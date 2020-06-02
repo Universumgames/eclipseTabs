@@ -1,28 +1,32 @@
 {
-
   "manifest_version": 2,
   "name": "Tab-folders",
   "version": "1.0",
-
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tabFolders@universegame.de",
+      "strict_min_version": "42.0"
+    }
+  },
   "description": "Let you manage your tabs using folders",
   "homepage_url": "https://universegame.de",
   "icons": {
     "48": "icons/logo-48.png"
   },
-
   "permissions": [
     "storage",
     "<all_urls>",
-    "tabs"
+    "tabs",
+    "tabHide"
   ],
-
-  "options_ui":{
+  "options_ui": {
     "page": "Settings.html"
   },
-
   "page_action": {
     "browser_style": true,
-    "show_matches": ["<all_urls>"], 
+    "show_matches": [
+      "<all_urls>"
+    ],
     "default_icon": {
       "19": "icons/logo-19.png",
       "32": "icons/logo-32.png",
@@ -32,18 +36,19 @@
     "default_title": "Tab-Folders",
     "default_popup": "popup/popup.html"
   },
-
   "sidebar_action": {
     "default_title": "Tab-Folders",
     "default_panel": "sidebar/sidebar.html",
     "default_icon": "icons/logo-48.png"
   },
-
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["tab-folders.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "tab-folders.js"
+      ]
     }
   ]
-
 }
