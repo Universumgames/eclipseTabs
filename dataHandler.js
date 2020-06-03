@@ -1,10 +1,11 @@
 export function updatePinnedFolderList(structure, tabs){
-  var pinnedFolders = {}
-  pinnedFolders.item = false
-  pinnedFolders.folder = true
-  pinnedFolders.name = "Pinned Tabs"
-  pinnedFolders.open = true
-  pinnedFolders.elements = []
+  var pinnedFolder = {}
+  pinnedFolder.item = false
+  pinnedFolder.folder = true
+  pinnedFolder.name = "Pinned Tabs"
+  pinnedFolder.open = (structure[0] == undefined || structure[0].open == undefined)? true: structure[0].open
+  pinnedFolder.folderID = 0
+  pinnedFolder.elements = []
   tabs.forEach(tab => {
     if(tab.pinned){
       var storedTab = {}
@@ -16,10 +17,10 @@ export function updatePinnedFolderList(structure, tabs){
       storedTab.url = tab.url
       storedTab.favIconURL = tab.favIconUrl
       storedTab.title = tab.title
-      pinnedFolders.elements[storedTab.title] = storedTab
+      pinnedFolder.elements.push(storedTab)
     }
   })
-  structure.pinnedFolders = pinnedFolders
+  structure[0] = pinnedFolder
 }
 
 export function saveDataInFirefox(data){

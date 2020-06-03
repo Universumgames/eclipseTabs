@@ -15,6 +15,7 @@ data: {
       folder: "true",
       name: "test",
       open: "true",
+      folderID: 1,
       elements:[
         site2:{
           item: "true",
