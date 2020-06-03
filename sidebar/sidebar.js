@@ -1,26 +1,14 @@
+//#region imports
+import * as dataHandler from '../dataHandler.js'
+import * as tabHelper from '../tabHelper.js'
+//#endregion
+
 function setupDisplay() {
   document.getElementById("emptyList").classList.add("disabled")
   document.getElementById("list").classList.remove("disabled")
 }
 
 //#region tab functions
-function hideTab(id) {
-  if (id != undefined) {
-    console.log(`hide ${id}`)
-    return browser.tabs.hide(id)
-  }
-}
-
-function showTab(id) {
-  if (id != undefined) {
-    console.log(`show ${id}`)
-    return browser.tabs.show(id)
-  }
-}
-
-function focusTab(id) {
-  browser.tabs.update(id, { active: true })
-}
 
 function getElementByTabID(id) {
   var childs = document.getElementById("list").children
@@ -70,11 +58,6 @@ function tabUpdateListener(tabId, changeInfo, tabInfo) {
 //#endregion
 
 function folderClick(e) {
-
-  console.log(e)
-  console.log(e.originalTarget)
-  console.log(e.originalTarget.open)
-  console.log(isFolder(e.originalTarget))
   if (isFolder(e.originalTarget)) {
     var folder = e.originalTarget
     var open = folder.open
@@ -98,15 +81,20 @@ function folderClick(e) {
   }
 }
 
-function itemClick(e) {
-  console.log(e)
-  if (!e.originalTarget.hiddenTab) {
-    e.originalTarget.hiddenTab = true;
-    hideTab(e.originalTarget.tabID).then(() => console.log("hidden"), (e) => console.error(e))
-  }
-  else {
-    e.originalTarget.hiddenTab = false;
-    showTab(e.originalTarget.tabID).then(() => focusTab(e.originalTarget.tabID), (e) => console.error(e))
+async function itemClick(e) {
+  var tab = await browser.tabs.get(e.originalTarget.tabID)
+  var tabElement = e.originalTarget
+  if (!tab.pinned) {
+    if (!tabElement.hiddenTab) {
+      tabElement.hiddenTab = true;
+      tabHelper.hideTab(tabElement.tabID).then(undefined, (e) => console.error(e))
+    }
+    else {
+      tabElement.hiddenTab = false;
+      tabHelper.showTab(tabElement.tabID).then(() => focusTab(tabElement.tabID), (e) => console.error(e))
+    }
+  } else {
+    focusTab(tabElement.tabID)
   }
 }
 
@@ -128,7 +116,7 @@ function addFolder(parent, id, name, opened, tier) {
   imgNode.src = "../icons/arrow_down-128.png"
   imgNode.id = "image"
   imgNode.classList.add("arrow")
-  if(!opened) imgNode.classList.add("rotated")
+  if (!opened) imgNode.classList.add("rotated")
   folderDiv.appendChild(imgNode)
   var textNode = document.createTextNode(name)
   folderDiv.appendChild(textNode)
@@ -146,7 +134,10 @@ function addTab(folderDiv, tab, tier) {
   itemNode.url = tab.url
   itemNode.title = tab.title
   itemNode.favIconUrl = tab.favIconUrl
-  itemNode.onclick = itemClick
+  if (!tab.pinned)
+    itemNode.onclick = itemClick
+  else
+    itemNode.ondblclick = itemClick
   itemNode.style.marginLeft = tier * 4 + "px"
   var iconNode = document.createElement("img")
   iconNode.src = tab.favIconUrl
@@ -159,17 +150,23 @@ function addTab(folderDiv, tab, tier) {
   folderDiv.appendChild(itemNode)
 }
 
-
-
 function loadFolderList(tabs) {
+  /*data.structure.pinnedTabIDs = {}
+  data.structure.pinnedTabIDs.item = false
+  data.structure.pinnedTabIDs.folder = true
+  data.structure.pinnedTabIDs.name = "Pinned Tabs"
+  data.structure.pinnedTabIDs.open = true
+  data.structure.pinnedTabIDs.elements = []*/
   var listContainer = document.getElementById("list")
   if (listContainer && tabs) {
     var pinFolder = addFolder(listContainer, "pinned", "Pinned Tabs", true, 1)
-    tabs.forEach(element => {
-      if (element.pinned)
-        addTab(pinFolder, element, 2)
+    tabs.forEach(tab => {
+      if (tab.pinned) {
+        //data.structure.pinnedTabIDs.push(tab.id)
+        addTab(pinFolder, tab, 2)
+      }
       else
-        addTab(listContainer, element, 1)
+        addTab(listContainer, tab, 1)
     });
     /*console.log(tabs)
     console.log(tabs[40])
@@ -180,23 +177,25 @@ function loadFolderList(tabs) {
   } else {
     console.error("List container not exisiting or tabs could not be loaded")
   }
+  //console.log(structure)
+  dataHandler.updatePinnedFolderList(data.structure, tabs)
+  dataHandler.saveDataInFirefox(data).then(()=>{
+    dataHandler.getDataFromFirefox().then((e)=>{
+      console.log(e)
+    })
+  })
 }
 
 //#region init code
-
+const data = {}
+data.structure = []
 //on sidepanel fully loaded
-
 document.addEventListener("DOMContentLoaded", function (event) {
   setupDisplay()
-
-
 
   browser.tabs.query({}).then((element) => { loadFolderList(element) }, (element) => console.error(element))
   browser.tabs.onActivated.addListener(refreshTabListOnActiveChange)
   //browser.tabs.onRemoved.addListener(refreshTabListOnTabClosed)
   browser.tabs.onUpdated.addListener(refreshTabListOnSiteUpdated)
-  var array = { "test": "hallo" }
-  browser.storage.sync.set({ array }).then(() => console.log("ok"))
-  var returnVal = browser.storage.sync.get("array").then((e) => console.log(e))
 });
 //#endregion

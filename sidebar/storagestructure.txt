@@ -1,0 +1,39 @@
+data: {
+  structure:[
+    site1:{
+      item: "true",
+      folder: "false",
+      hidden: "false",
+      tabExists: "false",
+      tabID: -1,
+      title: "Test1 Seite",
+      url: "www.universegame.de",
+      favIconURL: "www.universegame.de/favicon.ico"
+    },
+    folder1:{
+      item: "false",
+      folder: "true",
+      name: "test",
+      open: "true",
+      elements:[
+        site2:{
+          item: "true",
+          folder: "false",
+          hidden: "false",
+          tabExists: true,
+          tabID: 3,
+          title: "Test2 seite",
+          url: "www.universegame.de",
+          favIconURL: "www.universegame.de/favicon.ico"
+        },
+        folder2:{
+          item: "false",
+          folder: "true",
+          name: "test2",
+          open: "false",
+          elements: []
+        }
+      ]
+    }
+  ]
+}

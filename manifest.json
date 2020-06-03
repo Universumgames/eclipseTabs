@@ -47,7 +47,7 @@
         "<all_urls>"
       ],
       "js": [
-        "tab-folders.js"
+        "tab-folders.ts"
       ]
     }
   ]
