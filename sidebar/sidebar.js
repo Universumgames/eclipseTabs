@@ -38,7 +38,7 @@ function setup() {
 
 async function loadFirefoxData() {
   var dataF = await dataHandler.getDataStructFromFirefox()
-  data.elements = dataF.elements
+  if(dataF != undefined) data.elements = dataF.elements
 }
 
 
@@ -217,7 +217,7 @@ function addTab(folderDiv, tab, tier) {
   iconNode.src = tab.favIconURL
   iconNode.classList.add("favicon");
   itemNode.appendChild(iconNode)
-  var titleNode = document.createTextNode(tab.title + ` (${tab.tabID})`)
+  var titleNode = document.createTextNode(tab.title)
   itemNode.appendChild(titleNode)
   itemNode.classList.add("overflow")
   itemNode.classList.add("listItem")
