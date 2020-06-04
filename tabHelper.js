@@ -1,17 +1,44 @@
-export function hideTab(id) {
+import * as dataHandler from './dataHandler.js'
+
+export async function hideTab(id) {
   if (id != undefined) {
+    if ((await getCurrentTab()).id == id) return false
     console.log(`hide ${id}`)
-    return browser.tabs.hide(id)
+    await browser.tabs.hide(id)
+    return true
   }
+  return false
 }
 
-export function showTab(id) {
+export async function showTab(id) {
   if (id != undefined) {
     console.log(`show ${id}`)
-    return browser.tabs.show(id)
+    await browser.tabs.show(id)
+    return true
   }
+  return false
 }
 
 export function focusTab(id) {
   browser.tabs.update(id, { active: true })
+}
+
+export function createTab(url) {
+  window.open(url)
+}
+
+export async function tabExists(tabID) {
+  var tabs = await getTabs()
+  for (var tab of tabs) {
+    if (tab.id == tabID) return true
+  }
+  return false
+}
+
+export async function getTabs() {
+  return await browser.tabs.query({})
+}
+
+export async function getCurrentTab() {
+  return (await browser.tabs.query({ active: true }))[0]
 }

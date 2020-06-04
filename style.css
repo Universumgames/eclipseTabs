@@ -54,3 +54,12 @@ h3{
   overflow: hidden;
   white-space: nowrap;
 }
+
+.tabHidden{
+  color: darkgray
+}
+
+.bottom{
+  position: fixed;
+  bottom: 0;
+}

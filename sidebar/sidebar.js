@@ -8,10 +8,16 @@ const data = {}
 data.elements = []
 
 const listContainer = document.getElementById("list")
+const structCleaner = document.getElementById("structCleaner")
+const structReloader = document.getElementById("structReloader")
+const extensioReloader = document.getElementById("extensioReloader")
 
 
 //on sidepanel fully loaded
 document.addEventListener("DOMContentLoaded", () => setup())
+structCleaner.onclick = clearStruct
+structReloader.onclick = setup
+extensioReloader.onclick = reloadExtension
 //add updatteHTML listener
 //browser.tabs.addEventListener("updateHTMLList", () => updateHTMLList())
 
@@ -23,14 +29,14 @@ function setup() {
   document.getElementById("list").classList.remove("disabled")
 
   //load up pinned tabs
-  browser.tabs.query({}).then((tabs) => { loadFolderList(tabs) })
+  tabHelper.getTabs().then((tabs) => { loadFolderList(tabs) })
   //add event listeners for updates
   browser.tabs.onActivated.addListener(refreshTabListOnActiveChange)
   browser.tabs.onUpdated.addListener(refreshTabListOnSiteUpdated)
 }
 //#endregion
 
-async function loadFirefoxData(){
+async function loadFirefoxData() {
   var dataF = await dataHandler.getDataStructFromFirefox()
   data.elements = dataF.elements
 }
@@ -40,42 +46,27 @@ async function loadFolderList(tabs) {
   await loadFirefoxData()
   //save pinned tabs 
   dataHandler.updatePinnedFolderList(data.elements, tabs)
+  dataHandler.updateTabs(data.elements, tabs)
+
+  //console.log(data)
 
   dataHandler.saveDataInFirefox(data)
 
   displayHTMLList()
-
-  /*if (listContainer && tabs) {
-    var pinFolder = addFolder(listContainer, "pinned", "Pinned Tabs", true, 1)
-    tabs.forEach(tab => {
-      if (tab.pinned) {
-        addTab(pinFolder, tab, 2)
-      }
-      else
-        addTab(listContainer, tab, 1)
-    });
-  } else {
-    console.error("List container not exisiting or tabs could not be loaded")
-  }
-
-
-  dataHandler.saveDataInFirefox(data).then(() => {
-    dataHandler.getDataFromFirefox().then((e) => {
-      console.log(e)
-    })
-  })*/
 }
 
-function displayHTMLList() {
+async function displayHTMLList() {
   if (listContainer) {
     listContainer.innerHTML = ""
-    //console.log(data)
     displayElements(data.elements, listContainer, 1)
+    var tabs = await tabHelper.getTabs()
+
   }
 }
 
 function displayElements(elements, htmlContainer, layer) {
-  elements.forEach(item => {
+  for (var key in elements) {
+    var item = elements[key]
     if (item.item) {
       addTab(htmlContainer, item, layer);
     } else if (item.folder) {
@@ -83,7 +74,7 @@ function displayElements(elements, htmlContainer, layer) {
       displayElements(item.elements, htmlFolder.children[1], layer + 1)
       setChildrenVisible(item.open, htmlFolder.children)
     }
-  })
+  }
 }
 
 
@@ -100,11 +91,7 @@ function getElementByTabID(id) {
 //#region refresh list listener
 
 async function refreshTabList() {
-  loadFirefoxData()
-  //console.log(data)
-  displayHTMLList()
-  //listContainer.innerHTML = ""
-  //browser.tabs.query({}).then((element) => { loadFolderList(element) }, (element) => console.error(element))
+  tabHelper.getTabs().then((tabs) => { loadFolderList(tabs) })
 }
 
 function refreshTabListOnActiveChange(activeInfo) {
@@ -148,26 +135,37 @@ function folderClick(e) {
   }
 }
 
+async function itemClick(e) {
+  var tabElement = e.originalTarget
+  var tab = await browser.tabs.get(tabElement.tabID)
+  var currentTab = tabHelper.getCurrentTab();
+  var tabID = tabElement.tabID
+  if (!tab.pinned) {
+    if (!tabElement.hiddenTab) {
+      if (await tabHelper.tabExists(tabID)) {
+        if (await tabHelper.hideTab(tabID)) {
+          tabElement.hiddenTab = true;
+          tabElement.classList.add("tabHidden")
+        }
+      }
+    }
+    else {
+      if (await tabHelper.tabExists(tabID))
+        if (!(await tabHelper.showTab(tabID))) {
+          tabHelper.createTab(tabElement.url)
+        }
+      tabHelper.focusTab(tabID)
+      tabElement.hiddenTab = false;
+      tabElement.classList.remove("tabHidden")
+    }
+  } else {
+    tabHelper.focusTab(tabID)
+  }
+}
+
 function setChildrenVisible(value, childs) {
   if (value) childs[1].classList.remove("disabled")
   else childs[1].classList.add("disabled")
-}
-
-async function itemClick(e) {
-  var tab = await browser.tabs.get(e.originalTarget.tabID)
-  var tabElement = e.originalTarget
-  if (!tab.pinned) {
-    if (!tabElement.hiddenTab) {
-      tabElement.hiddenTab = true;
-      tabHelper.hideTab(tabElement.tabID).then(undefined, (e) => console.error(e))
-    }
-    else {
-      tabElement.hiddenTab = false;
-      tabHelper.showTab(tabElement.tabID).then(() => tabHelper.focusTab(tabElement.tabID), (e) => console.error(e))
-    }
-  } else {
-    tabHelper.focusTab(tabElement.tabID)
-  }
 }
 
 function isFolder(element) {
@@ -178,7 +176,7 @@ function isItem(element) {
   return element.isItem == true
 }
 
-function addFolder(parent, id, name, opened, tier) {
+function addFolder(htmlParent, id, name, opened, tier) {
   var folderDiv = document.createElement("div")
   folderDiv.folderID = id
   folderDiv.isFolder = true
@@ -197,7 +195,7 @@ function addFolder(parent, id, name, opened, tier) {
   var childContainer = document.createElement("div")
   folderDiv.appendChild(childContainer)
 
-  parent.appendChild(folderDiv)
+  htmlParent.appendChild(folderDiv)
 
   return folderDiv
 }
@@ -212,6 +210,8 @@ function addTab(folderDiv, tab, tier) {
     itemNode.onclick = itemClick
   else
     itemNode.ondblclick = itemClick
+  itemNode.hiddenTab = tab.hidden
+  if (tab.hidden) itemNode.classList.add("tabHidden")
   itemNode.style.marginLeft = tier * 4 + "px"
   var iconNode = document.createElement("img")
   iconNode.src = tab.favIconURL
@@ -225,3 +225,11 @@ function addTab(folderDiv, tab, tier) {
   return itemNode
 }
 
+function clearStruct() {
+  data.elements = []
+  dataHandler.saveDataInFirefox(data)
+}
+
+function reloadExtension() {
+  browser.runtime.reload()
+}

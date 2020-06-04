@@ -5,10 +5,10 @@ export function updatePinnedFolderList(elements, tabs) {
   pinnedFolder.item = false
   pinnedFolder.folder = true
   pinnedFolder.name = "Pinned Tabs"
-  pinnedFolder.open = (elements[0] == undefined || elements[0].open == undefined) ? true : elements[0].open
-  pinnedFolder.folderID = 0
+  pinnedFolder.open = (elements["pinned"] == undefined || elements["pinned"].open == undefined) ? true : elements["pinned"].open
+  pinnedFolder.folderID = "pinned"
   pinnedFolder.elements = []
-  tabs.forEach(tab => {
+  for (var tab of tabs) {
     if (tab.pinned) {
       var storedTab = {}
       storedTab.item = true
@@ -21,8 +21,33 @@ export function updatePinnedFolderList(elements, tabs) {
       storedTab.title = tab.title
       pinnedFolder.elements.push(storedTab)
     }
-  })
-  elements[0] = pinnedFolder
+  }
+  elements["pinned"] = pinnedFolder
+}
+
+export function updateTabs(elements, tabs) {
+  var unorderedFolder = {}
+  unorderedFolder.item = false
+  unorderedFolder.folder = true
+  unorderedFolder.name = "Unordered Tabs"
+  unorderedFolder.open = (elements["unordered"] == undefined || elements["unordered"].open == undefined) ? true : elements["unordered"].open
+  unorderedFolder.folderID = "unordered"
+  unorderedFolder.elements = []
+  for (var tab of tabs) {
+    if (!tab.pinned && !tabExists(tab.id, elements)) {
+      var storedTab = {}
+      storedTab.item = true
+      storedTab.folder = false
+      storedTab.hidden = tab.hidden
+      storedTab.tabExists = true
+      storedTab.tabID = tab.id
+      storedTab.url = tab.url
+      storedTab.favIconURL = tab.favIconUrl
+      storedTab.title = tab.title
+      unorderedFolder.elements.push(storedTab)
+    }
+  }
+  elements["unordered"] = unorderedFolder
 }
 
 export async function addFolder(parentID, newFolderID, name) {
@@ -59,27 +84,30 @@ export async function addTab(folderID, title, url, favIconURL, tabExists, tabID,
 }
 
 export function getFolderJSONObjectByID(id, data) {
-  if(id == -1) return data
+  //for selectTab -1 is baseDir
+  if (id == -1) return data
   return getFolderJSONObjectByIDRecursion(id, data.elements)
+}
+
+function getFolderJSONObjectByIDRecursion(id, folder) {
+  for (var key in folder) {
+    var element = folder[key]
+    if (element.folder) {
+      if (element.folderID == id) {
+        return element
+      }
+    }
+  }
+  return getFolderJSONObjectByIDRecursion(id, element.elements)
 }
 
 export function getFoldersInFolder(folder) {
   var folderArr = []
-  folder.elements.forEach((item) => {
+  for (var key in folder.elements) {
+    var item = folder.elements[key]
     if (item.folder) folderArr.push(item)
-  })
+  }
   return folderArr
-}
-
-function getFolderJSONObjectByIDRecursion(id, folder) {
-  var returnval = {}
-  folder.forEach(element => {
-    if (element.folder) {
-      if (element.folderID == id) returnval = element
-      else returnval = getFolderJSONObjectByIDRecursion(id, element.elements)
-    }
-  })
-  return returnval
 }
 
 export function saveDataInFirefox(data) {
@@ -110,11 +138,37 @@ export async function generateFolderID() {
 
 function getNumberOfFoldersAlreadyExisting(folderContainer) {
   var number = 0
-  folderContainer.forEach(item => {
+  for (var key in folderContainer) {
+    var item = folderContainer[key]
     if (item.folder) {
       number++
       number += getNumberOfFoldersAlreadyExisting(item.elements)
     }
-  })
+  }
   return number
+}
+
+export function tabExists(tabID, elements) {
+  for (var key in elements) {
+    var item = elements[key]
+    if (item.item && item.tabID == tabID) {
+      return true
+    }
+    if (item.folder) {
+      if (item.folderID == "unordered") break
+      return tabExists(tabID, item.elements)
+    }
+  }
+  return false
+}
+
+export function folderExists(folderID, elements) {
+  for (var key in elements) {
+    var item = elements[key]
+    if (item.folder) {
+      if (item.folderID == folderID) {
+        return item
+      } else return folderExists(folderID, item.elements)
+    }
+  }
 }
