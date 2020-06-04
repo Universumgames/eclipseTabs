@@ -1,5 +1,5 @@
 data: {
-  structure:[
+  elements:[
     site1:{
       item: "true",
       folder: "false",
@@ -38,3 +38,14 @@ data: {
     }
   ]
 }
+
+html
+div id="list"
+  div id=folderID style="margin-left: 4px;"
+    img 
+    foldername
+    div (children)
+      div id=tabID title url faviconURL 
+        (img tab not existing)
+        img favicon
+        tabname

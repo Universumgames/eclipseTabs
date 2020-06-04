@@ -5,14 +5,15 @@ import * as tabHelper from '../tabHelper.js'
 
 //#region init code
 const data = {}
-data.structure = []
+data.elements = []
 
 const listContainer = document.getElementById("list")
 
 
 //on sidepanel fully loaded
 document.addEventListener("DOMContentLoaded", () => setup())
-
+//add updatteHTML listener
+//browser.tabs.addEventListener("updateHTMLList", () => updateHTMLList())
 
 
 function setup() {
@@ -29,16 +30,20 @@ function setup() {
 }
 //#endregion
 
+async function loadFirefoxData(){
+  var dataF = await dataHandler.getDataStructFromFirefox()
+  data.elements = dataF.elements
+}
 
-function loadFolderList(tabs) {
+
+async function loadFolderList(tabs) {
+  await loadFirefoxData()
   //save pinned tabs 
-  dataHandler.updatePinnedFolderList(data.structure, tabs)
+  dataHandler.updatePinnedFolderList(data.elements, tabs)
 
-  if (listContainer) {
-    listContainer.innerHTML = ""
-    console.log(data)
-    displayStructure(data.structure, listContainer, 1)
-  }
+  dataHandler.saveDataInFirefox(data)
+
+  displayHTMLList()
 
   /*if (listContainer && tabs) {
     var pinFolder = addFolder(listContainer, "pinned", "Pinned Tabs", true, 1)
@@ -61,13 +66,21 @@ function loadFolderList(tabs) {
   })*/
 }
 
-function displayStructure(structure, htmlContainer, layer) {
-  structure.forEach(item => {
+function displayHTMLList() {
+  if (listContainer) {
+    listContainer.innerHTML = ""
+    //console.log(data)
+    displayElements(data.elements, listContainer, 1)
+  }
+}
+
+function displayElements(elements, htmlContainer, layer) {
+  elements.forEach(item => {
     if (item.item) {
       addTab(htmlContainer, item, layer);
     } else if (item.folder) {
       var htmlFolder = addFolder(htmlContainer, item.folderID, item.name, item.open, layer)
-      displayStructure(item.elements, htmlFolder, layer + 1)
+      displayElements(item.elements, htmlFolder.children[1], layer + 1)
       setChildrenVisible(item.open, htmlFolder.children)
     }
   })
@@ -86,9 +99,12 @@ function getElementByTabID(id) {
 
 //#region refresh list listener
 
-function refreshTabList() {
-  listContainer.innerHTML = ""
-  browser.tabs.query({}).then((element) => { loadFolderList(element) }, (element) => console.error(element))
+async function refreshTabList() {
+  loadFirefoxData()
+  //console.log(data)
+  displayHTMLList()
+  //listContainer.innerHTML = ""
+  //browser.tabs.query({}).then((element) => { loadFolderList(element) }, (element) => console.error(element))
 }
 
 function refreshTabListOnActiveChange(activeInfo) {
@@ -107,15 +123,6 @@ function refreshTabListOnSiteUpdated(tabId, changeInfo, tabInfo) {
 function tabUpdateListener(tabId, changeInfo, tabInfo) {
   document.getElementById("list").innerHTML = ""
   browser.tabs.query({}).then((element) => { loadFolderList(element) }, (element) => console.error(element))
-  /*console.log(changeInfo)
-  var tab = getElementByTabID(tabId)
-  tab.url = (changeInfo.url != undefined) ? changeInfo.url : tab.url
-  var oldTitle = tab.title
-  tab.title = (changeInfo.title != undefined) ? changeInfo.title : tab.title
-  tab.innerHTML = tab.innerHTML.replace(oldTitle, tab.title)*/
-  //console.log(tab)
-  //shitty
-  //browser.runtime.reload()
 }
 
 //#endregion
@@ -125,7 +132,7 @@ function folderClick(e) {
     var folder = e.originalTarget
     var open = folder.open
     folder.open = !open
-    getFolderJSONObjectByID(folder.folderID).open = folder.open
+    dataHandler.getFolderJSONObjectByID(folder.folderID, data).open = folder.open
     var childs = folder.children
     if (open) {
       folder.children[0].classList.add("rotated")
@@ -137,15 +144,13 @@ function folderClick(e) {
       folder.classList.remove("closed")
       setChildrenVisible(true, childs)
     }
-
+    dataHandler.saveDataInFirefox(data)
   }
 }
 
-function setChildrenVisible(value, childs){
-  for(let i = 1; i < childs.length; i++){
-    if(value) childs[i].classList.remove("disabled")
-    else childs[i].classList.add("disabled")
-  }
+function setChildrenVisible(value, childs) {
+  if (value) childs[1].classList.remove("disabled")
+  else childs[1].classList.add("disabled")
 }
 
 async function itemClick(e) {
@@ -158,26 +163,11 @@ async function itemClick(e) {
     }
     else {
       tabElement.hiddenTab = false;
-      tabHelper.showTab(tabElement.tabID).then(() => focusTab(tabElement.tabID), (e) => console.error(e))
+      tabHelper.showTab(tabElement.tabID).then(() => tabHelper.focusTab(tabElement.tabID), (e) => console.error(e))
     }
   } else {
-    focusTab(tabElement.tabID)
+    tabHelper.focusTab(tabElement.tabID)
   }
-}
-
-function getFolderJSONObjectByID(id) {
-  return getFolderJSONObjectByIDRecursion(id, data.structure)
-}
-
-function getFolderJSONObjectByIDRecursion(id, folder) {
-  var returnval = {}
-  folder.forEach(element => {
-    if (element.folder) {
-      if (element.folderID == id) returnval = element
-      else returnval = getFolderJSONObjectByIDRecursion(id, element.elements)
-    }
-  })
-  return returnval
 }
 
 function isFolder(element) {
@@ -204,6 +194,9 @@ function addFolder(parent, id, name, opened, tier) {
   folderDiv.appendChild(textNode)
   folderDiv.onclick = folderClick
 
+  var childContainer = document.createElement("div")
+  folderDiv.appendChild(childContainer)
+
   parent.appendChild(folderDiv)
 
   return folderDiv
@@ -211,7 +204,7 @@ function addFolder(parent, id, name, opened, tier) {
 
 function addTab(folderDiv, tab, tier) {
   var itemNode = document.createElement("div")
-  itemNode.tabID = tab.id
+  itemNode.tabID = tab.tabID
   itemNode.url = tab.url
   itemNode.title = tab.title
   itemNode.favIconUrl = tab.favIconURL
@@ -224,7 +217,7 @@ function addTab(folderDiv, tab, tier) {
   iconNode.src = tab.favIconURL
   iconNode.classList.add("favicon");
   itemNode.appendChild(iconNode)
-  var titleNode = document.createTextNode(tab.title)
+  var titleNode = document.createTextNode(tab.title + ` (${tab.tabID})`)
   itemNode.appendChild(titleNode)
   itemNode.classList.add("overflow")
   itemNode.classList.add("listItem")

@@ -3,6 +3,10 @@ body{
   color: white;
 }
 
+.popupBody{
+  border-radius: 5px;
+}
+
 .closed{
   color: lightgrey;
 }
