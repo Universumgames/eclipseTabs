@@ -41,6 +41,26 @@ async function loadFirefoxData() {
   if(dataF != undefined) data.elements = dataF.elements
 }
 
+//#region Drag handling
+function dragstart_handler(ev){
+  ev.dataTransfer.setData("text/plain", ev.target.innerText)
+  ev.dataTransfer.dropEffect = "move"
+  console.log(ev)
+}
+
+function dragover_handler(ev){
+  ev.preventDefault()
+  ev.dataTransfer.dropEffect = "move"
+}
+
+function drop_handler(ev){
+  ev.preventDefault()
+
+  const data = ev.dataTransfer.getData("text/plain");
+  //ev.target.appendchild(...)
+}
+//#endregion
+
 
 async function loadFolderList(tabs) {
   await loadFirefoxData()
@@ -114,6 +134,7 @@ function tabUpdateListener(tabId, changeInfo, tabInfo) {
 
 //#endregion
 
+//#region click handler
 function folderClick(e) {
   if (isFolder(e.originalTarget)) {
     var folder = e.originalTarget
@@ -163,6 +184,8 @@ async function itemClick(e) {
   }
 }
 
+//#endregion
+
 function setChildrenVisible(value, childs) {
   if (value) childs[1].classList.remove("disabled")
   else childs[1].classList.add("disabled")
@@ -176,6 +199,7 @@ function isItem(element) {
   return element.isItem == true
 }
 
+//#region add HTML elements (loading things from json data)
 function addFolder(htmlParent, id, name, opened, tier) {
   var folderDiv = document.createElement("div")
   folderDiv.folderID = id
@@ -194,7 +218,10 @@ function addFolder(htmlParent, id, name, opened, tier) {
 
   var childContainer = document.createElement("div")
   folderDiv.appendChild(childContainer)
-
+  folderDiv.draggable = true
+  folderDiv.addEventListener("dragstart", dragstart_handler)
+  folderDiv.ondrop.addListener(drop_handler)
+  folderDiv.ondragover.addListener(dragover_handler)
   htmlParent.appendChild(folderDiv)
 
   return folderDiv
@@ -221,9 +248,12 @@ function addTab(folderDiv, tab, tier) {
   itemNode.appendChild(titleNode)
   itemNode.classList.add("overflow")
   itemNode.classList.add("listItem")
+  itemNode.draggable = true
+  itemNode.addEventListener("dragstart", dragstart_handler)
   folderDiv.appendChild(itemNode)
   return itemNode
 }
+//#endregion
 
 function clearStruct() {
   data.elements = []

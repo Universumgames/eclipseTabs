@@ -17,7 +17,8 @@
     "storage",
     "<all_urls>",
     "tabs",
-    "tabHide"
+    "tabHide",
+    "contextMenus"
   ],
   "options_ui": {
     "page": "Settings.html"
