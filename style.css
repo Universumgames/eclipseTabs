@@ -63,3 +63,16 @@ h3{
   position: fixed;
   bottom: 0;
 }
+
+.bottomElements{
+  margin: 2%;
+}
+
+.bottomElement{
+  display: inline;
+}
+
+.bottomElementPic{
+  width: 25px;
+  height: 25px;
+}

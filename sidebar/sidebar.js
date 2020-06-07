@@ -12,6 +12,9 @@ const structCleaner = document.getElementById("structCleaner")
 const structReloader = document.getElementById("structReloader")
 const extensioReloader = document.getElementById("extensioReloader")
 
+const addFolderBtn = document.getElementById("addFolder")
+const deleteArea = document.getElementById("delete")
+
 
 //on sidepanel fully loaded
 document.addEventListener("DOMContentLoaded", () => setup())
@@ -43,21 +46,27 @@ async function loadFirefoxData() {
 
 //#region Drag handling
 function dragstart_handler(ev){
-  ev.dataTransfer.setData("text/plain", ev.target.innerText)
-  ev.dataTransfer.dropEffect = "move"
+  //ev.dataTransfer.setData("text/plain", ev.target.innerText)
+  //ev.dataTransfer.dropEffect = "move"
   console.log(ev)
 }
 
 function dragover_handler(ev){
-  ev.preventDefault()
-  ev.dataTransfer.dropEffect = "move"
+  //ev.preventDefault()
+  //ev.dataTransfer.dropEffect = "move"
+  console.log(ev)
 }
 
 function drop_handler(ev){
-  ev.preventDefault()
+  //ev.preventDefault()
 
-  const data = ev.dataTransfer.getData("text/plain");
+  //const data = ev.dataTransfer.getData("text/plain");
   //ev.target.appendchild(...)
+  console.log(ev)
+}
+
+function dropend_handler(ev){
+  console.log(ev)
 }
 //#endregion
 
@@ -207,7 +216,7 @@ function addFolder(htmlParent, id, name, opened, tier) {
   folderDiv.open = opened
   folderDiv.style.marginLeft = tier * 4 + "px"
   var imgNode = document.createElement("img")
-  imgNode.src = "../icons/arrow_down-128.png"
+  imgNode.src = "../icons/arrow_down-256.png"
   imgNode.id = "image"
   imgNode.classList.add("arrow")
   if (!opened) imgNode.classList.add("rotated")
@@ -220,8 +229,9 @@ function addFolder(htmlParent, id, name, opened, tier) {
   folderDiv.appendChild(childContainer)
   folderDiv.draggable = true
   folderDiv.addEventListener("dragstart", dragstart_handler)
-  folderDiv.ondrop.addListener(drop_handler)
-  folderDiv.ondragover.addListener(dragover_handler)
+  folderDiv.addEventListener("drop", drop_handler)
+  folderDiv.addEventListener("dragover", dragover_handler)
+  folderDiv.addEventListener("dropend", dropend_handler)
   htmlParent.appendChild(folderDiv)
 
   return folderDiv
@@ -250,6 +260,7 @@ function addTab(folderDiv, tab, tier) {
   itemNode.classList.add("listItem")
   itemNode.draggable = true
   itemNode.addEventListener("dragstart", dragstart_handler)
+  itemNode.addEventListener("dropend", dropend_handler)
   folderDiv.appendChild(itemNode)
   return itemNode
 }
