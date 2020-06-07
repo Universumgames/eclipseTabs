@@ -50,6 +50,11 @@ export function updateTabs(elements, tabs) {
   elements["unordered"] = unorderedFolder
 }
 
+export async function renameFolder(folderID, newName){
+  var folder = getFolderJSONObjectByID(folderID)
+  folder.name = newName
+}
+
 export async function addFolder(parentID, newFolderID, name) {
   var data = await getDataStructFromFirefox()
   var parentFolder = getFolderJSONObjectByID(parentID, data)
@@ -60,7 +65,6 @@ export async function addFolder(parentID, newFolderID, name) {
   folder.name = name
   folder.elements = []
   folder.folderID = newFolderID
-  console.log(parentFolder)
   parentFolder.elements.push(folder)
   await saveDataInFirefox(data)
   return folder

@@ -3,10 +3,6 @@ body{
   color: white;
 }
 
-.popupBody{
-  border-radius: 5px;
-}
-
 .closed{
   color: lightgrey;
 }
@@ -75,4 +71,16 @@ h3{
 .bottomElementPic{
   width: 25px;
   height: 25px;
+}
+
+#addFolderNameInput{
+  margin: 5%;
+}
+
+.noEvents {
+  pointer-events: none;
+}
+
+.hover{
+  opacity: .5;
 }
