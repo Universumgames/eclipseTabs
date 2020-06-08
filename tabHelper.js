@@ -42,3 +42,7 @@ export async function getTabs() {
 export async function getCurrentTab() {
   return (await browser.tabs.query({ active: true }))[0]
 }
+
+export async function closeTab(id){
+  return browser.tabs.remove(id)
+}

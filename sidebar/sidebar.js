@@ -23,7 +23,7 @@ const addFolderNameInputContainer = document.getElementById("addFolderNameInputC
 const addFolderNameInput = document.getElementById("addFolderNameInput")
 
 const addFolderBtn = document.getElementById("addFolder")
-const deleteArea = document.getElementById("delete")
+const trashcan = document.getElementById("delete")
 
 
 //on sidepanel fully loaded
@@ -49,6 +49,17 @@ async function setup() {
   browser.tabs.onActivated.addListener(refreshTabListOnActiveChange)
   browser.tabs.onUpdated.addListener(refreshTabListOnSiteUpdated)
 
+  //trashcan listners
+  trashcan.addEventListener("dragstart", dragstart_handler)
+  trashcan.addEventListener("dragover", dragover_handler)
+  trashcan.addEventListener("dropend", dropend_handler)
+  trashcan.addEventListener("dragend", dragend_handler)
+  trashcan.addEventListener("dragenter", dragenter_handler)
+  trashcan.addEventListener("dragleave", dragleave_handler)
+  trashcan.addEventListener("drop", drop_handler)
+  trashcan.isTrashCan = true
+
+
   var data = await dataHandler.getDataStructFromFirefox()
   console.log(data)
 }
@@ -65,10 +76,10 @@ async function loadFirefoxData() {
 async function dragstart_handler(event) {
   dragging = event.target
   console.log(dragging)
-  if(isFolder(dragging))
+  if (isFolder(dragging))
     draggingJSON = dataHandler.getFolderJSONObjectByID(dragging.folderID, await dataHandler.getDataStructFromFirefox())
-  else if(isItem(dragging))
-     draggingJSON = dataHandler.getItemJSONObjectByID(dragging.tabID, await dataHandler.getDataStructFromFirefox())
+  else if (isItem(dragging))
+    draggingJSON = dataHandler.getItemJSONObjectByID(dragging.tabID, await dataHandler.getDataStructFromFirefox())
   event.target.classList.add("hover")
   //ev.dataTransfer.setData("text/plain", ev.target.innerText)
   //ev.dataTransfer.dropEffect = "move"
@@ -81,7 +92,7 @@ function dragend_handler(event) {
 
 function dragenter_handler(event) {
   var target = event.target
-  if (target != dragging && isFolder(target)){ // && target.folderID != "pinned" && target.folderID != "unordered") {
+  if (target != dragging && isFolder(target)) { // && target.folderID != "pinned" && target.folderID != "unordered") {
     target.classList.add("hover")
   }
 }
@@ -104,15 +115,27 @@ async function drop_handler(event) {
   target.classList.remove("hover")
   dragging.classList.remove("hover")
 
-  if(isFolder(target)){
+  if (isFolder(target)) {
 
-    if(draggingJSON.folder){
+    if (draggingJSON.folder) {
       await dataHandler.moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.folderID)
       console.log(true)
-    } else if(draggingJSON.item){
+    } else if (draggingJSON.item) {
       await dataHandler.moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.folderID)
     }
 
+    triggerListReload()
+  } else if (target.isTrashCan) {
+    if (draggingJSON.item) {
+      tabHelper.closeTab(draggingJSON.itemID)
+      dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
+    } else if (draggingJSON.folder) {
+      for (var key in draggingJSON.elements) {
+        var item = draggingJSON.elements[key]
+        if (item.tabID != -1 && await tabHelper.tabExists(item.tabID)) tabHelper.closeTab(item.tabID)
+      }
+      dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
+    }
     triggerListReload()
   }
 
@@ -315,7 +338,7 @@ function addFolder(htmlParent, id, name, opened, tier) {
   imgNode.classList.add("noEvents")
   if (!opened) imgNode.classList.add("rotated")
   folderDiv.appendChild(imgNode)
-  
+
   var textContainerNode = document.createElement("div")
   textContainerNode.classList.add("noEvents")
   textContainerNode.style.display = "inline"
@@ -326,7 +349,7 @@ function addFolder(htmlParent, id, name, opened, tier) {
   var childContainer = document.createElement("div")
   folderDiv.appendChild(childContainer)
 
-  
+
 
   //rename functionality
   if (id != "pinned" && id != "unordered") {
@@ -341,7 +364,7 @@ function addFolder(htmlParent, id, name, opened, tier) {
 
   //eventhandler
   //draggable
-  if(id != "pinned" && id != "unordered") folderDiv.draggable = true
+  if (id != "pinned" && id != "unordered") folderDiv.draggable = true
   folderDiv.addEventListener("dragstart", dragstart_handler)
   folderDiv.addEventListener("drop", drop_handler)
   folderDiv.addEventListener("dragover", dragover_handler)
