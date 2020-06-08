@@ -6,9 +6,11 @@ data: {
       hidden: "false",
       tabExists: "false",
       tabID: -1,
+      itemID: 2,
       title: "Test1 Seite",
       url: "www.universegame.de",
-      favIconURL: "www.universegame.de/favicon.ico"
+      favIconURL: "www.universegame.de/favicon.ico",
+      parentFolderID: "-1"
     },
     folder1:{
       item: "false",
@@ -16,6 +18,7 @@ data: {
       name: "test",
       open: "true",
       folderID: 1,
+      parentFolderID: "-1"
       elements:[
         site2:{
           item: "true",
@@ -23,15 +26,18 @@ data: {
           hidden: "false",
           tabExists: true,
           tabID: 3,
+          itemID: 3,
           title: "Test2 seite",
           url: "www.universegame.de",
-          favIconURL: "www.universegame.de/favicon.ico"
+          favIconURL: "www.universegame.de/favicon.ico",
+          parentFolderID: "1"
         },
         folder2:{
           item: "false",
           folder: "true",
           name: "test2",
           open: "false",
+          parentFolderID: "1"
           elements: []
         }
       ]

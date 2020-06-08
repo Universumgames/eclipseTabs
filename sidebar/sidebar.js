@@ -5,6 +5,7 @@ import * as tabHelper from '../tabHelper.js'
 
 //#region init code
 var dragging
+var draggingJSON
 
 const folderChildImageIndex = 0
 const folderChildItemListIndex = 2
@@ -48,7 +49,8 @@ async function setup() {
   browser.tabs.onActivated.addListener(refreshTabListOnActiveChange)
   browser.tabs.onUpdated.addListener(refreshTabListOnSiteUpdated)
 
-  console.log(await dataHandler.getDataStructFromFirefox())
+  var data = await dataHandler.getDataStructFromFirefox()
+  console.log(data)
 }
 //#endregion
 
@@ -60,8 +62,13 @@ async function loadFirefoxData() {
 //#region Event handler
 
 //#region element Drag handling
-function dragstart_handler(event) {
+async function dragstart_handler(event) {
   dragging = event.target
+  console.log(dragging)
+  if(isFolder(dragging))
+    draggingJSON = dataHandler.getFolderJSONObjectByID(dragging.folderID, await dataHandler.getDataStructFromFirefox())
+  else if(isItem(dragging))
+     draggingJSON = dataHandler.getItemJSONObjectByID(dragging.tabID, await dataHandler.getDataStructFromFirefox())
   event.target.classList.add("hover")
   //ev.dataTransfer.setData("text/plain", ev.target.innerText)
   //ev.dataTransfer.dropEffect = "move"
@@ -91,9 +98,24 @@ function dragover_handler(event) {
   //console.log(event)
 }
 
-function drop_handler(event) {
+async function drop_handler(event) {
   event.preventDefault()
-  event.target.classList.remove("hover")
+  var target = event.target
+  target.classList.remove("hover")
+  dragging.classList.remove("hover")
+
+  if(isFolder(target)){
+
+    if(draggingJSON.folder){
+      await dataHandler.moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.folderID)
+      console.log(true)
+    } else if(draggingJSON.item){
+      await dataHandler.moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.folderID)
+    }
+
+    triggerListReload()
+  }
+
   dragging = undefined
 
   //const data = ev.dataTransfer.getData("text/plain");
@@ -231,10 +253,7 @@ async function folderRenameSubmit_handler(event) {
     event.preventDefault()
     var value = event.originalTarget.value
     var parent = event.originalTarget.parentNode
-    var data = await dataHandler.getDataStructFromFirefox()
-    var JSONFolder = dataHandler.getFolderJSONObjectByID(parent.folderID, data)
-    JSONFolder.name = value
-    await dataHandler.saveDataInFirefox(data)
+    await dataHandler.renameFolder(parent.folderID, value)
     triggerListReload()
   }
 }
@@ -341,9 +360,11 @@ function addFolder(htmlParent, id, name, opened, tier) {
 function addTab(folderDiv, tab, tier) {
   var itemNode = document.createElement("div")
   itemNode.tabID = tab.tabID
+  itemNode.itemID = tab.itemID
   itemNode.url = tab.url
   itemNode.title = tab.title
   itemNode.favIconUrl = tab.favIconURL
+  itemNode.isItem = true
   if (!tab.pinned)
     itemNode.onclick = itemClick
   else
@@ -392,7 +413,7 @@ function setChildrenVisible(value, childs) {
 }
 
 function isFolder(element) {
-  return (element.isFolder != undefined && element.isFolder) || isFolder(element.parentNode)
+  return (element.isFolder != undefined && element.isFolder)
 }
 
 function isItem(element) {
