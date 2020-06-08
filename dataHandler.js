@@ -67,14 +67,16 @@ export async function moveItem(itemID, oldParentFolderID, newParentFolderID) {
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
   var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data)
   var item = getItemJSONObjectByID(itemID, data)
-  item.parentFolderID = newParentFolderID
-  newParentFolder.elements.push(item)
-  console.log(data)
   var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID)
-  console.log(key)
-  delete oldParentFolder.elements[key]
-  console.log(data)
-  await saveDataInFirefox(data)
+  if (oldParentFolder != undefined && newParentFolder != undefined && item != undefined && key != undefined) {
+    item.parentFolderID = newParentFolderID
+    newParentFolder.elements.push(item)
+
+    delete oldParentFolder.elements[key]
+    await saveDataInFirefox(data)
+    return true
+  }
+  return false
 }
 
 export async function moveFolder(folderID, oldParentFolderID, newParentFolderID) {
@@ -82,10 +84,15 @@ export async function moveFolder(folderID, oldParentFolderID, newParentFolderID)
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
   var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data)
   var folder = getFolderJSONObjectByID(folderID)
-  folder.parentFolderID = newParentFolderID
-  newParentFolder.elements.push(folder)
-  delete oldParentFolder.elements[getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)]
-  await saveDataInFirefox(data)
+  var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
+  if (oldParentFolder != undefined && newParentFolder != undefined && folder != undefined && key != undefined) {
+    folder.parentFolderID = newParentFolderID
+    newParentFolder.elements.push(folder)
+    delete oldParentFolder.elements[key]
+    await saveDataInFirefox(data)
+    return true
+  }
+  return false
 }
 
 function getKeyByIDAndType(elements, isFolder, id) {
@@ -100,6 +107,7 @@ function getKeyByIDAndType(elements, isFolder, id) {
         break
     }
   }
+  return undefined
 }
 
 export async function addFolder(parentID, newFolderID, name) {
