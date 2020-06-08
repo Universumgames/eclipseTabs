@@ -38,7 +38,8 @@ export function updateTabs(elements, tabs) {
   unorderedFolder.parentFolderID = -1
   unorderedFolder.elements = []
   for (var tab of tabs) {
-    if (!tab.pinned && !tabExists(tab.id, elements)) {
+    var exist = tabExistsByTabID(tab.id, elements)
+    if (!tab.pinned && !exist) {
       var storedTab = {}
       storedTab.item = true
       storedTab.folder = false
@@ -71,7 +72,6 @@ export async function moveItem(itemID, oldParentFolderID, newParentFolderID) {
   if (oldParentFolder != undefined && newParentFolder != undefined && item != undefined && key != undefined) {
     item.parentFolderID = newParentFolderID
     newParentFolder.elements.push(item)
-
     delete oldParentFolder.elements[key]
     await saveDataInFirefox(data)
     return true
@@ -79,7 +79,7 @@ export async function moveItem(itemID, oldParentFolderID, newParentFolderID) {
   return false
 }
 
-export async function removeItem(itemID, oldParentFolderID){
+export async function removeItem(itemID, oldParentFolderID) {
   var data = await getDataStructFromFirefox()
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
   var item = getItemJSONObjectByID(itemID, data)
@@ -98,6 +98,7 @@ export async function moveFolder(folderID, oldParentFolderID, newParentFolderID)
   var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data)
   var folder = getFolderJSONObjectByID(folderID)
   var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
+  console.log(key)
   if (oldParentFolder != undefined && newParentFolder != undefined && folder != undefined && key != undefined) {
     folder.parentFolderID = newParentFolderID
     newParentFolder.elements.push(folder)
@@ -108,7 +109,7 @@ export async function moveFolder(folderID, oldParentFolderID, newParentFolderID)
   return false
 }
 
-export async function removeFolder(folderID, oldParentFolderID){
+export async function removeFolder(folderID, oldParentFolderID) {
   var data = await getDataStructFromFirefox()
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
   var folder = getFolderJSONObjectByID(folderID, data)
@@ -267,7 +268,8 @@ export function getNumberOfItemsAlreadyExisting(folderContainer) {
   return number
 }
 
-export function tabExists(itemID, elements) {
+export function tabExistsByItemID(itemID, elements) {
+  var returnVal
   for (var key in elements) {
     var item = elements[key]
     if (item.item && item.itemID == itemID) {
@@ -275,19 +277,38 @@ export function tabExists(itemID, elements) {
     }
     if (item.folder) {
       if (item.folderID == "unordered") break
-      return tabExists(itemID, item.elements)
+      returnVal = tabExistsByItemID(itemID, item.elements)
+      if (returnVal != false) return returnVal
+    }
+  }
+  return false
+}
+
+export function tabExistsByTabID(tabID, elements) {
+  var returnVal = undefined
+  for (var key in elements) {
+    var item = elements[key]
+    if (item.item && item.tabID == tabID) {
+      return true
+    }else if (item.folder) {
+      if (item.folderID != "unordered") {
+        returnVal = tabExistsByTabID(tabID, item.elements)
+        if (returnVal != false) return returnVal
+      }
     }
   }
   return false
 }
 
 export function folderExists(folderID, elements) {
+  var returnVal = undefined
   for (var key in elements) {
     var item = elements[key]
     if (item.folder) {
       if (item.folderID == folderID) {
         return item
-      } else return folderExists(folderID, item.elements)
+      } else returnVal = folderExists(folderID, item.elements)
+      if(returnVal != undefined) return returnVal
     }
   }
 }

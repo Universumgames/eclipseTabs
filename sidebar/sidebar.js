@@ -75,7 +75,6 @@ async function loadFirefoxData() {
 //#region element Drag handling
 async function dragstart_handler(event) {
   dragging = event.target
-  console.log(dragging)
   if (isFolder(dragging))
     draggingJSON = dataHandler.getFolderJSONObjectByID(dragging.folderID, await dataHandler.getDataStructFromFirefox())
   else if (isItem(dragging))
@@ -83,7 +82,6 @@ async function dragstart_handler(event) {
   event.target.classList.add("hover")
   //ev.dataTransfer.setData("text/plain", ev.target.innerText)
   //ev.dataTransfer.dropEffect = "move"
-  console.log(event)
 }
 
 function dragend_handler(event) {
@@ -119,7 +117,6 @@ async function drop_handler(event) {
 
     if (draggingJSON.folder) {
       await dataHandler.moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.folderID)
-      console.log(true)
     } else if (draggingJSON.item) {
       await dataHandler.moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.folderID)
     }
@@ -143,8 +140,6 @@ async function drop_handler(event) {
 
   //const data = ev.dataTransfer.getData("text/plain");
   //ev.target.appendchild(...)
-
-  console.log(event)
 }
 
 function dropend_handler(event) {
