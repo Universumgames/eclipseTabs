@@ -186,15 +186,19 @@ function folderClick(e) {
 }
 
 async function itemClick(e) {
+  var data = await dataHandler.getDataStructFromFirefox()
   var tabElement = e.originalTarget
   var tab = await browser.tabs.get(tabElement.tabID)
   var currentTab = tabHelper.getCurrentTab();
   var tabID = tabElement.tabID
+  var itemID = tabElement.itemID
+  var jsonTab = dataHandler.getItemJSONObjectByID(itemID, data)
   if (!tab.pinned) {
     if (!tabElement.hiddenTab) {
       if (await tabHelper.tabExists(tabID)) {
         if (await tabHelper.hideTab(tabID)) {
-          tabElement.hiddenTab = true;
+          tabElement.hiddenTab = true
+          jsonTab.hidden = true
           tabElement.classList.add("tabHidden")
         }
       }
@@ -206,11 +210,13 @@ async function itemClick(e) {
         }
       tabHelper.focusTab(tabID)
       tabElement.hiddenTab = false;
+      jsonTab.hidden = false;
       tabElement.classList.remove("tabHidden")
     }
   } else {
     tabHelper.focusTab(tabID)
   }
+  await dataHandler.saveDataInFirefox(data)
 }
 
 //#endregion
