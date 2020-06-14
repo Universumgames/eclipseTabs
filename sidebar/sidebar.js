@@ -287,6 +287,7 @@ async function folderRenameSubmit_handler(event) {
 
 //#region display functions
 async function loadFolderList(tabs) {
+  console.log(tabs)
   await loadFirefoxData()
   //save pinned tabs 
   dataHandler.updatePinnedFolderList(data.elements, tabs)
@@ -322,7 +323,6 @@ function displayElements(elements, htmlContainer, layer) {
 }
 
 //#endregion
-
 
 //#region add HTML elements (loading things from json data)
 function addFolder(htmlParent, id, name, opened, tier) {

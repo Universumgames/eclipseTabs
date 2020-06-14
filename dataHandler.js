@@ -1,6 +1,6 @@
 export const updateHTMLEvent = new Event('updateHTMLList')
 
-export function updatePinnedFolderList(elements, tabs) {
+export async function updatePinnedFolderList(elements, tabs) {
   var pinnedFolder = {}
   pinnedFolder.item = false
   pinnedFolder.folder = true
@@ -9,20 +9,11 @@ export function updatePinnedFolderList(elements, tabs) {
   pinnedFolder.folderID = "pinned"
   pinnedFolder.parentFolderID = -1
   pinnedFolder.elements = []
-  for (var tab of tabs) {
+  for (var key in tabs) {
+    var tab = tabs[key]
     if (tab.pinned) {
-      var storedTab = {}
-      storedTab.item = true
-      storedTab.folder = false
-      storedTab.hidden = tab.hidden
-      storedTab.tabExists = true
-      storedTab.tabID = tab.id
-      storedTab.itemID = tab.id
-      storedTab.url = tab.url
-      storedTab.favIconURL = tab.favIconUrl
-      storedTab.title = tab.title
-      storedTab.parentFolderID = pinnedFolder.folderID
-      pinnedFolder.elements.push(storedTab)
+      var itemID = tab.id
+      addTabSync(pinnedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, itemID, tab.hidden)
     }
   }
   elements["pinned"] = pinnedFolder
@@ -153,21 +144,25 @@ export async function addFolder(parentID, newFolderID, name) {
   return folder
 }
 
+function addTabSync(folder, title, url, favIconURL, tabExists, tabID, itemID, hidden) {
+  var storedTab = {}
+  storedTab.item = true
+  storedTab.folder = false
+  storedTab.hidden = hidden
+  storedTab.tabExists = true
+  storedTab.tabID = tabID
+  storedTab.itemID = itemID
+  storedTab.url = url
+  storedTab.favIconURL = favIconURL
+  storedTab.title = title
+  storedTab.parentFolderID = folder.folderID
+  folder.elements.push(storedTab)
+}
+
 export async function addTab(folderID, title, url, favIconURL, tabExists, tabID, itemID, hidden) {
   var data = await getDataStructFromFirefox()
   var folder = getFolderJSONObjectByID(folderID, data)
-  var item = {}
-  item.folder = false
-  item.item = true
-  item.hidden = hidden
-  item.tabID = tabID
-  item.itemID = itemID
-  item.title = title
-  item.url = url
-  item.favIconURL = favIconURL
-  item.tabExists = tabExists
-  item.parentFolderID = folderID
-  folder.elements.push(item)
+  addTabSync(folder, title, url, favIconURL, tabExists, tabID, itemID, hidden)
   await saveDataInFirefox(data)
   return item
 }
@@ -290,7 +285,7 @@ export function tabExistsByTabID(tabID, elements) {
     var item = elements[key]
     if (item.item && item.tabID == tabID) {
       return true
-    }else if (item.folder) {
+    } else if (item.folder) {
       if (item.folderID != "unordered") {
         returnVal = tabExistsByTabID(tabID, item.elements)
         if (returnVal != false) return returnVal
@@ -308,7 +303,7 @@ export function folderExists(folderID, elements) {
       if (item.folderID == folderID) {
         return item
       } else returnVal = folderExists(folderID, item.elements)
-      if(returnVal != undefined) return returnVal
+      if (returnVal != undefined) return returnVal
     }
   }
 }
