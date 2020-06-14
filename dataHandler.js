@@ -1,6 +1,6 @@
 export const updateHTMLEvent = new Event('updateHTMLList')
 
-export async function updatePinnedFolderList(elements, tabs) {
+function updatePinnedTabs(elements, tabs) {
   var pinnedFolder = {}
   pinnedFolder.item = false
   pinnedFolder.folder = true
@@ -12,14 +12,14 @@ export async function updatePinnedFolderList(elements, tabs) {
   for (var key in tabs) {
     var tab = tabs[key]
     if (tab.pinned) {
-      var itemID = tab.url
+      var itemID = createItemIDByTab(tab)
       addTabSync(pinnedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, itemID, tab.hidden)
     }
   }
   elements["pinned"] = pinnedFolder
 }
 
-export function updateTabs(elements, tabs) {
+function updateUnorderedTabs(elements, tabs){
   var unorderedFolder = {}
   unorderedFolder.item = false
   unorderedFolder.folder = true
@@ -31,11 +31,26 @@ export function updateTabs(elements, tabs) {
   for (var tab of tabs) {
     var exist = tabExistsByTabID(tab.id, elements)
     if (!tab.pinned && !exist) {
-      var itemID = tab.url
+      var itemID = createItemIDByTab(tab)
       addTabSync(unorderedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, itemID, tab.hidden)
     }
   }
   elements["unordered"] = unorderedFolder
+}
+
+function updateOrganisedTabs(elements, tabs){
+  for(key in tabs){
+
+  }
+}
+
+export function updateTabs(elements, tabs) {
+  updatePinnedTabs(elements, tabs)
+  updateUnorderedTabs(elements, tabs)
+}
+
+function createItemIDByTab(tab){
+  return tab.url
 }
 
 export async function renameFolder(folderID, newName) {
@@ -157,17 +172,34 @@ export async function addTab(folderID, title, url, favIconURL, tabExists, tabID,
   return item
 }
 
-export function getItemJSONObjectByID(id, data) {
-  return getItemJSONObjectByIDRecursion(id, data.elements)
+export function getItemJSONObjectByItemID(itemID, data) {
+  return getItemJSONObjectByItemIDRecursion(itemID, data.elements)
 }
 
-function getItemJSONObjectByIDRecursion(id, items) {
+function getItemJSONObjectByItemIDRecursion(itemID, items) {
   var returnVal = undefined
   for (var key in items) {
     var element = items[key]
-    if (element.item && element.itemID == id) return element
+    if (element.item && element.itemID == itemID) return element
     else if (element.folder) {
-      returnVal = getItemJSONObjectByIDRecursion(id, element.elements)
+      returnVal = getItemJSONObjectByItemIDRecursion(itemID, element.elements)
+      if (returnVal != undefined) return returnVal
+    }
+  }
+  return undefined
+}
+
+export function getItemJSONObjectByTabID(tabID, data) {
+  return getItemJSONObjectByTabIDRecursion(tabID, data.elements)
+}
+
+function getItemJSONObjectByTabIDRecursion(tabID, items) {
+  var returnVal = undefined
+  for (var key in items) {
+    var element = items[key]
+    if (element.item && element.tabID == tabID) return element
+    else if (element.folder) {
+      returnVal = getItemJSONObjectByTabIDRecursion(tabID, element.elements)
       if (returnVal != undefined) return returnVal
     }
   }
@@ -254,7 +286,8 @@ export function getNumberOfItemsAlreadyExisting(folderContainer) {
 }
 
 export function tabExistsByItemID(itemID, elements) {
-  var returnVal
+  return getItemJSONObjectByItemID(itemID, {elements}) != undefined
+  /*var returnVal
   for (var key in elements) {
     var item = elements[key]
     if (item.item && item.itemID == itemID) {
@@ -266,11 +299,12 @@ export function tabExistsByItemID(itemID, elements) {
       if (returnVal != false) return returnVal
     }
   }
-  return false
+  return false*/
 }
 
 export function tabExistsByTabID(tabID, elements) {
-  var returnVal = undefined
+  return getItemJSONObjectByTabID(tabID, {elements}) != undefined
+  /*var returnVal = undefined
   for (var key in elements) {
     var item = elements[key]
     if (item.item && item.tabID == tabID) {
@@ -282,7 +316,7 @@ export function tabExistsByTabID(tabID, elements) {
       }
     }
   }
-  return false
+  return false*/
 }
 
 export function folderExists(folderID, elements) {

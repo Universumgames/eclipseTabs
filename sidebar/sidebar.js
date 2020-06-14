@@ -28,11 +28,7 @@ const trashcan = document.getElementById("delete")
 
 //on sidepanel fully loaded
 document.addEventListener("DOMContentLoaded", () => setup())
-structCleaner.onclick = clearStruct_handler
-structReloader.onclick = structReloader_handler
-extensionReloader.onclick = extensionReloader_handler
-addFolderBtn.onclick = addFolderClick_handler
-addFolderNameInput.addEventListener("keyup", addFolderSubmit_handler)
+
 //add updatteHTML listener
 //browser.tabs.addEventListener("updateHTMLList", () => updateHTMLList())
 
@@ -48,6 +44,12 @@ async function setup() {
   //add event listeners for updates
   browser.tabs.onActivated.addListener(refreshTabListOnActiveChange)
   browser.tabs.onUpdated.addListener(refreshTabListOnSiteUpdated)
+
+  structCleaner.onclick = clearStruct_handler
+  structReloader.onclick = structReloader_handler
+  extensionReloader.onclick = extensionReloader_handler
+  addFolderBtn.onclick = addFolderClick_handler
+  addFolderNameInput.addEventListener("keyup", addFolderSubmit_handler)
 
   //trashcan listners
   trashcan.addEventListener("dragstart", dragstart_handler)
@@ -289,8 +291,7 @@ async function folderRenameSubmit_handler(event) {
 async function loadFolderList(tabs) {
   console.log(tabs)
   await loadFirefoxData()
-  //save pinned tabs 
-  dataHandler.updatePinnedFolderList(data.elements, tabs)
+  //update tabs 
   dataHandler.updateTabs(data.elements, tabs)
 
   //console.log(data)
@@ -337,7 +338,10 @@ function addFolder(htmlParent, id, name, opened, tier) {
   imgNode.id = "image"
   imgNode.classList.add("arrow")
   imgNode.classList.add("noEvents")
-  if (!opened) imgNode.classList.add("rotated")
+  if (!opened){
+    imgNode.classList.add("rotated")
+    folderDiv.classList.add("closed")
+  }
   folderDiv.appendChild(imgNode)
 
   var textContainerNode = document.createElement("div")
