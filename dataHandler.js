@@ -12,7 +12,7 @@ export async function updatePinnedFolderList(elements, tabs) {
   for (var key in tabs) {
     var tab = tabs[key]
     if (tab.pinned) {
-      var itemID = tab.id
+      var itemID = tab.url
       addTabSync(pinnedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, itemID, tab.hidden)
     }
   }
@@ -31,18 +31,8 @@ export function updateTabs(elements, tabs) {
   for (var tab of tabs) {
     var exist = tabExistsByTabID(tab.id, elements)
     if (!tab.pinned && !exist) {
-      var storedTab = {}
-      storedTab.item = true
-      storedTab.folder = false
-      storedTab.hidden = tab.hidden
-      storedTab.tabExists = true
-      storedTab.tabID = tab.id
-      storedTab.itemID = tab.id
-      storedTab.url = tab.url
-      storedTab.favIconURL = tab.favIconUrl
-      storedTab.title = tab.title
-      storedTab.parentFolderID = unorderedFolder.folderID
-      unorderedFolder.elements.push(storedTab)
+      var itemID = tab.url
+      addTabSync(unorderedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, itemID, tab.hidden)
     }
   }
   elements["unordered"] = unorderedFolder
@@ -149,7 +139,7 @@ function addTabSync(folder, title, url, favIconURL, tabExists, tabID, itemID, hi
   storedTab.item = true
   storedTab.folder = false
   storedTab.hidden = hidden
-  storedTab.tabExists = true
+  storedTab.tabExists = tabExists
   storedTab.tabID = tabID
   storedTab.itemID = itemID
   storedTab.url = url

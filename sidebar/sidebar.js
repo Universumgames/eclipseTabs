@@ -78,7 +78,7 @@ async function dragstart_handler(event) {
   if (isFolder(dragging))
     draggingJSON = dataHandler.getFolderJSONObjectByID(dragging.folderID, await dataHandler.getDataStructFromFirefox())
   else if (isItem(dragging))
-    draggingJSON = dataHandler.getItemJSONObjectByID(dragging.tabID, await dataHandler.getDataStructFromFirefox())
+    draggingJSON = dataHandler.getItemJSONObjectByID(dragging.itemID, await dataHandler.getDataStructFromFirefox())
   event.target.classList.add("hover")
   //ev.dataTransfer.setData("text/plain", ev.target.innerText)
   //ev.dataTransfer.dropEffect = "move"
