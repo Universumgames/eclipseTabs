@@ -28,6 +28,7 @@ export function createTab(url) {
 }
 
 export async function tabExists(tabID) {
+  if(tabID == -1) return false
   var tabs = await getTabs()
   for (var tab of tabs) {
     if (tab.id == tabID) return true

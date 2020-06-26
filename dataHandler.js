@@ -1,5 +1,6 @@
 export const updateHTMLEvent = new Event('updateHTMLList')
 
+//#region update tabs
 function updatePinnedTabs(elements, tabs) {
   var pinnedFolder = {}
   pinnedFolder.item = false
@@ -12,8 +13,7 @@ function updatePinnedTabs(elements, tabs) {
   for (var key in tabs) {
     var tab = tabs[key]
     if (tab.pinned) {
-      var itemID = createItemIDByTab(tab)
-      addTabSync(pinnedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, itemID, tab.hidden)
+      addTabSync(pinnedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, createItemIDByTab(tab), tab.hidden)
     }
   }
   elements["pinned"] = pinnedFolder
@@ -31,17 +31,38 @@ function updateUnorderedTabs(elements, tabs){
   for (var tab of tabs) {
     var exist = tabExistsByTabID(tab.id, elements)
     if (!tab.pinned && !exist) {
-      var itemID = createItemIDByTab(tab)
-      addTabSync(unorderedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, itemID, tab.hidden)
+      addTabSync(unorderedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, createItemIDByTab(tab), tab.hidden)
     }
   }
   elements["unordered"] = unorderedFolder
 }
 
-function updateOrganisedTabs(elements, tabs){
-  for(key in tabs){
-
+export function updateTabsOnStartUp(data, tabs){
+  for(var key in  data.elements){
+    var element = data.elements[key]
+    if(element.folder) updateTabsOnStartUp(element, tabs)
+    else if(element.item){
+      var item = element
+      var firefoxTab = getFirefoxTabByURL(tabs, item.url)
+      if(firefoxTab == undefined){ 
+        item.tabID = -1
+        item.hidden = true
+      }
+      else{
+        item.tabID = firefoxTab.id
+        item.hidden = firefoxTab.hidden
+      }
+    }
   }
+  /*for(tabKey in tabs){
+    var firefoxTab = tabs[tabKey]
+    var item = getItemJSONObjectByUrl(firefoxTab.url, data.elements)
+    item.tabID = firefoxTab.id
+  }*/
+}
+
+function updateOrganisedTabs(elements, tabs){
+  
 }
 
 export function updateTabs(elements, tabs) {
@@ -49,9 +70,7 @@ export function updateTabs(elements, tabs) {
   updateUnorderedTabs(elements, tabs)
 }
 
-function createItemIDByTab(tab){
-  return tab.url
-}
+//#endregion
 
 export async function renameFolder(folderID, newName) {
   var folder = getFolderJSONObjectByID(folderID, await getDataStructFromFirefox())
@@ -59,28 +78,16 @@ export async function renameFolder(folderID, newName) {
   await saveDataInFirefox(data)
 }
 
+//#region mover
 export async function moveItem(itemID, oldParentFolderID, newParentFolderID) {
   var data = await getDataStructFromFirefox()
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
   var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data)
-  var item = getItemJSONObjectByID(itemID, data)
+  var item = getItemJSONObjectByItemID(itemID, data)
   var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID)
   if (oldParentFolder != undefined && newParentFolder != undefined && item != undefined && key != undefined) {
     item.parentFolderID = newParentFolderID
     newParentFolder.elements.push(item)
-    delete oldParentFolder.elements[key]
-    await saveDataInFirefox(data)
-    return true
-  }
-  return false
-}
-
-export async function removeItem(itemID, oldParentFolderID) {
-  var data = await getDataStructFromFirefox()
-  var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
-  var item = getItemJSONObjectByID(itemID, data)
-  var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID)
-  if (oldParentFolder != undefined && item != undefined && key != undefined) {
     delete oldParentFolder.elements[key]
     await saveDataInFirefox(data)
     return true
@@ -104,7 +111,9 @@ export async function moveFolder(folderID, oldParentFolderID, newParentFolderID)
   }
   return false
 }
+//#endregion
 
+//#region remover
 export async function removeFolder(folderID, oldParentFolderID) {
   var data = await getDataStructFromFirefox()
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
@@ -118,21 +127,21 @@ export async function removeFolder(folderID, oldParentFolderID) {
   return false
 }
 
-function getKeyByIDAndType(elements, isFolder, id) {
-  for (var key in elements) {
-    var obj = elements[key]
-    switch (isFolder) {
-      case true:
-        if (obj.folderID == id) return key
-        break
-      case false:
-        if (obj.itemID == id) return key
-        break
-    }
+export async function removeItem(itemID, oldParentFolderID) {
+  var data = await getDataStructFromFirefox()
+  var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
+  var item = getItemJSONObjectByID(itemID, data)
+  var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID)
+  if (oldParentFolder != undefined && item != undefined && key != undefined) {
+    delete oldParentFolder.elements[key]
+    await saveDataInFirefox(data)
+    return true
   }
-  return undefined
+  return false
 }
+//#endregion
 
+//#region adder
 export async function addFolder(parentID, newFolderID, name) {
   var data = await getDataStructFromFirefox()
   var parentFolder = getFolderJSONObjectByID(parentID, data)
@@ -171,7 +180,9 @@ export async function addTab(folderID, title, url, favIconURL, tabExists, tabID,
   await saveDataInFirefox(data)
   return item
 }
+//#endregion
 
+//#region getter
 export function getItemJSONObjectByItemID(itemID, data) {
   return getItemJSONObjectByItemIDRecursion(itemID, data.elements)
 }
@@ -228,6 +239,48 @@ function getFolderJSONObjectByIDRecursion(id, folder) {
   return undefined
 }
 
+function getKeyByIDAndType(elements, isFolder, id) {
+  for (var key in elements) {
+    var obj = elements[key]
+    switch (isFolder) {
+      case true:
+        if (obj.folderID == id) return key
+        break
+      case false:
+        if (obj.itemID == id) return key
+        break
+    }
+  }
+  return undefined
+}
+
+export function getItemJSONObjectByUrl(elements, url){
+  return getItemJSONObjectByURLRecursion(elements, url)
+}
+
+function getItemJSONObjectByURLRecursion(items, url){
+  var returnVal = undefined
+  for (var key in items) {
+    var element = items[key]
+    if (element.item && element.url == url) return element
+    else if (element.folder) {
+      returnVal = getItemJSONObjectByUrlRecursion(urls, element.elements)
+      if (returnVal != undefined) return returnVal
+    }
+  }
+  return undefined
+}
+
+export function getFirefoxTabByURL(tabs, url){
+  for(var key in tabs){
+    var tab = tabs[key]
+    if(tab.url == url) return tab
+  }
+}
+
+//#endregion
+
+//#region firefox data
 export function getFoldersInFolder(folder) {
   var folderArr = []
   for (var key in folder.elements) {
@@ -248,6 +301,7 @@ export function getFirefoxStructFromFirefox() {
 export async function getDataStructFromFirefox() {
   return (await getFirefoxStructFromFirefox()).data
 }
+//#endregion
 
 export async function getActiveTab() {
   return (await browser.tabs.query({ currentWindow: true, active: true }))[0]
@@ -257,6 +311,7 @@ export function getCurrentWindowTabs() {
   return browser.tabs.query({ currentWindow: true });
 }
 
+//#region genertators
 export async function generateFolderID() {
   var collectedFolders = 0
   var data = await getDataStructFromFirefox()
@@ -285,38 +340,21 @@ export function getNumberOfItemsAlreadyExisting(folderContainer) {
   return number
 }
 
+function createItemIDByTab(tab){
+  return tab.url
+}
+
+//#endregion
+
+//#region exist functions
 export function tabExistsByItemID(itemID, elements) {
-  return getItemJSONObjectByItemID(itemID, {elements}) != undefined
-  /*var returnVal
-  for (var key in elements) {
-    var item = elements[key]
-    if (item.item && item.itemID == itemID) {
-      return true
-    }
-    if (item.folder) {
-      if (item.folderID == "unordered") break
-      returnVal = tabExistsByItemID(itemID, item.elements)
-      if (returnVal != false) return returnVal
-    }
-  }
-  return false*/
+  var item = getItemJSONObjectByItemID(itemID, {elements})
+  return item != undefined  && item.parentFolderID != "unordered"
 }
 
 export function tabExistsByTabID(tabID, elements) {
-  return getItemJSONObjectByTabID(tabID, {elements}) != undefined
-  /*var returnVal = undefined
-  for (var key in elements) {
-    var item = elements[key]
-    if (item.item && item.tabID == tabID) {
-      return true
-    } else if (item.folder) {
-      if (item.folderID != "unordered") {
-        returnVal = tabExistsByTabID(tabID, item.elements)
-        if (returnVal != false) return returnVal
-      }
-    }
-  }
-  return false*/
+  var item = getItemJSONObjectByTabID(tabID, {elements})
+  return  item != undefined && item.parentFolderID != "unordered"
 }
 
 export function folderExists(folderID, elements) {
@@ -331,3 +369,4 @@ export function folderExists(folderID, elements) {
     }
   }
 }
+//#endregion
