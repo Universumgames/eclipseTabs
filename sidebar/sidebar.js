@@ -124,7 +124,6 @@ async function drop_handler(event) {
   dragging.classList.remove("hover")
 
   if (isFolder(target)) {
-
     if (draggingJSON.folder) {
       await dataHandler.moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.folderID)
     } else if (draggingJSON.item) {
@@ -134,13 +133,9 @@ async function drop_handler(event) {
     triggerListReload()
   } else if (target.isTrashCan) {
     if (draggingJSON.item) {
-      tabHelper.closeTab(draggingJSON.itemID)
+      if(draggingJSON.tabID != -1) tabHelper.closeTab(draggingJSON.tabID)
       dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
     } else if (draggingJSON.folder) {
-      for (var key in draggingJSON.elements) {
-        var item = draggingJSON.elements[key]
-        if (item.tabID != -1 && await tabHelper.tabExists(item.tabID)) tabHelper.closeTab(item.tabID)
-      }
       dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
     }
     triggerListReload()
@@ -220,8 +215,11 @@ async function itemClick(e) {
         tabElement.hiddenTab = false;
         jsonTab.hidden = false;
         tabElement.classList.remove("tabHidden")
+      }else{
+        await tabHelper.createTab(jsonTab.url)
       }
     }
+    setup()
   } else {
     tabHelper.focusTab(tabID)
   }

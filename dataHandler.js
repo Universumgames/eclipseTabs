@@ -1,4 +1,5 @@
 export const updateHTMLEvent = new Event('updateHTMLList')
+import * as tabHelper from '../tabHelper.js'
 
 //#region update tabs
 function updatePinnedTabs(elements, tabs) {
@@ -99,9 +100,8 @@ export async function moveFolder(folderID, oldParentFolderID, newParentFolderID)
   var data = await getDataStructFromFirefox()
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
   var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data)
-  var folder = getFolderJSONObjectByID(folderID)
+  var folder = getFolderJSONObjectByID(folderID, data)
   var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
-  console.log(key)
   if (oldParentFolder != undefined && newParentFolder != undefined && folder != undefined && key != undefined) {
     folder.parentFolderID = newParentFolderID
     newParentFolder.elements.push(folder)
@@ -119,6 +119,14 @@ export async function removeFolder(folderID, oldParentFolderID) {
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
   var folder = getFolderJSONObjectByID(folderID, data)
   var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
+  for (var key in folder.elements) {
+    var item = folder.elements[key]
+    if(item.item){
+      if (item.tabID != -1 && await tabHelper.tabExists(item.tabID)) tabHelper.closeTab(item.tabID)
+    }else if(item.folder){
+      removeFolder(item.folderID, folderID)
+    }
+  }
   if (oldParentFolder != undefined && folder != undefined && key != undefined) {
     delete oldParentFolder.elements[key]
     await saveDataInFirefox(data)
@@ -130,7 +138,7 @@ export async function removeFolder(folderID, oldParentFolderID) {
 export async function removeItem(itemID, oldParentFolderID) {
   var data = await getDataStructFromFirefox()
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
-  var item = getItemJSONObjectByID(itemID, data)
+  var item = getItemJSONObjectByItemID(itemID, data)
   var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID)
   if (oldParentFolder != undefined && item != undefined && key != undefined) {
     delete oldParentFolder.elements[key]

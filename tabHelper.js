@@ -24,7 +24,9 @@ export function focusTab(id) {
 }
 
 export function createTab(url) {
-  window.open(url)
+  return browser.tabs.create({
+    url: `${url}`
+  })
 }
 
 export async function tabExists(tabID) {
