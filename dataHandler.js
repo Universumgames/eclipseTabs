@@ -118,7 +118,7 @@ export async function removeFolder(folderID, oldParentFolderID) {
   var data = await getDataStructFromFirefox()
   var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
   var folder = getFolderJSONObjectByID(folderID, data)
-  var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
+
   for (var key in folder.elements) {
     var item = folder.elements[key]
     if(item.item){
@@ -127,6 +127,9 @@ export async function removeFolder(folderID, oldParentFolderID) {
       removeFolder(item.folderID, folderID)
     }
   }
+  
+  var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
+  
   if (oldParentFolder != undefined && folder != undefined && key != undefined) {
     delete oldParentFolder.elements[key]
     await saveDataInFirefox(data)
