@@ -2,12 +2,6 @@
   "manifest_version": 2,
   "name": "Tab-folders",
   "version": "1.0",
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "tabFolders@universegame.de",
-      "strict_min_version": "42.0"
-    }
-  },
   "description": "Let you manage your tabs using folders",
   "homepage_url": "https://universegame.de",
   "icons": {
@@ -17,7 +11,6 @@
     "storage",
     "<all_urls>",
     "tabs",
-    "tabHide",
     "contextMenus"
   ],
   "options_ui": {
