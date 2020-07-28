@@ -26,13 +26,13 @@ const addFolderBtn = document.getElementById("addFolder")
 const trashcan = document.getElementById("delete")
 
 //on firefox start (tabID's may have changed, changing these in data struct)
-browser.runtime.onStartup.addListener(startup)
+
 //on sidepanel fully loaded
 document.addEventListener("DOMContentLoaded", () => setup())
 
 
 //add updatteHTML listener
-//browser.tabs.addEventListener("updateHTMLList", () => updateHTMLList())
+//chrome.tabs.addEventListener("updateHTMLList", () => updateHTMLList())
 
 async function startup() {
   var data = await dataHandler.getDataStructFromFirefox()
@@ -40,6 +40,8 @@ async function startup() {
     console.log(tabs)
     dataHandler.updateTabsOnStartUp(data, tabs) })
 }
+
+startup()
 
 async function setup() {
   //set placeholder invisible
@@ -50,8 +52,8 @@ async function setup() {
   //load up pinned tabs
   tabHelper.getTabs().then((tabs) => { loadFolderList(tabs) })
   //add event listeners for updates
-  browser.tabs.onActivated.addListener(refreshTabListOnActiveChange)
-  browser.tabs.onUpdated.addListener(refreshTabListOnSiteUpdated)
+  chrome.tabs.onActivated.addListener(refreshTabListOnActiveChange)
+  chrome.tabs.onUpdated.addListener(refreshTabListOnSiteUpdated)
 
   structCleaner.onclick = clearStruct_handler
   structReloader.onclick = structReloader_handler
@@ -193,7 +195,7 @@ function folderClick(e) {
 async function itemClick(e) {
   var data = await dataHandler.getDataStructFromFirefox()
   var tabElement = e.originalTarget
-  var tab = (await tabHelper.tabExists(tabElement.tabID)) ? await browser.tabs.get(tabElement.tabID) : { pinned: false }
+  var tab = (await tabHelper.tabExists(tabElement.tabID)) ? await chrome.tabs.get(tabElement.tabID) : { pinned: false }
   //var currentTab = tabHelper.getCurrentTab();
   var tabID = tabElement.tabID
   var itemID = tabElement.itemID
@@ -249,7 +251,7 @@ function refreshTabListOnSiteUpdated(tabId, changeInfo, tabInfo) {
 //not used anymore
 function tabUpdateListener(tabId, changeInfo, tabInfo) {
   document.getElementById("list").innerHTML = ""
-  browser.tabs.query({}).then((element) => { loadFolderList(element) }, (element) => console.error(element))
+  chrome.tabs.query({}).then((element) => { loadFolderList(element) }, (element) => console.error(element))
 }
 
 //#endregion
@@ -438,7 +440,7 @@ function clearStruct() {
 }
 
 function reloadExtension() {
-  browser.runtime.reload()
+  chrome.runtime.reload()
 }
 
 function setChildrenVisible(value, childs) {

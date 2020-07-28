@@ -302,11 +302,11 @@ export function getFoldersInFolder(folder) {
 }
 
 export function saveDataInFirefox(data) {
-  return browser.storage.local.set({ data })
+  return chrome.storage.local.set({ data })
 }
 
 export function getFirefoxStructFromFirefox() {
-  return browser.storage.local.get("data")
+  return chrome.storage.local.get("data")
 }
 
 export async function getDataStructFromFirefox() {
@@ -315,11 +315,11 @@ export async function getDataStructFromFirefox() {
 //#endregion
 
 export async function getActiveTab() {
-  return (await browser.tabs.query({ currentWindow: true, active: true }))[0]
+  return (await chrome.tabs.query({ currentWindow: true, active: true }))[0]
 }
 
 export function getCurrentWindowTabs() {
-  return browser.tabs.query({ currentWindow: true });
+  return chrome.tabs.query({ currentWindow: true });
 }
 
 //#region genertators
