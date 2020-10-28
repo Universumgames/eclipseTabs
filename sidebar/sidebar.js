@@ -27,29 +27,36 @@ const trashcan = document.getElementById("delete")
 
 //on firefox start (tabID's may have changed, changing these in data struct)
 browser.runtime.onStartup.addListener(startup)
+browser.runtime.onUpdateAvailable.addListener(handleUpdateAvailable);
 //on sidepanel fully loaded
 document.addEventListener("DOMContentLoaded", () => setup())
 
+function handleUpdateAvailable() {
+  console.log(details.version);
+  // Proceed to upgrade the add-on
+  browser.runtime.reload();
+}
 
 //add updatteHTML listener
 //browser.tabs.addEventListener("updateHTMLList", () => updateHTMLList())
 
 async function startup() {
   var data = await dataHandler.getDataStructFromFirefox()
-  tabHelper.getTabs().then((tabs) => { 
+  tabHelper.getTabs().then((tabs) => {
     console.log(tabs)
-    dataHandler.updateTabsOnStartUp(data, tabs) })
+    dataHandler.updateTabsOnStartUp(data, tabs)
+  })
 }
 
 async function setup() {
   //set placeholder invisible
   document.getElementById("emptyList").classList.add("disabled")
-  //set folder list visible
+    //set folder list visible
   document.getElementById("list").classList.remove("disabled")
 
   //load up pinned tabs
   tabHelper.getTabs().then((tabs) => { loadFolderList(tabs) })
-  //add event listeners for updates
+    //add event listeners for updates
   browser.tabs.onActivated.addListener(refreshTabListOnActiveChange)
   browser.tabs.onUpdated.addListener(refreshTabListOnSiteUpdated)
 
@@ -82,6 +89,10 @@ async function loadFirefoxData() {
 
 //#region Event handler
 
+function tabClosed(event) {
+  setup();
+}
+
 //#region element Drag handling
 async function dragstart_handler(event) {
   dragging = event.target
@@ -90,8 +101,8 @@ async function dragstart_handler(event) {
   else if (isItem(dragging))
     draggingJSON = dataHandler.getItemJSONObjectByItemID(dragging.itemID, await dataHandler.getDataStructFromFirefox())
   event.target.classList.add("hover")
-  //ev.dataTransfer.setData("text/plain", ev.target.innerText)
-  //ev.dataTransfer.dropEffect = "move"
+    //ev.dataTransfer.setData("text/plain", ev.target.innerText)
+    //ev.dataTransfer.dropEffect = "move"
 }
 
 function dragend_handler(event) {
@@ -113,8 +124,8 @@ function dragleave_handler(event) {
 
 function dragover_handler(event) {
   event.preventDefault()
-  //ev.dataTransfer.dropEffect = "move"
-  //console.log(event)
+    //ev.dataTransfer.dropEffect = "move"
+    //console.log(event)
 }
 
 async function drop_handler(event) {
@@ -133,7 +144,7 @@ async function drop_handler(event) {
     triggerListReload()
   } else if (target.isTrashCan) {
     if (draggingJSON.item) {
-      if(draggingJSON.tabID != -1) tabHelper.closeTab(draggingJSON.tabID)
+      if (draggingJSON.tabID != -1) tabHelper.closeTab(draggingJSON.tabID)
       dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
     } else if (draggingJSON.folder) {
       dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
@@ -180,8 +191,7 @@ function folderClick(e) {
       folder.children[folderChildImageIndex].classList.add("rotated")
       folder.classList.add("closed")
       setChildrenVisible(false, childs)
-    }
-    else {
+    } else {
       folder.children[folderChildImageIndex].classList.remove("rotated")
       folder.classList.remove("closed")
       setChildrenVisible(true, childs)
@@ -194,7 +204,7 @@ async function itemClick(e) {
   var data = await dataHandler.getDataStructFromFirefox()
   var tabElement = e.originalTarget
   var tab = (await tabHelper.tabExists(tabElement.tabID)) ? await browser.tabs.get(tabElement.tabID) : { pinned: false }
-  //var currentTab = tabHelper.getCurrentTab();
+    //var currentTab = tabHelper.getCurrentTab();
   var tabID = tabElement.tabID
   var itemID = tabElement.itemID
   var jsonTab = dataHandler.getItemJSONObjectByItemID(itemID, data)
@@ -205,8 +215,7 @@ async function itemClick(e) {
         jsonTab.hidden = true
         tabElement.classList.add("tabHidden")
       }
-    }
-    else {
+    } else {
       if (await tabHelper.tabExists(tabID)) {
         if (!(await tabHelper.showTab(tabID))) {
           tabHelper.createTab(tabElement.url)
@@ -215,7 +224,7 @@ async function itemClick(e) {
         tabElement.hiddenTab = false;
         jsonTab.hidden = false;
         tabElement.classList.remove("tabHidden")
-      }else{
+      } else {
         await tabHelper.createTab(jsonTab.url)
       }
     }
@@ -274,9 +283,9 @@ async function addFolderSubmit_handler(event) {
 function folderRenameClick_handler(event) {
   if (event.explicitOriginalTarget.localName == "div") {
     var divContainer = event.originalTarget
-    if(divContainer.isFolder)
+    if (divContainer.isFolder)
     //divContainer.innerText = ""
-    divContainer.children[2].classList.toggle("disabled")
+      divContainer.children[2].classList.toggle("disabled")
   }
 }
 
@@ -297,7 +306,7 @@ async function folderRenameSubmit_handler(event) {
 async function loadFolderList(tabs) {
   await loadFirefoxData()
   dataHandler.updateTabsOnStartUp(data, tabs)
-  //update tabs 
+    //update tabs 
   dataHandler.updateTabs(data.elements, tabs)
 
   //console.log(data)
@@ -383,7 +392,7 @@ function addFolder(htmlParent, id, name, opened, tier) {
   folderDiv.addEventListener("dragend", dragend_handler)
   folderDiv.addEventListener("dragenter", dragenter_handler)
   folderDiv.addEventListener("dragleave", dragleave_handler)
-  //on click
+    //on click
   folderDiv.onclick = folderClick
 
   htmlParent.appendChild(folderDiv)

@@ -2,42 +2,44 @@
 
 <html>
 
-<head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" type="text/css" href="../style.css">
-  <script src="sidebar.js" type="module"></script>
-</head>
+  <head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../style.css">
+    <script src="sidebar.js" type="module"></script>
+  </head>
 
-<body>
-  <div id="emptyList">
-    <noscript>
+  <body>
+    <div id="emptyList">
+      <noscript>
       Here are you tab folders going to be listed, if this is shown to you, the extension is propably not working
       correctly
     </noscript>
-  </div>
-  <div id="list" class="disabled list"></div>
-  <div id="addFolderNameInputContainer" class="disabled">
-    <input type="text" id="addFolderNameInput" placeholder="foldername">
-  </div>
-  <div><br> <br></div>
-  <div id="buttonArea">
-    <!-- Debugging buttons-->
-    <div class="bottom">
-      <div class="bottomElements">
-        <div id="addFolder" class="bottomElement">
-          <img src="../icons/pus-256.png" class="bottomElementPic">
+    </div>
+    <div id="list" class="disabled list"></div>
+    <div id="addFolderNameInputContainer" class="disabled">
+      <input type="text" id="addFolderNameInput" placeholder="foldername">
+    </div>
+    <div><br> <br></div>
+    <div id="buttonArea">
+      <!-- Debugging buttons-->
+      <div class="bottom">
+        <div class="bottomElements">
+          <div id="addFolder" class="bottomElement">
+            <img src="../icons/pus-256.png" class="bottomElementPic">
+          </div>
+          <div id="delete" class="bottomElement">
+            <img src="../icons/trashcan-256.png" class="bottomElementPic noEvents">
+          </div>
         </div>
-        <div id="delete" class="bottomElement">
-          <img src="../icons/trashcan-256.png" class="bottomElementPic noEvents">
+
+        <br>
+        <div id="debugElements">
+          <button id="structCleaner">Clear Data Struct</button>
+          <button id="structReloader">Reload Data Struct</button>
+          <button id="extensioReloader"> Reload Extension</button>
         </div>
       </div>
-
-      <br>
-      <button id="structCleaner">Clear Data Struct</button>
-      <button id="structReloader">Reload Data Struct</button>
-      <button id="extensioReloader"> Reload Extension</button>
     </div>
-  </div>
-</body>
+  </body>
 
 </html>
