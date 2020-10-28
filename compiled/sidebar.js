@@ -15,7 +15,7 @@ var draggingJSON;
 const folderChildImageIndex = 0;
 const folderChildItemListIndex = 2;
 const folderChildTextIndex = 1;
-var data = { elements: [] };
+var data = { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1" };
 const listContainer = document.getElementById("list");
 const structCleaner = document.getElementById("structCleaner");
 const structReloader = document.getElementById("structReloader");
@@ -80,9 +80,9 @@ function dragstart_handler(event) {
     return __awaiter(this, void 0, void 0, function* () {
         dragging = event.target;
         if (isFolder(dragging))
-            draggingJSON = dataHandler.getFolderJSONObjectByID(dragging.folderID, (yield dataHandler.getDataStructFromFirefox()).elements);
+            draggingJSON = dataHandler.getFolderJSONObjectByID(dragging.getAttribute("folderID"), (yield dataHandler.getDataStructFromFirefox()));
         else if (isItem(dragging))
-            draggingJSON = dataHandler.getItemJSONObjectByItemID(dragging.itemID, (yield dataHandler.getDataStructFromFirefox()).elements);
+            draggingJSON = dataHandler.getItemJSONObjectByItemID(dragging.getAttribute("itemID"), (yield dataHandler.getDataStructFromFirefox()).elements);
         event.target.classList.add("hover");
     });
 }
@@ -110,21 +110,21 @@ function drop_handler(event) {
         target.classList.remove("hover");
         dragging.classList.remove("hover");
         if (isFolder(target)) {
-            if (draggingJSON.folder) {
-                yield dataHandler.moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.folderID);
+            if ('folderID' in draggingJSON) {
+                yield dataHandler.moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.getAttribute("folderID"));
             }
-            else if (draggingJSON.item) {
-                yield dataHandler.moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.folderID);
+            else if ('itemID' in draggingJSON) {
+                yield dataHandler.moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.getAttribute("folderID"));
             }
             triggerListReload();
         }
-        else if (target.isTrashCan) {
-            if (draggingJSON.item) {
-                if (draggingJSON.tabID != -1)
+        else if (helper.toBoolean(target.getAttribute("isTrashCan"))) {
+            if ('itemID' in draggingJSON) {
+                if (draggingJSON.tabID != "-1")
                     tabHelper.closeTab(draggingJSON.tabID);
                 dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID);
             }
-            else if (draggingJSON.folder) {
+            else if ('folderID' in draggingJSON) {
                 dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID);
             }
             triggerListReload();
@@ -149,7 +149,7 @@ function folderClick(e) {
         var folder = e.originalTarget;
         var open = helper.toBoolean(folder.getAttribute("open"));
         folder.setAttribute("open", !open + "");
-        dataHandler.getFolderJSONObjectByID(folder.getAttribute("folderID"), data.elements).open = !open;
+        dataHandler.getFolderJSONObjectByID(folder.getAttribute("folderID"), data).open = !open;
         var childs = folder.children;
         if (open) {
             folder.children[folderChildImageIndex].classList.add("rotated");

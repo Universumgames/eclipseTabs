@@ -1,5 +1,4 @@
-export interface tabStructData{
-    elements: Array<elementData>
+export interface tabStructData extends folderData{
 }
 
 export interface folderData extends elementData {

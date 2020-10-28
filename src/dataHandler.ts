@@ -74,7 +74,7 @@ export function updateTabs(elements: Array<elementData>, tabs): void {
 
 export async function renameFolder(folderID: string, newName: string): Promise<void> {
     var data = await getDataStructFromFirefox()
-    var folder = getFolderJSONObjectByID(folderID, data.elements)
+    var folder = getFolderJSONObjectByID(folderID, data)
     folder.name = newName
     await saveDataInFirefox(data)
 }
@@ -82,8 +82,8 @@ export async function renameFolder(folderID: string, newName: string): Promise<v
 //#region mover
 export async function moveItem(itemID: string, oldParentFolderID: string, newParentFolderID: string): Promise<Boolean> {
     var data = await getDataStructFromFirefox()
-    var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.elements)
-    var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data.elements)
+    var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
+    var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data)
     var item = getItemJSONObjectByItemID(itemID, data.elements)
     var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID)
     if (oldParentFolder != undefined && newParentFolder != undefined && item != undefined && key != undefined) {
@@ -98,9 +98,9 @@ export async function moveItem(itemID: string, oldParentFolderID: string, newPar
 
 export async function moveFolder(folderID: string, oldParentFolderID: string, newParentFolderID: string): Promise<Boolean> {
     var data = await getDataStructFromFirefox()
-    var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.elements)
-    var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data.elements)
-    var folder = getFolderJSONObjectByID(folderID, data.elements)
+    var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
+    var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data)
+    var folder = getFolderJSONObjectByID(folderID, data)
     var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
     if (oldParentFolder != undefined && newParentFolder != undefined && folder != undefined && key != undefined) {
         folder.parentFolderID = newParentFolderID
@@ -116,8 +116,8 @@ export async function moveFolder(folderID: string, oldParentFolderID: string, ne
 //#region remover
 export async function removeFolder(folderID: string, oldParentFolderID: string): Promise<Boolean> {
     var data = await getDataStructFromFirefox()
-    var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.elements)
-    var folder = getFolderJSONObjectByID(folderID, data.elements)
+    var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
+    var folder = getFolderJSONObjectByID(folderID, data)
 
     for (var key in folder.elements) {
         var item = folder.elements[key]
@@ -140,7 +140,7 @@ export async function removeFolder(folderID: string, oldParentFolderID: string):
 
 export async function removeItem(itemID: string, oldParentFolderID: string): Promise<Boolean> {
     var data = await getDataStructFromFirefox()
-    var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.elements)
+    var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
     var item = getItemJSONObjectByItemID(itemID, data.elements)
     var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID)
     if (oldParentFolder != undefined && item != undefined && key != undefined) {
@@ -155,7 +155,7 @@ export async function removeItem(itemID: string, oldParentFolderID: string): Pro
 //#region adder
 export async function addFolder(parentID: string, newFolderID: string, name: string): Promise<folderData> {
     var data = await getDataStructFromFirefox()
-    var parentFolder = getFolderJSONObjectByID(parentID, data.elements)
+    var parentFolder = getFolderJSONObjectByID(parentID, data)
     var folder: folderData = {
         open: true,
         name: name,
@@ -168,7 +168,7 @@ export async function addFolder(parentID: string, newFolderID: string, name: str
     return folder
 }
 
-function addTabSync(folder: folderData, title: string, url: string, favIconURL: string, tabExists: Boolean, tabID: string, itemID: string, hidden: Boolean): itemData {
+function addTabSync(folder: tabStructData | folderData, title: string, url: string, favIconURL: string, tabExists: Boolean, tabID: string, itemID: string, hidden: Boolean): itemData {
     var storedTab: itemData = {
         hidden: hidden,
         tabExists: tabExists,
@@ -185,7 +185,7 @@ function addTabSync(folder: folderData, title: string, url: string, favIconURL: 
 
 export async function addTab(folderID: string, title: string, url: string, favIconURL: string, tabExists: Boolean, tabID: string, itemID: string, hidden: Boolean): Promise<itemData> {
     var data = await getDataStructFromFirefox()
-    var folder = getFolderJSONObjectByID(folderID, data.elements)
+    var folder = getFolderJSONObjectByID(folderID, data)
     var item = addTabSync(folder, title, url, favIconURL, tabExists, tabID, itemID, hidden)
     await saveDataInFirefox(data)
     return item
@@ -201,8 +201,8 @@ function getItemJSONObjectByItemIDRecursion(itemID: itemIDType, items: Array<ele
     var returnVal: itemData | undefined
     for (var key in items) {
         var element = items[key]
-        if ('itemID' in element){
-            if((element as itemData).itemID == itemID) return element
+        if ('itemID' in element) {
+            if ((element as itemData).itemID == itemID) return element
         }
         else if ('folderID' in element) {
             returnVal = getItemJSONObjectByItemIDRecursion(itemID, (element as folderData).elements)
@@ -220,8 +220,8 @@ function getItemJSONObjectByTabIDRecursion(tabID: tabIDType, items: Array<elemen
     var returnVal: itemData | undefined
     for (var key in items) {
         var element = items[key]
-        if ('itemID' in element){
-            if((element as itemData).tabID == tabID) return element
+        if ('itemID' in element) {
+            if ((element as itemData).tabID == tabID) return element
         }
         else if ('folderID' in element) {
             returnVal = getItemJSONObjectByTabIDRecursion(tabID, (element as folderData).elements)
@@ -231,10 +231,10 @@ function getItemJSONObjectByTabIDRecursion(tabID: tabIDType, items: Array<elemen
     return undefined
 }
 
-export function getFolderJSONObjectByID(id: folderIDType, data: Array<elementData>): folderData | undefined {
+export function getFolderJSONObjectByID(id: folderIDType, data: tabStructData | folderData): tabStructData | folderData | undefined {
     //for selectTab -1 is baseDir
-    if (id == "-1") return undefined
-    return getFolderJSONObjectByIDRecursion(id, data)
+    if (id == "-1") return data
+    return getFolderJSONObjectByIDRecursion(id, data.elements)
 }
 
 function getFolderJSONObjectByIDRecursion(id: folderIDType, folder: Array<elementData>): folderData | undefined {
@@ -276,8 +276,8 @@ function getItemJSONObjectByURLRecursion(items: Array<elementData>, url: string)
     var returnVal: itemData | undefined
     for (var key in items) {
         var element = items[key]
-        if ('itemID' in element){
-            if((element as itemData).url == url) return element
+        if ('itemID' in element) {
+            if ((element as itemData).url == url) return element
         }
         else if ('folderID' in element) {
             returnVal = getItemJSONObjectByURLRecursion((element as folderData).elements, url)
@@ -373,7 +373,7 @@ export function tabExistsByTabID(tabID: tabIDType, elements: Array<elementData>)
     return item != undefined && item.parentFolderID != "unordered"
 }
 
-export function folderExists(folderID:folderIDType, elements) {
+export function folderExists(folderID: folderIDType, elements) {
     var returnVal = undefined
     for (var key in elements) {
         var item = elements[key]

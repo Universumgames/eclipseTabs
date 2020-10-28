@@ -69,7 +69,7 @@ export function updateTabs(elements, tabs) {
 export function renameFolder(folderID, newName) {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
-        var folder = getFolderJSONObjectByID(folderID, data.elements);
+        var folder = getFolderJSONObjectByID(folderID, data);
         folder.name = newName;
         yield saveDataInFirefox(data);
     });
@@ -77,8 +77,8 @@ export function renameFolder(folderID, newName) {
 export function moveItem(itemID, oldParentFolderID, newParentFolderID) {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
-        var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.elements);
-        var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data.elements);
+        var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data);
+        var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data);
         var item = getItemJSONObjectByItemID(itemID, data.elements);
         var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID);
         if (oldParentFolder != undefined && newParentFolder != undefined && item != undefined && key != undefined) {
@@ -94,9 +94,9 @@ export function moveItem(itemID, oldParentFolderID, newParentFolderID) {
 export function moveFolder(folderID, oldParentFolderID, newParentFolderID) {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
-        var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.elements);
-        var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data.elements);
-        var folder = getFolderJSONObjectByID(folderID, data.elements);
+        var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data);
+        var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data);
+        var folder = getFolderJSONObjectByID(folderID, data);
         var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID);
         if (oldParentFolder != undefined && newParentFolder != undefined && folder != undefined && key != undefined) {
             folder.parentFolderID = newParentFolderID;
@@ -111,8 +111,8 @@ export function moveFolder(folderID, oldParentFolderID, newParentFolderID) {
 export function removeFolder(folderID, oldParentFolderID) {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
-        var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.elements);
-        var folder = getFolderJSONObjectByID(folderID, data.elements);
+        var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data);
+        var folder = getFolderJSONObjectByID(folderID, data);
         for (var key in folder.elements) {
             var item = folder.elements[key];
             if ('itemID' in item) {
@@ -135,7 +135,7 @@ export function removeFolder(folderID, oldParentFolderID) {
 export function removeItem(itemID, oldParentFolderID) {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
-        var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.elements);
+        var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data);
         var item = getItemJSONObjectByItemID(itemID, data.elements);
         var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID);
         if (oldParentFolder != undefined && item != undefined && key != undefined) {
@@ -149,7 +149,7 @@ export function removeItem(itemID, oldParentFolderID) {
 export function addFolder(parentID, newFolderID, name) {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
-        var parentFolder = getFolderJSONObjectByID(parentID, data.elements);
+        var parentFolder = getFolderJSONObjectByID(parentID, data);
         var folder = {
             open: true,
             name: name,
@@ -179,7 +179,7 @@ function addTabSync(folder, title, url, favIconURL, tabExists, tabID, itemID, hi
 export function addTab(folderID, title, url, favIconURL, tabExists, tabID, itemID, hidden) {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
-        var folder = getFolderJSONObjectByID(folderID, data.elements);
+        var folder = getFolderJSONObjectByID(folderID, data);
         var item = addTabSync(folder, title, url, favIconURL, tabExists, tabID, itemID, hidden);
         yield saveDataInFirefox(data);
         return item;
@@ -225,8 +225,8 @@ function getItemJSONObjectByTabIDRecursion(tabID, items) {
 }
 export function getFolderJSONObjectByID(id, data) {
     if (id == "-1")
-        return undefined;
-    return getFolderJSONObjectByIDRecursion(id, data);
+        return data;
+    return getFolderJSONObjectByIDRecursion(id, data.elements);
 }
 function getFolderJSONObjectByIDRecursion(id, folder) {
     var returnVal;

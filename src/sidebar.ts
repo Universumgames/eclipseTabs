@@ -6,14 +6,14 @@ import { elementData, folderData, itemData, tabStructData } from './interfaces.j
 //#endregion
 
 //#region init code
-var dragging
-var draggingJSON
+var dragging : HTMLElement
+var draggingJSON: folderData | itemData
 
 const folderChildImageIndex = 0
 const folderChildItemListIndex = 2
 const folderChildTextIndex = 1
 
-var data: tabStructData = { elements: [] }
+var data: tabStructData = { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1" }
 
 const listContainer = document.getElementById("list")
 const structCleaner = document.getElementById("structCleaner")
@@ -99,9 +99,9 @@ function tabClosed(event) {
 async function dragstart_handler(event) {
     dragging = event.target
     if (isFolder(dragging))
-        draggingJSON = dataHandler.getFolderJSONObjectByID(dragging.folderID, (await dataHandler.getDataStructFromFirefox()).elements)
+        draggingJSON = dataHandler.getFolderJSONObjectByID(dragging.getAttribute("folderID"), (await dataHandler.getDataStructFromFirefox()))
     else if (isItem(dragging))
-        draggingJSON = dataHandler.getItemJSONObjectByItemID(dragging.itemID, (await dataHandler.getDataStructFromFirefox()).elements)
+        draggingJSON = dataHandler.getItemJSONObjectByItemID(dragging.getAttribute("itemID"), (await dataHandler.getDataStructFromFirefox()).elements)
     event.target.classList.add("hover")
     //ev.dataTransfer.setData("text/plain", ev.target.innerText)
     //ev.dataTransfer.dropEffect = "move"
@@ -132,23 +132,23 @@ function dragover_handler(event) {
 
 async function drop_handler(event) {
     event.preventDefault()
-    var target = event.target
+    var target = event.target as HTMLElement
     target.classList.remove("hover")
     dragging.classList.remove("hover")
 
     if (isFolder(target)) {
-        if (draggingJSON.folder) {
-            await dataHandler.moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.folderID)
-        } else if (draggingJSON.item) {
-            await dataHandler.moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.folderID)
+        if ('folderID' in draggingJSON) {
+            await dataHandler.moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.getAttribute("folderID"))
+        } else if ('itemID' in draggingJSON) {
+            await dataHandler.moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.getAttribute("folderID"))
         }
 
         triggerListReload()
-    } else if (target.isTrashCan) {
-        if (draggingJSON.item) {
-            if (draggingJSON.tabID != -1) tabHelper.closeTab(draggingJSON.tabID)
+    } else if (helper.toBoolean(target.getAttribute("isTrashCan"))) {
+        if ('itemID' in draggingJSON) {
+            if (draggingJSON.tabID != "-1") tabHelper.closeTab(draggingJSON.tabID)
             dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
-        } else if (draggingJSON.folder) {
+        } else if ('folderID' in draggingJSON) {
             dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
         }
         triggerListReload()
@@ -187,7 +187,7 @@ function folderClick(e) {
         var folder = e.originalTarget as HTMLElement
         var open = helper.toBoolean(folder.getAttribute("open"))
         folder.setAttribute("open", !open + "")
-        dataHandler.getFolderJSONObjectByID(folder.getAttribute("folderID"), data.elements).open = !open
+        dataHandler.getFolderJSONObjectByID(folder.getAttribute("folderID"), data).open = !open
         var childs = folder.children
         if (open) {
             folder.children[folderChildImageIndex].classList.add("rotated")
