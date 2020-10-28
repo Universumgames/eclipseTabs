@@ -1,3 +1,5 @@
+import * as firefoxHandler from './firefoxHandler.js'
+
 export async function hideTab(id: string): Promise<Boolean> {
     if (id != undefined) {
       if ((await getCurrentTab()).id == id) return false
@@ -17,7 +19,7 @@ export async function hideTab(id: string): Promise<Boolean> {
     return false
   }
   
-  export function focusTab(id: string) {
+  export function focusTab(id: string): void {
     browser.tabs.update(+id, { active: true })
   }
   
@@ -41,11 +43,11 @@ export async function hideTab(id: string): Promise<Boolean> {
   }
   
   export async function getTabs() {
-    return await browser.tabs.query({})
+    return await firefoxHandler.tabQuery({})
   }
   
   export async function getCurrentTab() {
-    return (await browser.tabs.query({ active: true }))[0]
+    return (await firefoxHandler.tabQuery({ active: true }))[0]
   }
   
   export async function closeTab(id: string){

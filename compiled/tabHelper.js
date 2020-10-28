@@ -7,6 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+import * as firefoxHandler from './firefoxHandler.js';
 export function hideTab(id) {
     return __awaiter(this, void 0, void 0, function* () {
         if (id != undefined) {
@@ -56,12 +57,12 @@ export function getTabByTabID(tabID) {
 }
 export function getTabs() {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield browser.tabs.query({});
+        return yield firefoxHandler.tabQuery({});
     });
 }
 export function getCurrentTab() {
     return __awaiter(this, void 0, void 0, function* () {
-        return (yield browser.tabs.query({ active: true }))[0];
+        return (yield firefoxHandler.tabQuery({ active: true }))[0];
     });
 }
 export function closeTab(id) {
