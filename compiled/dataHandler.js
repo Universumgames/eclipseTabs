@@ -326,7 +326,7 @@ export function getnumberOfFoldersAlreadyExisting(folderContainer) {
     var number = 0;
     for (var key in folderContainer) {
         var item = folderContainer[key];
-        if (item.folder) {
+        if ('folderID' in item) {
             number++;
             number += getnumberOfFoldersAlreadyExisting(item.elements);
         }

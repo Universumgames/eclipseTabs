@@ -229,9 +229,9 @@ function addFolderSubmit_handler(event) {
     return __awaiter(this, void 0, void 0, function* () {
         if (event.keyCode == 13) {
             event.preventDefault();
-            var value = addFolderNameInput.getAttribute("value");
+            var value = addFolderNameInput.value;
             dataHandler.addFolder("-1", (yield dataHandler.generateFolderID()).toString(), value);
-            addFolderNameInput.setAttribute("value", "");
+            addFolderNameInput.value = "";
             addFolderNameInputContainer.classList.add("disabled");
             triggerListReload();
         }

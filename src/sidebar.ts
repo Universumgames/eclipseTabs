@@ -21,7 +21,7 @@ const structReloader = document.getElementById("structReloader")
 const extensionReloader = document.getElementById("extensioReloader")
 
 const addFolderNameInputContainer = document.getElementById("addFolderNameInputContainer")
-const addFolderNameInput = document.getElementById("addFolderNameInput")
+const addFolderNameInput = document.getElementById("addFolderNameInput") as HTMLTextAreaElement
 
 const addFolderBtn = document.getElementById("addFolder")
 const trashcan = document.getElementById("delete")
@@ -161,7 +161,7 @@ async function drop_handler(event) {
 }
 
 function dropend_handler(event) {
-    console.log(event)
+   console.log(event)
 }
 
 
@@ -275,9 +275,9 @@ function addFolderClick_handler() {
 async function addFolderSubmit_handler(event) {
     if (event.keyCode == 13) {
         event.preventDefault()
-        var value = addFolderNameInput.getAttribute("value")
+        var value = addFolderNameInput.value
         dataHandler.addFolder("-1", (await dataHandler.generateFolderID()).toString(), value)
-        addFolderNameInput.setAttribute("value", "")
+        addFolderNameInput.value = ""
         addFolderNameInputContainer.classList.add("disabled")
         triggerListReload()
     }
