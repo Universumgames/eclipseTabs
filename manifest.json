@@ -1,10 +1,10 @@
 {
   "manifest_version": 2,
-  "name": "Tab-folders",
+  "name": "eclipseTab",
   "version": "1.0",
   "browser_specific_settings": {
     "gecko": {
-      "id": "tabFolders@universegame.de",
+      "id": "eclipseTab@universegame.de",
       "strict_min_version": "42.0"
     }
   },
@@ -24,7 +24,7 @@
     "page": "Settings.html"
   },
   "sidebar_action": {
-    "default_title": "Tab-Folders",
+    "default_title": "eclipseTab",
     "default_panel": "sidebar/sidebar.html",
     "default_icon": "icons/logo-48.png"
   }
