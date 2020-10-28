@@ -16,7 +16,9 @@
     ],
     "exclude": [
         "icons",
-        "node_moules"
+        "node_moules",
+        "compiled",
+        ".vscode"
     ],
     "lib": [ "es2015.promise", "es5" ],
     "target-engines": [

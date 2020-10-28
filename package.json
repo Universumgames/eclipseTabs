@@ -1,0 +1,26 @@
+{
+  "name": "eclipseTabs",
+  "version": "0.2.0",
+  "description": "Browsertab storage system",
+  "main": "siedbar/sidebar.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Universumgames/eclipseTabs.git"
+  },
+  "keywords": [
+    "firefox",
+    "extension",
+    "browser-extension"
+  ],
+  "author": "Universumgames",
+  "license": "MIT",
+  "dependencies": {
+    "@types/chrome": "0.0.126",
+    "@types/firefox": "0.0.30",
+    "tcs": "^10.0.0"
+  }
+}
