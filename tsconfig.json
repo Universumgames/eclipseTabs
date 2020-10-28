@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "system",
+        "declaration": false,
+        "noImplicitAny": false,
+        "removeComments": true,
+        "noLib": false,
+        "sourceMap": true,
+        "outFile": "tabFolders.js"
+    },
+    "include": [
+        "src/*"
+    ],
+    "exclude": [
+        "icons",
+        "node_moules"
+    ]
+}
