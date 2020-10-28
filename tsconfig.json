@@ -1,13 +1,15 @@
 {
     "compilerOptions": {
-        "target": "es5",
-        "module": "system",
+        "experimentalDecorators": true,
+        "target": "ES2015",
+        "module": "es2015",
         "declaration": false,
         "noImplicitAny": false,
         "removeComments": true,
         "noLib": false,
         "sourceMap": true,
-        "outFile": "tabFolders.js"
+        "outDir": "./compiled",
+        "moduleResolution": "node"
     },
     "include": [
         "src/*"
@@ -15,5 +17,9 @@
     "exclude": [
         "icons",
         "node_moules"
+    ],
+    "lib": [ "es2015.promise", "es5" ],
+    "target-engines": [
+        "dom.firefox.42+"
     ]
 }
