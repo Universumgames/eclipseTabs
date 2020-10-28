@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 export const updateHTMLEvent = new Event('updateHTMLList');
 import * as tabHelper from './tabHelper.js';
+import * as firefoxHandler from './firefoxHandler.js';
 function updatePinnedTabs(elements, tabs) {
     var pinnedFolder = {
         name: "Pinned Tabs",
@@ -297,10 +298,10 @@ export function getFoldersInFolder(folder) {
     return folderArr;
 }
 export function saveDataInFirefox(data) {
-    return browser.storage.local.set({ data });
+    return firefoxHandler.localStorageSet({ data });
 }
 export function getFirefoxStructFromFirefox() {
-    return browser.storage.local.get("data");
+    return firefoxHandler.localStorageGet("data");
 }
 export function getDataStructFromFirefox() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -309,11 +310,11 @@ export function getDataStructFromFirefox() {
 }
 export function getActiveTab() {
     return __awaiter(this, void 0, void 0, function* () {
-        return (yield browser.tabs.query({ currentWindow: true, active: true }))[0];
+        return (yield firefoxHandler.tabQuery({ currentWindow: true, active: true }))[0];
     });
 }
 export function getCurrentWindowTabs() {
-    return browser.tabs.query({ currentWindow: true });
+    return firefoxHandler.tabQuery({ currentWindow: true });
 }
 export function generateFolderID() {
     return __awaiter(this, void 0, void 0, function* () {

@@ -1,6 +1,7 @@
 export const updateHTMLEvent = new Event('updateHTMLList')
 import * as tabHelper from './tabHelper.js'
 import { elementData, folderData, itemData, tabStructData, itemIDType, tabIDType, folderIDType } from './interfaces.js'
+import * as firefoxHandler from './firefoxHandler.js'
 
 //#region update tabs
 function updatePinnedTabs(elements: Array<elementData>, tabs): void {
@@ -307,11 +308,11 @@ export function getFoldersInFolder(folder: folderData): Array<folderData> {
 }
 
 export function saveDataInFirefox(data: tabStructData) {
-    return browser.storage.local.set({ data })
+    return firefoxHandler.localStorageSet({data})
 }
 
 export function getFirefoxStructFromFirefox() {
-    return browser.storage.local.get("data")
+    return firefoxHandler.localStorageGet("data")
 }
 
 export async function getDataStructFromFirefox(): Promise<tabStructData> {
@@ -320,11 +321,11 @@ export async function getDataStructFromFirefox(): Promise<tabStructData> {
 //#endregion
 
 export async function getActiveTab() {
-    return (await browser.tabs.query({ currentWindow: true, active: true }))[0]
+    return (await firefoxHandler.tabQuery({ currentWindow: true, active: true }))[0]
 }
 
 export function getCurrentWindowTabs() {
-    return browser.tabs.query({ currentWindow: true });
+    return firefoxHandler.tabQuery({ currentWindow: true });
 }
 
 //#region genertators
