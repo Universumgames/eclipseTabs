@@ -10,9 +10,9 @@ export function reloadExtension() {
     firefoxHandler.reload();
 }
 export function isFolder(element) {
-    return (element.getAttribute("isFolder") != undefined && element.getAttribute("isFolder"));
+    return (element.getAttribute("isFolder") != undefined && toBoolean(element.getAttribute("isFolder")));
 }
 export function isItem(element) {
-    return element.getAttribute("isItem");
+    return (element.getAttribute("isItem") != undefined && toBoolean(element.getAttribute("isItem")));
 }
 //# sourceMappingURL=helper.js.map

@@ -140,23 +140,24 @@ function extensionReloader_handler() {
 function folderClick(e) {
     return __awaiter(this, void 0, void 0, function* () {
         if (e.explicitOriginalTarget.localName == "div" && helper.isFolder(e.originalTarget)) {
-            var folder = e.originalTarget;
-            var open = helper.toBoolean(folder.getAttribute("open"));
-            folder.setAttribute("open", !open + "");
+            var HTMLFolder = e.originalTarget;
+            var opened = helper.toBoolean(HTMLFolder.getAttribute("open"));
             var data = yield dataHandler.getDataStructFromFirefox();
-            dataHandler.getFolderJSONObjectByID(folder.getAttribute("folderID"), data).open = !open;
-            var childs = folder.children;
-            if (open) {
-                folder.children[folderChildImageIndex].classList.add("rotated");
-                folder.classList.add("closed");
+            var newOpened = !opened;
+            HTMLFolder.setAttribute("open", newOpened + "");
+            dataHandler.getFolderJSONObjectByID(HTMLFolder.getAttribute("folderID"), data).open = newOpened;
+            var childs = HTMLFolder.children;
+            if (newOpened) {
+                HTMLFolder.children[folderChildImageIndex].classList.add("rotated");
+                HTMLFolder.classList.add("closed");
                 setChildrenVisible(false, childs);
             }
             else {
-                folder.children[folderChildImageIndex].classList.remove("rotated");
-                folder.classList.remove("closed");
+                HTMLFolder.children[folderChildImageIndex].classList.remove("rotated");
+                HTMLFolder.classList.remove("closed");
                 setChildrenVisible(true, childs);
             }
-            dataHandler.saveDataInFirefox(data);
+            yield dataHandler.saveDataInFirefox(data);
         }
     });
 }

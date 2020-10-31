@@ -11,9 +11,9 @@ export function reloadExtension() {
 }
 
 export function isFolder(element: HTMLElement) {
-    return (element.getAttribute("isFolder") != undefined && element.getAttribute("isFolder"))
+    return (element.getAttribute("isFolder") != undefined && toBoolean(element.getAttribute("isFolder")))
 }
 
 export function isItem(element: HTMLElement) {
-    return element.getAttribute("isItem")
+    return (element.getAttribute("isItem") != undefined && toBoolean(element.getAttribute("isItem")))
 }

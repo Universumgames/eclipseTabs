@@ -98,6 +98,7 @@ export async function moveItem(itemID: string, oldParentFolderID: string, newPar
 }
 
 export async function moveFolder(folderID: string, oldParentFolderID: string, newParentFolderID: string): Promise<Boolean> {
+    if(folderID == oldParentFolderID || folderID == newParentFolderID || oldParentFolderID == newParentFolderID) return true;
     var data = await getDataStructFromFirefox()
     var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
     var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data)

@@ -94,6 +94,8 @@ export function moveItem(itemID, oldParentFolderID, newParentFolderID) {
 }
 export function moveFolder(folderID, oldParentFolderID, newParentFolderID) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (folderID == oldParentFolderID || folderID == newParentFolderID || oldParentFolderID == newParentFolderID)
+            return true;
         var data = yield getDataStructFromFirefox();
         var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data);
         var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data);
