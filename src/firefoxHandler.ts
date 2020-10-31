@@ -20,7 +20,7 @@ export async function tabQuery(query: any): Promise<any>{
     return await browser.tabs.query(query)
 }
 
-export function startupHandler(handler: firefoxStartupHandler){
+export async function startupHandler(handler: firefoxStartupHandler){
     browser.runtime.onStartup.addListener(handler.startup)
 }
 

@@ -19,7 +19,11 @@ firefoxHandler.startupHandler(firefoxStartHandler);
 document.addEventListener("DOMContentLoaded", () => setup());
 function startup() {
     return __awaiter(this, void 0, void 0, function* () {
-        var data = yield dataHandler.getDataStructFromFirefox();
+        var dataTmp = yield dataHandler.getDataStructFromFirefox();
+        if (dataTmp == undefined)
+            dataHandler.saveDataInFirefox(data);
+        else
+            data = dataTmp;
         tabHelper.getTabs().then((tabs) => {
             console.log(tabs);
             dataHandler.updateTabsOnStartUp(data, tabs);
@@ -29,9 +33,13 @@ function startup() {
 }
 function setup() {
     return __awaiter(this, void 0, void 0, function* () {
-        var data = yield dataHandler.getDataStructFromFirefox();
+        var dataTmp = yield dataHandler.getDataStructFromFirefox();
+        if (dataTmp == undefined)
+            dataHandler.saveDataInFirefox(data);
+        else
+            data = dataTmp;
         tabHelper.getTabs().then((tabs) => { handler.loadFolderList(tabs, data); });
-        handler.setup();
+        handler.setupHandler(setup);
         console.log(data);
     });
 }

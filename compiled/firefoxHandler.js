@@ -20,7 +20,9 @@ export function tabQuery(query) {
     });
 }
 export function startupHandler(handler) {
-    browser.runtime.onStartup.addListener(handler.startup);
+    return __awaiter(this, void 0, void 0, function* () {
+        browser.runtime.onStartup.addListener(handler.startup);
+    });
 }
 export function localStorageSet(data) {
     return __awaiter(this, void 0, void 0, function* () {

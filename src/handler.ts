@@ -29,7 +29,7 @@ var firefoxHandlerStruct: firefoxHandler.firefoxHandler = {
     refreshTabListOnSiteUpdated: refreshTabListOnSiteUpdated
 }
 
-var dragging : HTMLElement
+var dragging: HTMLElement
 var draggingJSON: folderData | itemData
 
 const folderChildImageIndex = 0
@@ -47,7 +47,10 @@ const addFolderNameInput = document.getElementById("addFolderNameInput") as HTML
 const addFolderBtn = document.getElementById("addFolder")
 const trashcan = document.getElementById("delete")
 
-export function setup(){
+var setup: Function
+
+export function setupHandler(setupFun: Function) {
+    setup = setupFun
     firefoxHandler.registerListener(firefoxHandlerStruct)
 
     //set placeholder invisible
@@ -123,9 +126,9 @@ async function drop_handler(event) {
     } else if (helper.toBoolean(target.getAttribute("isTrashCan"))) {
         if ('itemID' in draggingJSON) {
             if (draggingJSON.tabID != "-1") tabHelper.closeTab(draggingJSON.tabID)
-            dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
+                await dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
         } else if ('folderID' in draggingJSON) {
-            dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
+            await  dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
         }
         triggerListReload()
     }
@@ -137,7 +140,7 @@ async function drop_handler(event) {
 }
 
 function dropend_handler(event) {
-   console.log(event)
+    console.log(event)
 }
 
 
@@ -145,7 +148,7 @@ function dropend_handler(event) {
 
 //#region debugging handler
 async function clearStruct_handler() {
-    clearStruct(await dataHandler.getDataStructFromFirefox())
+    clearStruct()
 }
 
 function structReloader_handler() {
@@ -223,7 +226,7 @@ async function addFolderSubmit_handler(event) {
     if (event.keyCode == 13) {
         event.preventDefault()
         var value = addFolderNameInput.value
-        dataHandler.addFolder("-1", (await dataHandler.generateFolderID()).toString(), value)
+        await dataHandler.addFolder("-1", (await dataHandler.generateFolderID()).toString(), value)
         addFolderNameInput.value = ""
         addFolderNameInputContainer.classList.add("disabled")
         triggerListReload()
@@ -274,7 +277,6 @@ async function tabUpdateListener(tabId, changeInfo, tabInfo) {
 }
 
 export async function loadFolderList(tabs: any, data: tabStructData) {
-    await loadFirefoxData()
     dataHandler.updateTabsOnStartUp(data, tabs)
     //update tabs 
     dataHandler.updateTabs(data.elements, tabs)
@@ -288,6 +290,7 @@ export async function loadFolderList(tabs: any, data: tabStructData) {
 
 async function displayHTMLList(data: tabStructData) {
     if (listContainer) {
+        listContainer.innerHTML = ""
         listContainer.innerHTML = ""
         displayElements(data.elements, listContainer, 1)
         var tabs = await tabHelper.getTabs()
@@ -316,8 +319,8 @@ function triggerListReload() {
     refreshTabList()
 }
 
-function clearStruct(data: tabStructData) {
-    data.elements = []
+function clearStruct() {
+    var data: tabStructData = { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1" }
     dataHandler.saveDataInFirefox(data)
 }
 

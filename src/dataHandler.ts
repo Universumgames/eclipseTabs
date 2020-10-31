@@ -133,6 +133,7 @@ export async function removeFolder(folderID: string, oldParentFolderID: string):
 
     if (oldParentFolder != undefined && folder != undefined && key != undefined) {
         delete oldParentFolder.elements[key]
+        oldParentFolder.elements.length-= 1;
         await saveDataInFirefox(data)
         return true
     }

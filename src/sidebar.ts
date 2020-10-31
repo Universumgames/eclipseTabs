@@ -21,7 +21,10 @@ document.addEventListener("DOMContentLoaded", () => setup())
 //browser.tabs.addEventListener("updateHTMLList", () => updateHTMLList())
 
 async function startup() {
-    var data = await dataHandler.getDataStructFromFirefox()
+    var dataTmp = await dataHandler.getDataStructFromFirefox()
+    if (dataTmp == undefined)
+        dataHandler.saveDataInFirefox(data)
+    else data = dataTmp
     tabHelper.getTabs().then((tabs) => {
         console.log(tabs)
         dataHandler.updateTabsOnStartUp(data, tabs)
@@ -30,12 +33,15 @@ async function startup() {
 }
 
 async function setup() {
-    var data = await dataHandler.getDataStructFromFirefox()
+    var dataTmp = await dataHandler.getDataStructFromFirefox()
+    if (dataTmp == undefined)
+        dataHandler.saveDataInFirefox(data)
+    else data = dataTmp
     //load up pinned tabs
     tabHelper.getTabs().then((tabs) => { handler.loadFolderList(tabs, data) })
 
-    handler.setup()
-    
+    handler.setupHandler(setup)
+
     console.log(data)
 }
 //#endregion

@@ -47,7 +47,9 @@ const addFolderNameInputContainer = document.getElementById("addFolderNameInputC
 const addFolderNameInput = document.getElementById("addFolderNameInput");
 const addFolderBtn = document.getElementById("addFolder");
 const trashcan = document.getElementById("delete");
-export function setup() {
+var setup;
+export function setupHandler(setupFun) {
+    setup = setupFun;
     firefoxHandler.registerListener(firefoxHandlerStruct);
     document.getElementById("emptyList").classList.add("disabled");
     document.getElementById("list").classList.remove("disabled");
@@ -111,10 +113,10 @@ function drop_handler(event) {
             if ('itemID' in draggingJSON) {
                 if (draggingJSON.tabID != "-1")
                     tabHelper.closeTab(draggingJSON.tabID);
-                dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID);
+                yield dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID);
             }
             else if ('folderID' in draggingJSON) {
-                dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID);
+                yield dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID);
             }
             triggerListReload();
         }
@@ -126,7 +128,7 @@ function dropend_handler(event) {
 }
 function clearStruct_handler() {
     return __awaiter(this, void 0, void 0, function* () {
-        clearStruct(yield dataHandler.getDataStructFromFirefox());
+        clearStruct();
     });
 }
 function structReloader_handler() {
@@ -205,7 +207,7 @@ function addFolderSubmit_handler(event) {
         if (event.keyCode == 13) {
             event.preventDefault();
             var value = addFolderNameInput.value;
-            dataHandler.addFolder("-1", (yield dataHandler.generateFolderID()).toString(), value);
+            yield dataHandler.addFolder("-1", (yield dataHandler.generateFolderID()).toString(), value);
             addFolderNameInput.value = "";
             addFolderNameInputContainer.classList.add("disabled");
             triggerListReload();
@@ -257,7 +259,6 @@ function tabUpdateListener(tabId, changeInfo, tabInfo) {
 }
 export function loadFolderList(tabs, data) {
     return __awaiter(this, void 0, void 0, function* () {
-        yield loadFirefoxData();
         dataHandler.updateTabsOnStartUp(data, tabs);
         dataHandler.updateTabs(data.elements, tabs);
         console.log(data);
@@ -268,6 +269,7 @@ export function loadFolderList(tabs, data) {
 function displayHTMLList(data) {
     return __awaiter(this, void 0, void 0, function* () {
         if (listContainer) {
+            listContainer.innerHTML = "";
             listContainer.innerHTML = "";
             displayElements(data.elements, listContainer, 1);
             var tabs = yield tabHelper.getTabs();
@@ -291,8 +293,8 @@ function displayElements(elements, htmlContainer, layer) {
 function triggerListReload() {
     refreshTabList();
 }
-function clearStruct(data) {
-    data.elements = [];
+function clearStruct() {
+    var data = { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1" };
     dataHandler.saveDataInFirefox(data);
 }
 function setChildrenVisible(value, childs) {

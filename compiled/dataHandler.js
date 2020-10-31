@@ -127,6 +127,7 @@ export function removeFolder(folderID, oldParentFolderID) {
         var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID);
         if (oldParentFolder != undefined && folder != undefined && key != undefined) {
             delete oldParentFolder.elements[key];
+            oldParentFolder.elements.length -= 1;
             yield saveDataInFirefox(data);
             return true;
         }
