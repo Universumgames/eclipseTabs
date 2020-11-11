@@ -143,9 +143,10 @@ function folderClick(e) {
             var HTMLFolder = e.originalTarget;
             var opened = helper.toBoolean(HTMLFolder.getAttribute("open"));
             var data = yield dataHandler.getDataStructFromFirefox();
-            var newOpened = !opened;
+            var dataObj = dataHandler.getFolderJSONObjectByID(HTMLFolder.getAttribute("folderID"), data);
+            dataObj.open = !dataObj.open;
+            var newOpened = dataObj.open;
             HTMLFolder.setAttribute("open", newOpened + "");
-            dataHandler.getFolderJSONObjectByID(HTMLFolder.getAttribute("folderID"), data).open = newOpened;
             var childs = HTMLFolder.children;
             if (newOpened) {
                 HTMLFolder.children[folderChildImageIndex].classList.add("rotated");
@@ -158,6 +159,7 @@ function folderClick(e) {
                 setChildrenVisible(true, childs);
             }
             yield dataHandler.saveDataInFirefox(data);
+            triggerListReload();
         }
     });
 }
