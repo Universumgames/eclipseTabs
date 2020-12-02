@@ -1,13 +1,14 @@
-body{
+body {
   background-color: #2a2a2e;
   color: white;
+  height: 100%;
 }
 
-.closed{
+.closed {
   color: lightgrey;
 }
 
-h3{
+h3 {
   color: darkgrey;
   margin: auto;
   text-align: center;
@@ -16,64 +17,77 @@ h3{
   transform: translate(0%, -50%);
 }
 
-.disabled{
+.disabled {
   display: none;
 }
 
-.list{
+#list {
+  overflow: auto;
+  max-height: calc(100vh - 10rem);
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+#list::-webkit-scrollbar {
+  display: none;
+}
+
+.list {
   padding-left: 5px;
   padding-top: 5px;
 }
 
-.listItem{
+.listItem {
   padding: 2px;
 }
 
-.favicon{
+.favicon {
   height: 15px;
   width: 15px;
   margin-right: 5px;
 }
 
-.arrow{
+.arrow {
   height: 15px;
   width: 15px;
   margin-right: 5px;
 }
 
-.rotated{
+.rotated {
   transform: rotate(-90deg);
 }
 
-.overflow{
+.overflow {
   text-overflow: clip;
   overflow: hidden;
   white-space: nowrap;
 }
 
-.tabHidden{
+.tabHidden {
   color: darkgray
 }
 
-.bottom{
-  position: fixed;
+.bottom {
   bottom: 0;
+  position: fixed;
 }
 
-.bottomElements{
+.bottomElements {
   margin: 2%;
 }
 
-.bottomElement{
-  display: inline;
+.bottomElement {
+  display: inline-block;
 }
 
-.bottomElementPic{
+.bottomElementPic {
   width: 25px;
   height: 25px;
 }
 
-#addFolderNameInput{
+#addFolderNameInput {
   margin: 5%;
 }
 
@@ -81,6 +95,6 @@ h3{
   pointer-events: none;
 }
 
-.hover{
+.hover {
   opacity: .5;
 }
