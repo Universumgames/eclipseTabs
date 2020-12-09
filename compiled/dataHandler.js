@@ -10,13 +10,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 export const updateHTMLEvent = new Event('updateHTMLList');
 import * as tabHelper from './tabHelper.js';
 import * as firefoxHandler from './firefoxHandler.js';
+export function createEmptyData() {
+    return { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0 };
+}
 function updatePinnedTabs(elements, tabs) {
     var pinnedFolder = {
         name: "Pinned Tabs",
         open: (elements["pinned"] == undefined || elements["pinned"].open == undefined) ? true : elements["pinned"].open,
         folderID: "pinned",
         parentFolderID: "-1",
-        elements: []
+        elements: [],
+        index: 1
     };
     for (var key in tabs) {
         var tab = tabs[key];
@@ -32,7 +36,8 @@ function updateUnorderedTabs(elements, tabs) {
         open: (elements["unordered"] == undefined || elements["unordered"].open == undefined) ? true : elements["unordered"].open,
         folderID: "unordered",
         parentFolderID: "-1",
-        elements: []
+        elements: [],
+        index: 0
     };
     for (var tab of tabs) {
         var exist = tabExistsByTabID(tab.id, elements);
@@ -64,8 +69,8 @@ export function updateTabsOnStartUp(data, tabs) {
 void function updateOrganisedTabs(elements, tabs) {
 };
 export function updateTabs(elements, tabs) {
-    updatePinnedTabs(elements, tabs);
     updateUnorderedTabs(elements, tabs);
+    updatePinnedTabs(elements, tabs);
 }
 export function renameFolder(folderID, newName) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -159,7 +164,8 @@ export function addFolder(parentID, newFolderID, name) {
             name: name,
             elements: [],
             folderID: newFolderID,
-            parentFolderID: parentID
+            parentFolderID: parentID,
+            index: generateIndexInFolder(parentFolder)
         };
         parentFolder.elements.push(folder);
         yield saveDataInFirefox(data);
@@ -175,7 +181,8 @@ function addTabSync(folder, title, url, favIconURL, tabExists, tabID, itemID, hi
         url: url,
         favIconURL: favIconURL,
         title: title,
-        parentFolderID: folder.folderID
+        parentFolderID: folder.folderID,
+        index: generateIndexInFolder(folder)
     };
     folder.elements.push(storedTab);
     return storedTab;
@@ -350,6 +357,9 @@ export function getnumberOfItemsAlreadyExisting(folderContainer) {
 }
 function createItemIDByTab(tab) {
     return tab.url;
+}
+function generateIndexInFolder(folder) {
+    return folder.elements.length;
 }
 export function tabExistsByItemID(itemID, elements) {
     var item = getItemJSONObjectByItemID(itemID, elements);

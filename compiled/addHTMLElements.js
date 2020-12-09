@@ -1,15 +1,15 @@
-export function addFolder(htmlParent, id, name, opened, tier, handler) {
+export function addFolder(htmlParent, folder, tier, handler) {
     var folderDiv = document.createElement("div");
-    folderDiv.setAttribute("folderID", id);
+    folderDiv.setAttribute("folderID", folder.folderID);
     folderDiv.setAttribute("isFolder", "true");
-    folderDiv.setAttribute("open", opened + "");
+    folderDiv.setAttribute("open", folder.open + "");
     folderDiv.style.marginLeft = tier * 4 + "px";
     var imgNode = document.createElement("img");
     imgNode.src = "../icons/arrow_down-256.png";
     imgNode.id = "image";
     imgNode.classList.add("arrow");
     imgNode.classList.add("noEvents");
-    if (!opened) {
+    if (!folder.open) {
         imgNode.classList.add("rotated");
         folderDiv.classList.add("closed");
     }
@@ -22,7 +22,7 @@ export function addFolder(htmlParent, id, name, opened, tier, handler) {
     folderDiv.appendChild(textContainerNode);
     var childContainer = document.createElement("div");
     folderDiv.appendChild(childContainer);
-    if (id != "pinned" && id != "unordered") {
+    if (folder.folderID != "pinned" && folder.folderID != "unordered") {
         var renameNode = document.createElement("input");
         renameNode.type = "text";
         renameNode.placeholder = "New Name";
@@ -31,7 +31,7 @@ export function addFolder(htmlParent, id, name, opened, tier, handler) {
         folderDiv.appendChild(renameNode);
         folderDiv.ondblclick = handler.folderRenameClick_handler;
     }
-    if (id != "pinned" && id != "unordered")
+    if (folder.folderID != "pinned" && folder.folderID != "unordered")
         folderDiv.draggable = true;
     folderDiv.addEventListener("dragstart", handler.dragstart_handler);
     folderDiv.addEventListener("drop", handler.drop_handler);
@@ -78,5 +78,11 @@ export function addTab(folderDiv, tab, tier, handler) {
     itemNode.addEventListener("dragend", handler.dragend_handler);
     folderDiv.appendChild(itemNode);
     return itemNode;
+}
+function createInbetween(element, handler) {
+    var inbetween = document.createElement("div");
+    inbetween.setAttribute("isInbetween", "true");
+    if (element)
+        return new HTMLElement();
 }
 //# sourceMappingURL=addHTMLElements.js.map

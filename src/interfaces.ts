@@ -1,4 +1,4 @@
-export interface tabStructData extends folderData{
+export interface tabStructData extends folderData {
 }
 
 export interface folderData extends elementData {
@@ -19,7 +19,8 @@ export interface itemData extends elementData {
 }
 
 export interface elementData {
-    parentFolderID: string
+    parentFolderID: string,
+    index: number
 }
 
 export type tabIDType = string

@@ -11,7 +11,7 @@ import * as dataHandler from './dataHandler.js';
 import * as tabHelper from './tabHelper.js';
 import * as handler from './handler.js';
 import * as firefoxHandler from './firefoxHandler.js';
-var data = { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1" };
+var data = dataHandler.createEmptyData();
 var firefoxStartHandler = {
     startup: startup
 };

@@ -1,4 +1,4 @@
-import { itemData } from './interfaces'
+import { itemData, folderData } from './interfaces'
 
 export interface addHTMLhandler {
     folderRenameSubmit_handler: any,
@@ -13,17 +13,17 @@ export interface addHTMLhandler {
     folderClick: any,
     itemClick: any,
     clearStruct_handler: any,
-    structReloader_handler: any, 
+    structReloader_handler: any,
     extensionReloader_handler: any,
     addFolderClick_handler: any,
     addFolderSubmit_handler: any
 }
 
-export function addFolder(htmlParent: HTMLElement, id: string, name: string, opened: Boolean, tier: number, handler: addHTMLhandler) {
+export function addFolder(htmlParent: HTMLElement, folder: folderData, tier: number, handler: addHTMLhandler) {
     var folderDiv = document.createElement("div")
-    folderDiv.setAttribute("folderID", id)
+    folderDiv.setAttribute("folderID", folder.folderID)
     folderDiv.setAttribute("isFolder", "true")
-    folderDiv.setAttribute("open", opened + "")
+    folderDiv.setAttribute("open", folder.open + "")
     folderDiv.style.marginLeft = tier * 4 + "px"
 
     var imgNode = document.createElement("img")
@@ -31,7 +31,7 @@ export function addFolder(htmlParent: HTMLElement, id: string, name: string, ope
     imgNode.id = "image"
     imgNode.classList.add("arrow")
     imgNode.classList.add("noEvents")
-    if (!opened) {
+    if (!folder.open) {
         imgNode.classList.add("rotated")
         folderDiv.classList.add("closed")
     }
@@ -50,7 +50,7 @@ export function addFolder(htmlParent: HTMLElement, id: string, name: string, ope
 
 
     //rename functionality
-    if (id != "pinned" && id != "unordered") {
+    if (folder.folderID != "pinned" && folder.folderID != "unordered") {
         var renameNode = document.createElement("input")
         renameNode.type = "text"
         renameNode.placeholder = "New Name"
@@ -62,7 +62,7 @@ export function addFolder(htmlParent: HTMLElement, id: string, name: string, ope
 
     //eventhandler
     //draggable
-    if (id != "pinned" && id != "unordered") folderDiv.draggable = true
+    if (folder.folderID != "pinned" && folder.folderID != "unordered") folderDiv.draggable = true
     folderDiv.addEventListener("dragstart", handler.dragstart_handler)
     folderDiv.addEventListener("drop", handler.drop_handler)
     folderDiv.addEventListener("dragover", handler.dragover_handler)
@@ -111,4 +111,11 @@ export function addTab(folderDiv: HTMLElement, tab: itemData, tier: number, hand
     itemNode.addEventListener("dragend", handler.dragend_handler)
     folderDiv.appendChild(itemNode)
     return itemNode
+}
+
+function createInbetween(element: itemData | folderData, handler: addHTMLhandler): HTMLElement {
+    var inbetween = document.createElement("div");
+    inbetween.setAttribute("isInbetween", "true");
+    if (element)
+        return new HTMLElement();
 }

@@ -126,9 +126,9 @@ async function drop_handler(event) {
     } else if (helper.toBoolean(target.getAttribute("isTrashCan"))) {
         if ('itemID' in draggingJSON) {
             if (draggingJSON.tabID != "-1") tabHelper.closeTab(draggingJSON.tabID)
-                await dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
+            await dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
         } else if ('folderID' in draggingJSON) {
-            await  dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
+            await dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
         }
         triggerListReload()
     }
@@ -170,7 +170,7 @@ async function folderClick(e) {
         dataObj.open = !dataObj.open
         var newOpened = dataObj.open
         HTMLFolder.setAttribute("open", newOpened + "")
-        
+
         var childs = HTMLFolder.children
         if (newOpened) {
             HTMLFolder.children[folderChildImageIndex].classList.add("rotated")
@@ -309,7 +309,7 @@ function displayElements(elements: Array<elementData>, htmlContainer: HTMLElemen
             htmlAdder.addTab(htmlContainer, item, layer, addHTMLHandler);
         } else if ('folderID' in item) {
             var folder = item as folderData
-            var htmlFolder = htmlAdder.addFolder(htmlContainer, folder.folderID, folder.name, folder.open, layer, addHTMLHandler)
+            var htmlFolder = htmlAdder.addFolder(htmlContainer, folder, layer, addHTMLHandler)
             displayElements(folder.elements, htmlFolder.children[folderChildItemListIndex] as HTMLElement, layer + 1)
             setChildrenVisible(folder.open, htmlFolder.children)
         }
@@ -324,8 +324,7 @@ function triggerListReload() {
 }
 
 function clearStruct() {
-    var data: tabStructData = { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1" }
-    dataHandler.saveDataInFirefox(data)
+    dataHandler.saveDataInFirefox(dataHandler.createEmptyData())
 }
 
 function setChildrenVisible(value: Boolean, childs: Array<HTMLElement> | HTMLCollection) {

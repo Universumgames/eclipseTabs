@@ -7,7 +7,7 @@ import * as firefoxHandler from './firefoxHandler.js'
 //#endregion
 
 //#region init code
-var data: tabStructData = { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1" }
+var data: tabStructData = dataHandler.createEmptyData()
 
 //on firefox start (tabID's may have changed, changing these in data struct)
 var firefoxStartHandler: firefoxHandler.firefoxStartupHandler = {

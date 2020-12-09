@@ -3,6 +3,10 @@ import * as tabHelper from './tabHelper.js'
 import { elementData, folderData, itemData, tabStructData, itemIDType, tabIDType, folderIDType } from './interfaces.js'
 import * as firefoxHandler from './firefoxHandler.js'
 
+export function createEmptyData(): tabStructData {
+    return { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0 }
+}
+
 //#region update tabs
 function updatePinnedTabs(elements: Array<elementData>, tabs): void {
     var pinnedFolder: folderData = {
@@ -10,7 +14,8 @@ function updatePinnedTabs(elements: Array<elementData>, tabs): void {
         open: (elements["pinned"] == undefined || elements["pinned"].open == undefined) ? true : elements["pinned"].open,
         folderID: "pinned",
         parentFolderID: "-1",
-        elements: []
+        elements: [],
+        index: 1
     }
     for (var key in tabs) {
         var tab = tabs[key]
@@ -27,7 +32,8 @@ function updateUnorderedTabs(elements: Array<elementData>, tabs): void {
         open: (elements["unordered"] == undefined || elements["unordered"].open == undefined) ? true : elements["unordered"].open,
         folderID: "unordered",
         parentFolderID: "-1",
-        elements: []
+        elements: [],
+        index: 0
     }
     for (var tab of tabs) {
         var exist = tabExistsByTabID(tab.id, elements)
@@ -67,8 +73,8 @@ void function updateOrganisedTabs(elements: tabStructData, tabs): void {
 }
 
 export function updateTabs(elements: Array<elementData>, tabs): void {
-    updatePinnedTabs(elements, tabs)
     updateUnorderedTabs(elements, tabs)
+    updatePinnedTabs(elements, tabs)
 }
 
 //#endregion
@@ -98,7 +104,7 @@ export async function moveItem(itemID: string, oldParentFolderID: string, newPar
 }
 
 export async function moveFolder(folderID: string, oldParentFolderID: string, newParentFolderID: string): Promise<Boolean> {
-    if(folderID == oldParentFolderID || folderID == newParentFolderID || oldParentFolderID == newParentFolderID) return true;
+    if (folderID == oldParentFolderID || folderID == newParentFolderID || oldParentFolderID == newParentFolderID) return true;
     var data = await getDataStructFromFirefox()
     var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data)
     var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data)
@@ -134,7 +140,7 @@ export async function removeFolder(folderID: string, oldParentFolderID: string):
 
     if (oldParentFolder != undefined && folder != undefined && key != undefined) {
         delete oldParentFolder.elements[key]
-        oldParentFolder.elements.length-= 1;
+        oldParentFolder.elements.length -= 1;
         await saveDataInFirefox(data)
         return true
     }
@@ -164,7 +170,8 @@ export async function addFolder(parentID: string, newFolderID: string, name: str
         name: name,
         elements: [],
         folderID: newFolderID,
-        parentFolderID: parentID
+        parentFolderID: parentID,
+        index: generateIndexInFolder(parentFolder)
     }
     parentFolder.elements.push(folder)
     await saveDataInFirefox(data)
@@ -180,7 +187,8 @@ function addTabSync(folder: tabStructData | folderData, title: string, url: stri
         url: url,
         favIconURL: favIconURL,
         title: title,
-        parentFolderID: folder.folderID
+        parentFolderID: folder.folderID,
+        index: generateIndexInFolder(folder)
     }
     folder.elements.push(storedTab)
     return storedTab
@@ -310,7 +318,7 @@ export function getFoldersInFolder(folder: folderData): Array<folderData> {
 }
 
 export function saveDataInFirefox(data: tabStructData) {
-    return firefoxHandler.localStorageSet({data})
+    return firefoxHandler.localStorageSet({ data })
 }
 
 export function getFirefoxStructFromFirefox() {
@@ -361,6 +369,10 @@ export function getnumberOfItemsAlreadyExisting(folderContainer) {
 
 function createItemIDByTab(tab) {
     return tab.url
+}
+
+function generateIndexInFolder(folder: folderData) {
+    return folder.elements.length;
 }
 
 //#endregion

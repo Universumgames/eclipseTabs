@@ -1,33 +1,40 @@
-export interface firefoxHandler{
+export interface firefoxHandler {
     refreshTabListOnActiveChange: any,
     refreshTabListOnSiteUpdated: any
 }
 
-export interface firefoxStartupHandler{
+export interface firefoxStartupHandler {
     startup: any
 }
 
-export function reload(){
+export function reload() {
+    //@ts-ignore
     browser.runtime.reload()
 }
 
-export function registerListener(handler: firefoxHandler){
+export function registerListener(handler: firefoxHandler) {
+    //@ts-ignore
     browser.tabs.onActivated.addListener(handler.refreshTabListOnActiveChange)
+    //@ts-ignore
     browser.tabs.onUpdated.addListener(handler.refreshTabListOnSiteUpdated)
 }
 
-export async function tabQuery(query: any): Promise<any>{
+export async function tabQuery(query: any): Promise<any> {
+    //@ts-ignore
     return await browser.tabs.query(query)
 }
 
-export async function startupHandler(handler: firefoxStartupHandler){
+export async function startupHandler(handler: firefoxStartupHandler) {
+    //@ts-ignore
     browser.runtime.onStartup.addListener(handler.startup)
 }
 
-export async function localStorageSet(data: any): Promise<any>{
+export async function localStorageSet(data: any): Promise<any> {
+    //@ts-ignore
     return await browser.storage.local.set(data)
 }
 
 export async function localStorageGet(name: string): Promise<any> {
+    //@ts-ignore
     return await browser.storage.local.get(name)
 }

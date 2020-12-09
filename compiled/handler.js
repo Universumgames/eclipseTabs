@@ -287,7 +287,7 @@ function displayElements(elements, htmlContainer, layer) {
         }
         else if ('folderID' in item) {
             var folder = item;
-            var htmlFolder = htmlAdder.addFolder(htmlContainer, folder.folderID, folder.name, folder.open, layer, addHTMLHandler);
+            var htmlFolder = htmlAdder.addFolder(htmlContainer, folder, layer, addHTMLHandler);
             displayElements(folder.elements, htmlFolder.children[folderChildItemListIndex], layer + 1);
             setChildrenVisible(folder.open, htmlFolder.children);
         }
@@ -297,8 +297,7 @@ function triggerListReload() {
     refreshTabList();
 }
 function clearStruct() {
-    var data = { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1" };
-    dataHandler.saveDataInFirefox(data);
+    dataHandler.saveDataInFirefox(dataHandler.createEmptyData());
 }
 function setChildrenVisible(value, childs) {
     if (value)
