@@ -3,6 +3,7 @@ export function addFolder(htmlParent, folder, tier, handler) {
     folderDiv.setAttribute("folderID", folder.folderID);
     folderDiv.setAttribute("isFolder", "true");
     folderDiv.setAttribute("open", folder.open + "");
+    folderDiv.setAttribute("index", folder.index + "");
     folderDiv.style.marginLeft = tier * 4 + "px";
     var imgNode = document.createElement("img");
     imgNode.src = "../icons/arrow_down-256.png";
@@ -17,7 +18,7 @@ export function addFolder(htmlParent, folder, tier, handler) {
     var textContainerNode = document.createElement("div");
     textContainerNode.classList.add("noEvents");
     textContainerNode.style.display = "inline";
-    var textNode = document.createTextNode(name);
+    var textNode = document.createTextNode(folder.name);
     textContainerNode.appendChild(textNode);
     folderDiv.appendChild(textContainerNode);
     var childContainer = document.createElement("div");
@@ -52,6 +53,7 @@ export function addTab(folderDiv, tab, tier, handler) {
     itemNode.setAttribute("title", tab.title);
     itemNode.setAttribute("favIconUrl", tab.favIconURL);
     itemNode.setAttribute("isItem", "true");
+    itemNode.setAttribute("index", tab.index + "");
     if (tab.parentFolderID != "pinned")
         itemNode.onclick = handler.itemClick;
     else

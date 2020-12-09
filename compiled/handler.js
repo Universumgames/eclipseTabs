@@ -8,10 +8,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 import * as htmlAdder from './addHTMLElements.js';
-import * as dataHandler from './dataHandler.js';
 import * as tabHelper from './tabHelper.js';
 import * as helper from './helper.js';
 import * as firefoxHandler from './firefoxHandler.js';
+import { addFolder, createEmptyData, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js';
 export var addHTMLHandler = {
     folderRenameSubmit_handler: folderRenameSubmit_handler,
     folderRenameClick_handler: folderRenameClick_handler,
@@ -71,9 +71,9 @@ function dragstart_handler(event) {
     return __awaiter(this, void 0, void 0, function* () {
         dragging = event.target;
         if (helper.isFolder(dragging))
-            draggingJSON = dataHandler.getFolderJSONObjectByID(dragging.getAttribute("folderID"), (yield dataHandler.getDataStructFromFirefox()));
+            draggingJSON = getFolderJSONObjectByID(dragging.getAttribute("folderID"), (yield getDataStructFromFirefox()));
         else if (helper.isItem(dragging))
-            draggingJSON = dataHandler.getItemJSONObjectByItemID(dragging.getAttribute("itemID"), (yield dataHandler.getDataStructFromFirefox()).elements);
+            draggingJSON = getItemJSONObjectByItemID(dragging.getAttribute("itemID"), (yield getDataStructFromFirefox()).elements);
         event.target.classList.add("hover");
     });
 }
@@ -102,10 +102,10 @@ function drop_handler(event) {
         dragging.classList.remove("hover");
         if (helper.isFolder(target)) {
             if ('folderID' in draggingJSON) {
-                yield dataHandler.moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.getAttribute("folderID"));
+                yield moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.getAttribute("folderID"));
             }
             else if ('itemID' in draggingJSON) {
-                yield dataHandler.moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.getAttribute("folderID"));
+                yield moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.getAttribute("folderID"));
             }
             triggerListReload();
         }
@@ -113,10 +113,10 @@ function drop_handler(event) {
             if ('itemID' in draggingJSON) {
                 if (draggingJSON.tabID != "-1")
                     tabHelper.closeTab(draggingJSON.tabID);
-                yield dataHandler.removeItem(draggingJSON.itemID, draggingJSON.parentFolderID);
+                yield removeItem(draggingJSON.itemID, draggingJSON.parentFolderID);
             }
             else if ('folderID' in draggingJSON) {
-                yield dataHandler.removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID);
+                yield removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID);
             }
             triggerListReload();
         }
@@ -142,8 +142,8 @@ function folderClick(e) {
         if (e.explicitOriginalTarget.localName == "div" && helper.isFolder(e.originalTarget)) {
             var HTMLFolder = e.originalTarget;
             var opened = helper.toBoolean(HTMLFolder.getAttribute("open"));
-            var data = yield dataHandler.getDataStructFromFirefox();
-            var dataObj = dataHandler.getFolderJSONObjectByID(HTMLFolder.getAttribute("folderID"), data);
+            var data = yield getDataStructFromFirefox();
+            var dataObj = getFolderJSONObjectByID(HTMLFolder.getAttribute("folderID"), data);
             dataObj.open = !dataObj.open;
             var newOpened = dataObj.open;
             HTMLFolder.setAttribute("open", newOpened + "");
@@ -158,20 +158,20 @@ function folderClick(e) {
                 HTMLFolder.classList.remove("closed");
                 setChildrenVisible(true, childs);
             }
-            yield dataHandler.saveDataInFirefox(data);
+            yield saveDataInFirefox(data);
             triggerListReload();
         }
     });
 }
 function itemClick(e) {
     return __awaiter(this, void 0, void 0, function* () {
-        var data = yield dataHandler.getDataStructFromFirefox();
+        var data = yield getDataStructFromFirefox();
         var tabElement = e.originalTarget;
         var tabID = tabElement.getAttribute("tabID");
         var tabs = yield tabHelper.getTabByTabID(tabID);
         var tab = (yield tabHelper.tabExists(tabID)) ? tabs : { pinned: false };
         var itemID = tabElement.getAttribute("itemID");
-        var jsonTab = dataHandler.getItemJSONObjectByItemID(itemID, data.elements);
+        var jsonTab = getItemJSONObjectByItemID(itemID, data.elements);
         if (!tab.pinned) {
             if (!helper.toBoolean(tabElement.getAttribute("hiddenTab"))) {
                 if ((yield tabHelper.tabExists(tabID)) && (yield tabHelper.hideTab(tabID))) {
@@ -199,7 +199,7 @@ function itemClick(e) {
         else {
             tabHelper.focusTab(tabID);
         }
-        yield dataHandler.saveDataInFirefox(data);
+        yield saveDataInFirefox(data);
     });
 }
 function addFolderClick_handler() {
@@ -210,7 +210,7 @@ function addFolderSubmit_handler(event) {
         if (event.keyCode == 13) {
             event.preventDefault();
             var value = addFolderNameInput.value;
-            yield dataHandler.addFolder("-1", (yield dataHandler.generateFolderID()).toString(), value);
+            yield addFolder("-1", (yield generateFolderID()).toString(), value);
             addFolderNameInput.value = "";
             addFolderNameInputContainer.classList.add("disabled");
             triggerListReload();
@@ -230,14 +230,14 @@ function folderRenameSubmit_handler(event) {
             event.preventDefault();
             var value = event.originalTarget.value;
             var parent = event.originalTarget.parentNode;
-            yield dataHandler.renameFolder(parent.folderID, value);
+            yield renameFolder(parent.folderID, value);
             triggerListReload();
         }
     });
 }
 function refreshTabList() {
     return __awaiter(this, void 0, void 0, function* () {
-        var data = yield dataHandler.getDataStructFromFirefox();
+        var data = yield getDataStructFromFirefox();
         tabHelper.getTabs().then((tabs) => { loadFolderList(tabs, data); });
     });
 }
@@ -256,16 +256,16 @@ function refreshTabListOnSiteUpdated(tabId, changeInfo, tabInfo) {
 function tabUpdateListener(tabId, changeInfo, tabInfo) {
     return __awaiter(this, void 0, void 0, function* () {
         document.getElementById("list").innerHTML = "";
-        var data = yield dataHandler.getDataStructFromFirefox();
+        var data = yield getDataStructFromFirefox();
         firefoxHandler.tabQuery({}).then((element) => { loadFolderList(element, data); }, (element) => console.error(element));
     });
 }
 export function loadFolderList(tabs, data) {
     return __awaiter(this, void 0, void 0, function* () {
-        dataHandler.updateTabsOnStartUp(data, tabs);
-        dataHandler.updateTabs(data.elements, tabs);
+        updateTabsOnStartUp(data, tabs);
+        updateTabs(data.elements, tabs);
         console.log(data);
-        dataHandler.saveDataInFirefox(data);
+        saveDataInFirefox(data);
         displayHTMLList(data);
     });
 }
@@ -297,7 +297,7 @@ function triggerListReload() {
     refreshTabList();
 }
 function clearStruct() {
-    dataHandler.saveDataInFirefox(dataHandler.createEmptyData());
+    saveDataInFirefox(createEmptyData());
 }
 function setChildrenVisible(value, childs) {
     if (value)
@@ -310,7 +310,7 @@ function tabClosed(event) {
 }
 function loadFirefoxData() {
     return __awaiter(this, void 0, void 0, function* () {
-        var dataF = yield dataHandler.getDataStructFromFirefox();
+        var dataF = yield getDataStructFromFirefox();
         if (dataF != undefined)
             return dataF;
         return undefined;

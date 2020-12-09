@@ -1,13 +1,13 @@
 //#region imports
-import * as dataHandler from './dataHandler.js'
 import * as tabHelper from './tabHelper.js'
 import { elementData, folderData, itemData, tabStructData } from './interfaces.js'
 import * as handler from './handler.js'
 import * as firefoxHandler from './firefoxHandler.js'
+import { createEmptyData, getDataStructFromFirefox, saveDataInFirefox, updateTabsOnStartUp } from './dataHandler/importer.js'
 //#endregion
 
 //#region init code
-var data: tabStructData = dataHandler.createEmptyData()
+var data: tabStructData = createEmptyData()
 
 //on firefox start (tabID's may have changed, changing these in data struct)
 var firefoxStartHandler: firefoxHandler.firefoxStartupHandler = {
@@ -21,21 +21,21 @@ document.addEventListener("DOMContentLoaded", () => setup())
 //browser.tabs.addEventListener("updateHTMLList", () => updateHTMLList())
 
 async function startup() {
-    var dataTmp = await dataHandler.getDataStructFromFirefox()
+    var dataTmp = await getDataStructFromFirefox()
     if (dataTmp == undefined)
-        dataHandler.saveDataInFirefox(data)
+        saveDataInFirefox(data)
     else data = dataTmp
     tabHelper.getTabs().then((tabs) => {
         console.log(tabs)
-        dataHandler.updateTabsOnStartUp(data, tabs)
+        updateTabsOnStartUp(data, tabs)
     })
     console.log("query");
 }
 
 async function setup() {
-    var dataTmp = await dataHandler.getDataStructFromFirefox()
+    var dataTmp = await getDataStructFromFirefox()
     if (dataTmp == undefined)
-        dataHandler.saveDataInFirefox(data)
+        saveDataInFirefox(data)
     else data = dataTmp
     //load up pinned tabs
     tabHelper.getTabs().then((tabs) => { handler.loadFolderList(tabs, data) })

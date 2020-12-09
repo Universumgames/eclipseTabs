@@ -1,4 +1,4 @@
-import { itemData, folderData } from './interfaces'
+import { itemData, folderData } from './interfaces.js'
 
 export interface addHTMLhandler {
     folderRenameSubmit_handler: any,
@@ -24,6 +24,7 @@ export function addFolder(htmlParent: HTMLElement, folder: folderData, tier: num
     folderDiv.setAttribute("folderID", folder.folderID)
     folderDiv.setAttribute("isFolder", "true")
     folderDiv.setAttribute("open", folder.open + "")
+    folderDiv.setAttribute("index", folder.index + "")
     folderDiv.style.marginLeft = tier * 4 + "px"
 
     var imgNode = document.createElement("img")
@@ -40,7 +41,7 @@ export function addFolder(htmlParent: HTMLElement, folder: folderData, tier: num
     var textContainerNode = document.createElement("div")
     textContainerNode.classList.add("noEvents")
     textContainerNode.style.display = "inline"
-    var textNode = document.createTextNode(name)
+    var textNode = document.createTextNode(folder.name)
     textContainerNode.appendChild(textNode)
     folderDiv.appendChild(textContainerNode)
 
@@ -86,6 +87,7 @@ export function addTab(folderDiv: HTMLElement, tab: itemData, tier: number, hand
     itemNode.setAttribute("title", tab.title)
     itemNode.setAttribute("favIconUrl", tab.favIconURL)
     itemNode.setAttribute("isItem", "true")
+    itemNode.setAttribute("index", tab.index + "")
     if (tab.parentFolderID != "pinned")
         itemNode.onclick = handler.itemClick
     else
