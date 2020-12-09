@@ -3,7 +3,7 @@ import * as tabHelper from './tabHelper.js'
 import * as helper from './helper.js'
 import { elementData, folderData, itemData, tabStructData } from './interfaces.js'
 import * as firefoxHandler from './firefoxHandler.js'
-import { addFolder, createEmptyData, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js'
+import { addFolder, createEmptyData, exportData, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js'
 
 export var addHTMLHandler: htmlAdder.addHTMLhandler = {
     folderRenameSubmit_handler: folderRenameSubmit_handler,
@@ -46,6 +46,8 @@ const addFolderNameInput = document.getElementById("addFolderNameInput") as HTML
 
 const addFolderBtn = document.getElementById("addFolder")
 const trashcan = document.getElementById("delete")
+const exportBtn = document.getElementById("exportData")
+const importBtn = document.getElementById("importData")
 
 var setup: Function
 
@@ -63,6 +65,9 @@ export function setupHandler(setupFun: Function) {
     extensionReloader.onclick = addHTMLHandler.extensionReloader_handler
     addFolderBtn.onclick = addHTMLHandler.addFolderClick_handler
     addFolderNameInput.addEventListener("keyup", addHTMLHandler.addFolderSubmit_handler)
+
+    exportBtn.onclick = exportData_handler
+    importBtn.onclick = importData_handler
 
     //trashcan listners
     trashcan.addEventListener("dragstart", addHTMLHandler.dragstart_handler)
@@ -283,7 +288,7 @@ async function tabUpdateListener(tabId, changeInfo, tabInfo) {
 export async function loadFolderList(tabs: any, data: tabStructData) {
     updateTabsOnStartUp(data, tabs)
     //update tabs 
-    updateTabs(data.elements, tabs)
+    updateTabs(data, tabs)
 
     console.log(data)
 
@@ -305,13 +310,15 @@ async function displayHTMLList(data: tabStructData) {
 function displayElements(elements: Array<elementData>, htmlContainer: HTMLElement, layer: number) {
     for (var key in elements) {
         var item = elements[key]
-        if ('itemID' in item) {
-            htmlAdder.addTab(htmlContainer, item, layer, addHTMLHandler);
-        } else if ('folderID' in item) {
-            var folder = item as folderData
-            var htmlFolder = htmlAdder.addFolder(htmlContainer, folder, layer, addHTMLHandler)
-            displayElements(folder.elements, htmlFolder.children[folderChildItemListIndex] as HTMLElement, layer + 1)
-            setChildrenVisible(folder.open, htmlFolder.children)
+        if (item != undefined) {
+            if ('itemID' in item) {
+                htmlAdder.addTab(htmlContainer, item, layer, addHTMLHandler);
+            } else if ('folderID' in item) {
+                var folder = item as folderData
+                var htmlFolder = htmlAdder.addFolder(htmlContainer, folder, layer, addHTMLHandler)
+                displayElements(folder.elements, htmlFolder.children[folderChildItemListIndex] as HTMLElement, layer + 1)
+                setChildrenVisible(folder.open, htmlFolder.children)
+            }
         }
     }
 }
@@ -340,4 +347,12 @@ async function loadFirefoxData(): Promise<tabStructData> {
     var dataF = await getDataStructFromFirefox()
     if (dataF != undefined) return dataF
     return undefined
+}
+
+async function exportData_handler(event: any) {
+    tabHelper.createTab("../dataExport.html")
+}
+
+async function importData_handler(event: any) {
+    tabHelper.createTab("../dataImport.html")
 }

@@ -19,7 +19,8 @@ export async function moveItem(itemID: string, oldParentFolderID: string, newPar
     if (oldParentFolder != undefined && newParentFolder != undefined && item != undefined && key != undefined) {
         item.parentFolderID = newParentFolderID
         newParentFolder.elements.push(item)
-        delete oldParentFolder.elements[key]
+        //delete oldParentFolder.elements[key]
+        oldParentFolder.elements.splice(key as unknown as number, 1)
         await saveDataInFirefox(data)
         return true
     }
@@ -36,7 +37,8 @@ export async function moveFolder(folderID: string, oldParentFolderID: string, ne
     if (oldParentFolder != undefined && newParentFolder != undefined && folder != undefined && key != undefined) {
         folder.parentFolderID = newParentFolderID
         newParentFolder.elements.push(folder)
-        delete oldParentFolder.elements[key]
+        //delete oldParentFolder.elements[key]
+        oldParentFolder.elements.splice(key as unknown as number, 1)
         await saveDataInFirefox(data)
         return true
     }

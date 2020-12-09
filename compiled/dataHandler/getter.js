@@ -34,14 +34,16 @@ function getItemJSONObjectByTabIDRecursion(tabID, items) {
     var returnVal;
     for (var key in items) {
         var element = items[key];
-        if ('itemID' in element) {
-            if (element.tabID == tabID)
-                return element;
-        }
-        else if ('folderID' in element) {
-            returnVal = getItemJSONObjectByTabIDRecursion(tabID, element.elements);
-            if (returnVal != undefined)
-                return returnVal;
+        if (element != undefined) {
+            if ('itemID' in element) {
+                if (element.tabID == tabID)
+                    return element;
+            }
+            else if ('folderID' in element) {
+                returnVal = getItemJSONObjectByTabIDRecursion(tabID, element.elements);
+                if (returnVal != undefined)
+                    return returnVal;
+            }
         }
     }
     return undefined;
@@ -55,14 +57,16 @@ function getFolderJSONObjectByIDRecursion(id, folder) {
     var returnVal;
     for (var key in folder) {
         var element = folder[key];
-        if ('folderID' in element) {
-            if (element.folderID == id) {
-                return element;
-            }
-            else {
-                returnVal = getFolderJSONObjectByIDRecursion(id, element.elements);
-                if (returnVal != undefined)
-                    return returnVal;
+        if (element != undefined) {
+            if ('folderID' in element) {
+                if (element.folderID == id) {
+                    return element;
+                }
+                else {
+                    returnVal = getFolderJSONObjectByIDRecursion(id, element.elements);
+                    if (returnVal != undefined)
+                        return returnVal;
+                }
             }
         }
     }

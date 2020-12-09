@@ -55,7 +55,7 @@ export function addTab(folderID, title, url, favIconURL, tabExists, tabID, itemI
 export function createItemIDByTab(tab) {
     return tab.url;
 }
-function generateIndexInFolder(folder) {
+export function generateIndexInFolder(folder) {
     return folder.elements.length;
 }
 //# sourceMappingURL=adder.js.map

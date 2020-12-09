@@ -67,7 +67,7 @@ export function getCurrentTab() {
 }
 export function closeTab(id) {
     return __awaiter(this, void 0, void 0, function* () {
-        return browser.tabs.remove(+id);
+        return browser.tabs.remove(id);
     });
 }
 //# sourceMappingURL=tabHelper.js.map

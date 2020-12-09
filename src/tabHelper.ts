@@ -56,5 +56,5 @@ export async function getCurrentTab() {
 
 export async function closeTab(id: string) {
   //@ts-ignore
-  return browser.tabs.remove(+id)
+  return browser.tabs.remove(id as number)
 }

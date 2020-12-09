@@ -1,10 +1,10 @@
-import { recursiveSelectionSort } from '../sorting.js';
+import { recursiveSelectionSort } from './sorting.js';
 import * as defs from './definitions.js';
 import { getFirefoxTabByURL, getFolderJSONObjectByID } from './getter.js';
 import { addTabSync, createItemIDByTab } from './adder.js';
 import { tabExistsByTabID } from './checker.js';
-function updatePinnedTabs(elements, tabs) {
-    var pinnedFolder = getFolderJSONObjectByID(defs.pinnedFolderID, { elements });
+function updatePinnedTabs(tabStruct, tabs) {
+    var pinnedFolder = getFolderJSONObjectByID(defs.pinnedFolderID, tabStruct);
     if (pinnedFolder == undefined) {
         pinnedFolder = {
             name: "Pinned Tabs",
@@ -14,7 +14,7 @@ function updatePinnedTabs(elements, tabs) {
             elements: [],
             index: defs.pinnedIndex
         };
-        elements[defs.pinnedIndex] = pinnedFolder;
+        tabStruct.elements[defs.pinnedIndex] = pinnedFolder;
     }
     pinnedFolder.elements = new Array();
     for (var key in tabs) {
@@ -24,8 +24,8 @@ function updatePinnedTabs(elements, tabs) {
         }
     }
 }
-function updateUnorderedTabs(elements, tabs) {
-    var unorderedFolder = getFolderJSONObjectByID(defs.unorderedFolderID, { elements });
+function updateUnorderedTabs(tabStruct, tabs) {
+    var unorderedFolder = getFolderJSONObjectByID(defs.unorderedFolderID, tabStruct);
     if (unorderedFolder == undefined) {
         unorderedFolder = {
             name: "Unordered Tabs",
@@ -35,11 +35,11 @@ function updateUnorderedTabs(elements, tabs) {
             elements: [],
             index: defs.unorderedIndex
         };
-        elements[defs.unorderedIndex] = unorderedFolder;
+        tabStruct.elements[defs.unorderedIndex] = unorderedFolder;
     }
     unorderedFolder.elements = new Array();
     for (var tab of tabs) {
-        var exist = tabExistsByTabID(tab.id, elements);
+        var exist = tabExistsByTabID(tab.id, tabStruct.elements);
         if (!tab.pinned && !exist) {
             addTabSync(unorderedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, createItemIDByTab(tab), tab.hidden);
         }
@@ -48,27 +48,29 @@ function updateUnorderedTabs(elements, tabs) {
 export function updateTabsOnStartUp(data, tabs) {
     for (var key in data.elements) {
         var element = data.elements[key];
-        if ('folderID' in element)
-            updateTabsOnStartUp(element, tabs);
-        else {
-            var item = element;
-            var firefoxTab = getFirefoxTabByURL(tabs, item.url);
-            if (firefoxTab == undefined) {
-                item.tabID = "-1";
-                item.hidden = true;
-            }
+        if (element != undefined) {
+            if ('folderID' in element)
+                updateTabsOnStartUp(element, tabs);
             else {
-                item.tabID = firefoxTab.id;
-                item.hidden = firefoxTab.hidden;
+                var item = element;
+                var firefoxTab = getFirefoxTabByURL(tabs, item.url);
+                if (firefoxTab == undefined) {
+                    item.tabID = "-1";
+                    item.hidden = true;
+                }
+                else {
+                    item.tabID = firefoxTab.id;
+                    item.hidden = firefoxTab.hidden;
+                }
             }
         }
     }
 }
 void function updateOrganisedTabs(elements, tabs) {
 };
-export function updateTabs(elements, tabs) {
-    updateUnorderedTabs(elements, tabs);
-    updatePinnedTabs(elements, tabs);
-    recursiveSelectionSort({ elements });
+export function updateTabs(tabData, tabs) {
+    updateUnorderedTabs(tabData, tabs);
+    updatePinnedTabs(tabData, tabs);
+    recursiveSelectionSort(tabData);
 }
 //# sourceMappingURL=updater.js.map

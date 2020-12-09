@@ -1,13 +1,13 @@
 import { elementData, folderData, itemData, tabStructData } from '../interfaces.js';
-import { recursiveSelectionSort } from '../sorting.js'
+import { recursiveSelectionSort } from './sorting.js'
 import * as defs from './definitions.js'
 import { getFirefoxTabByURL, getFolderJSONObjectByID } from './getter.js';
 import { addTabSync, createItemIDByTab } from './adder.js'
 import { tabExistsByTabID } from './checker.js'
 
 //#region update tabs
-function updatePinnedTabs(elements: Array<elementData>, tabs): void {
-    var pinnedFolder: folderData = getFolderJSONObjectByID(defs.pinnedFolderID, { elements } as folderData)
+function updatePinnedTabs(tabStruct: tabStructData, tabs): void {
+    var pinnedFolder: folderData = getFolderJSONObjectByID(defs.pinnedFolderID, tabStruct)
     if (pinnedFolder == undefined) {
         pinnedFolder = {
             name: "Pinned Tabs",
@@ -17,7 +17,7 @@ function updatePinnedTabs(elements: Array<elementData>, tabs): void {
             elements: [],
             index: defs.pinnedIndex
         }
-        elements[defs.pinnedIndex] = pinnedFolder
+        tabStruct.elements[defs.pinnedIndex] = pinnedFolder
     }
     pinnedFolder.elements = new Array<elementData>();
     for (var key in tabs) {
@@ -28,8 +28,8 @@ function updatePinnedTabs(elements: Array<elementData>, tabs): void {
     }
 }
 
-function updateUnorderedTabs(elements: Array<elementData>, tabs): void {
-    var unorderedFolder: folderData = getFolderJSONObjectByID(defs.unorderedFolderID, { elements } as folderData)
+function updateUnorderedTabs(tabStruct: tabStructData, tabs): void {
+    var unorderedFolder: folderData = getFolderJSONObjectByID(defs.unorderedFolderID, tabStruct)
     if (unorderedFolder == undefined) {
         unorderedFolder = {
             name: "Unordered Tabs",
@@ -39,11 +39,11 @@ function updateUnorderedTabs(elements: Array<elementData>, tabs): void {
             elements: [],
             index: defs.unorderedIndex
         }
-        elements[defs.unorderedIndex] = unorderedFolder
+        tabStruct.elements[defs.unorderedIndex] = unorderedFolder
     }
     unorderedFolder.elements = new Array<elementData>();
     for (var tab of tabs) {
-        var exist = tabExistsByTabID(tab.id, elements)
+        var exist = tabExistsByTabID(tab.id, tabStruct.elements)
         if (!tab.pinned && !exist) {
             addTabSync(unorderedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, createItemIDByTab(tab), tab.hidden)
         }
@@ -53,17 +53,19 @@ function updateUnorderedTabs(elements: Array<elementData>, tabs): void {
 export function updateTabsOnStartUp(data: folderData | tabStructData, tabs): void {
     for (var key in data.elements) {
         var element = data.elements[key]
-        if ('folderID' in element) updateTabsOnStartUp(element as folderData, tabs)
-        else {
-            var item = element as itemData
-            var firefoxTab = getFirefoxTabByURL(tabs, item.url)
-            if (firefoxTab == undefined) {
-                item.tabID = "-1"
-                item.hidden = true
-            }
+        if (element != undefined) {
+            if ('folderID' in element) updateTabsOnStartUp(element as folderData, tabs)
             else {
-                item.tabID = firefoxTab.id
-                item.hidden = firefoxTab.hidden
+                var item = element as itemData
+                var firefoxTab = getFirefoxTabByURL(tabs, item.url)
+                if (firefoxTab == undefined) {
+                    item.tabID = "-1"
+                    item.hidden = true
+                }
+                else {
+                    item.tabID = firefoxTab.id
+                    item.hidden = firefoxTab.hidden
+                }
             }
         }
     }
@@ -78,10 +80,10 @@ void function updateOrganisedTabs(elements: tabStructData, tabs): void {
 
 }
 
-export function updateTabs(elements: Array<elementData>, tabs): void {
-    updateUnorderedTabs(elements, tabs)
-    updatePinnedTabs(elements, tabs)
-    recursiveSelectionSort({ elements } as folderData)
+export function updateTabs(tabData: tabStructData, tabs): void {
+    updateUnorderedTabs(tabData, tabs)
+    updatePinnedTabs(tabData, tabs)
+    recursiveSelectionSort(tabData)
 }
 
 //#endregion

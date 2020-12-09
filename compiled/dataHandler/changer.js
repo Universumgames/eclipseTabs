@@ -27,7 +27,7 @@ export function moveItem(itemID, oldParentFolderID, newParentFolderID) {
         if (oldParentFolder != undefined && newParentFolder != undefined && item != undefined && key != undefined) {
             item.parentFolderID = newParentFolderID;
             newParentFolder.elements.push(item);
-            delete oldParentFolder.elements[key];
+            oldParentFolder.elements.splice(key, 1);
             yield saveDataInFirefox(data);
             return true;
         }
@@ -46,7 +46,7 @@ export function moveFolder(folderID, oldParentFolderID, newParentFolderID) {
         if (oldParentFolder != undefined && newParentFolder != undefined && folder != undefined && key != undefined) {
             folder.parentFolderID = newParentFolderID;
             newParentFolder.elements.push(folder);
-            delete oldParentFolder.elements[key];
+            oldParentFolder.elements.splice(key, 1);
             yield saveDataInFirefox(data);
             return true;
         }

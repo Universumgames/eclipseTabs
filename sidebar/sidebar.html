@@ -2,43 +2,59 @@
 
 <html>
 
-  <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" type="text/css" href="../style.css">
-    <script src="../compiled/sidebar.js" type="module"></script>
-  </head>
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="../style.css">
+  <script src="../compiled/sidebar.js" type="module"></script>
+</head>
 
-  <body>
-    <div id="emptyList">
-      <noscript>
+<body>
+  <div id="emptyList">
+    <noscript>
       The tab structure is going to be listed here, if this is shown to you, the extension is propably not working
       correctly. The reason is that javascript is disabled...
     </noscript>
-    </div>
-    <div id="list" class="disabled list"></div>
-    <div id="addFolderNameInputContainer" class="disabled">
-      <input type="text" id="addFolderNameInput" placeholder="foldername">
-    </div>
-    <div><br> <br></div>
-    <!-- Debugging buttons-->
-    <div class="bottom">
-      <div class="bottomElements">
-        <div id="addFolder" class="bottomElement">
-          <img src="../icons/pus-256.png" class="bottomElementPic">
-        </div>
-        <div id="delete" class="bottomElement">
-          <img src="../icons/trashcan-256.png" class="bottomElementPic noEvents">
-        </div>
+  </div>
+  <div id="list" class="disabled list"></div>
+  <div id="addFolderNameInputContainer" class="disabled">
+    <input type="text" id="addFolderNameInput" placeholder="foldername">
+  </div>
+  <div><br> <br></div>
+  <!-- Debugging buttons-->
+  <div class="bottom">
+    <div class="bottomElements">
+      <div id="addFolder" class="bottomElement">
+        <img src="../icons/pus-256.png" class="bottomElementPic">
       </div>
-
-      <br>
-      <div id="debugElements">
-        <button id="structCleaner">Clear Data Struct</button>
-        <button id="structReloader">Reload Data Struct</button>
-        <button id="extensioReloader"> Reload Extension</button>
+      <div id="delete" class="bottomElement">
+        <img src="../icons/trashcan-256.png" class="bottomElementPic noEvents">
+      </div>
+      <div id="exportData" class="bottomElement">
+        <svg class="bottomElementPic noEvents" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+          style="fill:rgb(216, 216, 216);transform: rotate(-90deg);">
+          <path
+            d="M 8 2 C 6.895 2 6 2.895 6 4 L 6 20 C 6 21.105 6.895 22 8 22 L 16 22 C 17.105 22 18 21.105 18 20 L 18 15 L 16 15 L 16 20 L 8 20 L 8 4 L 16 4 L 16 9 L 18 9 L 18 4 C 18 2.895 17.105 2 16 2 L 8 2 z M 20 8 L 20 11 L 11 11 L 11 13 L 20 13 L 20 16 L 24 12 L 20 8 z">
+          </path>
+        </svg>
+      </div>
+      <div id="importData" class="bottomElement">
+        <svg class="bottomElementPic noEvents" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+          style="fill:rgb(216, 216, 216);transform: rotate(90deg);">
+          <path
+            d="M 8 2 C 6.895 2 6 2.895 6 4 L 6 20 C 6 21.105 6.895 22 8 22 L 16 22 C 17.105 22 18 21.105 18 20 L 18 15 L 16 15 L 16 20 L 8 20 L 8 4 L 16 4 L 16 9 L 18 9 L 18 4 C 18 2.895 17.105 2 16 2 L 8 2 z M 20 8 L 20 11 L 11 11 L 11 13 L 20 13 L 20 16 L 24 12 L 20 8 z">
+          </path>
+        </svg>
       </div>
     </div>
 
-  </body>
+    <br>
+    <div id="debugElements">
+      <button id="structCleaner">Clear Data Struct</button>
+      <button id="structReloader">Reload Data Struct</button>
+      <button id="extensioReloader"> Reload Extension</button>
+    </div>
+  </div>
+
+</body>
 
 </html>

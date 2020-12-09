@@ -47,6 +47,8 @@ const addFolderNameInputContainer = document.getElementById("addFolderNameInputC
 const addFolderNameInput = document.getElementById("addFolderNameInput");
 const addFolderBtn = document.getElementById("addFolder");
 const trashcan = document.getElementById("delete");
+const exportBtn = document.getElementById("exportData");
+const importBtn = document.getElementById("importData");
 var setup;
 export function setupHandler(setupFun) {
     setup = setupFun;
@@ -58,6 +60,8 @@ export function setupHandler(setupFun) {
     extensionReloader.onclick = addHTMLHandler.extensionReloader_handler;
     addFolderBtn.onclick = addHTMLHandler.addFolderClick_handler;
     addFolderNameInput.addEventListener("keyup", addHTMLHandler.addFolderSubmit_handler);
+    exportBtn.onclick = exportData_handler;
+    importBtn.onclick = importData_handler;
     trashcan.addEventListener("dragstart", addHTMLHandler.dragstart_handler);
     trashcan.addEventListener("dragover", addHTMLHandler.dragover_handler);
     trashcan.addEventListener("dropend", addHTMLHandler.dropend_handler);
@@ -263,7 +267,7 @@ function tabUpdateListener(tabId, changeInfo, tabInfo) {
 export function loadFolderList(tabs, data) {
     return __awaiter(this, void 0, void 0, function* () {
         updateTabsOnStartUp(data, tabs);
-        updateTabs(data.elements, tabs);
+        updateTabs(data, tabs);
         console.log(data);
         saveDataInFirefox(data);
         displayHTMLList(data);
@@ -282,14 +286,16 @@ function displayHTMLList(data) {
 function displayElements(elements, htmlContainer, layer) {
     for (var key in elements) {
         var item = elements[key];
-        if ('itemID' in item) {
-            htmlAdder.addTab(htmlContainer, item, layer, addHTMLHandler);
-        }
-        else if ('folderID' in item) {
-            var folder = item;
-            var htmlFolder = htmlAdder.addFolder(htmlContainer, folder, layer, addHTMLHandler);
-            displayElements(folder.elements, htmlFolder.children[folderChildItemListIndex], layer + 1);
-            setChildrenVisible(folder.open, htmlFolder.children);
+        if (item != undefined) {
+            if ('itemID' in item) {
+                htmlAdder.addTab(htmlContainer, item, layer, addHTMLHandler);
+            }
+            else if ('folderID' in item) {
+                var folder = item;
+                var htmlFolder = htmlAdder.addFolder(htmlContainer, folder, layer, addHTMLHandler);
+                displayElements(folder.elements, htmlFolder.children[folderChildItemListIndex], layer + 1);
+                setChildrenVisible(folder.open, htmlFolder.children);
+            }
         }
     }
 }
@@ -314,6 +320,16 @@ function loadFirefoxData() {
         if (dataF != undefined)
             return dataF;
         return undefined;
+    });
+}
+function exportData_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        tabHelper.createTab("../dataExport.html");
+    });
+}
+function importData_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        tabHelper.createTab("../dataImport.html");
     });
 }
 //# sourceMappingURL=handler.js.map

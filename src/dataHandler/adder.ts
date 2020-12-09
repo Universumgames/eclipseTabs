@@ -49,6 +49,6 @@ export function createItemIDByTab(tab) {
     return tab.url
 }
 
-function generateIndexInFolder(folder: folderData) {
+export function generateIndexInFolder(folder: folderData) {
     return folder.elements.length;
 }

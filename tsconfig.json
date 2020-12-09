@@ -12,7 +12,8 @@
         "moduleResolution": "node"
     },
     "include": [
-        "src/*"
+        "src/*",
+        "src/dataHandler/*"
     ],
     "exclude": [
         "icons",
@@ -20,7 +21,10 @@
         "compiled",
         ".vscode"
     ],
-    "lib": [ "es2015.promise", "es5" ],
+    "lib": [
+        "es2015.promise",
+        "es5"
+    ],
     "target-engines": [
         "dom.firefox.42+"
     ]
