@@ -17,6 +17,7 @@ function updatePinnedTabs(tabStruct, tabs) {
         tabStruct.elements[defs.pinnedIndex] = pinnedFolder;
         console.warn("Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initizialising new Pinned Folder. New Struct: ", tabStruct);
     }
+    pinnedFolder.index = defs.pinnedIndex;
     pinnedFolder.elements = new Array();
     for (var key in tabs) {
         var tab = tabs[key];
@@ -39,6 +40,7 @@ function updateUnorderedTabs(tabStruct, tabs) {
         tabStruct.elements[defs.unorderedIndex] = unorderedFolder;
         console.warn("Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initizialising new unordered Folder. New Struct: ", tabStruct);
     }
+    unorderedFolder.index = defs.unorderedIndex;
     unorderedFolder.elements = new Array();
     for (var tab of tabs) {
         var exist = tabExistsByTabID(tab.id, tabStruct.elements);
