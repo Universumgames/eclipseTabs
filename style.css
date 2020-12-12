@@ -1,5 +1,10 @@
+*{
+  font-family: 'Roboto', sans-serif;
+  text-decoration: none;
+  font-style: bold;
+}
+
 body {
-  background-color: #2a2a2e;
   color: white;
   height: 100%;
 }
@@ -97,4 +102,23 @@ h3 {
 
 .hover {
   opacity: .5;
+}
+
+.darkmode {
+  background-color:#252525;
+  color: #f6f6f6;
+  fill: #f6f6f6;
+}
+
+.lightmode {
+  background-color: #f6f6f6;
+  color: black;
+  fill: black;
+}
+
+.inbetween{
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  color: grey;
 }

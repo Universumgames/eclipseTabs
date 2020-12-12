@@ -1,15 +1,18 @@
 {
   "manifest_version": 2,
   "name": "eclipseTab",
-  "version": "1.0",
+  "version": "1.5",
+  "developer": {
+    "name": "UniversumGames",
+    "url": "https://universegame.de/"
+  },
   "browser_specific_settings": {
     "gecko": {
       "id": "eclipseTab@universegame.de",
       "strict_min_version": "42.0"
     }
   },
-  "description": "Let you manage your tabs using folders",
-  "homepage_url": "https://universegame.de",
+  "description": "Easy management of your tabs and own bookmark system",
   "icons": {
     "48": "icons/logo-48.png"
   },
@@ -26,6 +29,7 @@
   "sidebar_action": {
     "default_title": "eclipseTab",
     "default_panel": "sidebar/sidebar.html",
-    "default_icon": "icons/logo-48.png"
+    "default_icon": "icons/logo-48.png",
+    "open_at_install": true
   }
 }

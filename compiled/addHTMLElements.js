@@ -45,7 +45,7 @@ export function addFolder(data, htmlParent, folder, tier, handler) {
     folderDiv.onclick = handler.folderClick;
     htmlParent.appendChild(folderDiv);
     if (data.mode == Mode.Move)
-        htmlParent.appendChild(createInbetween(folder, handler));
+        folderDiv.appendChild(createInbetween(folder, tier, handler));
     return folderDiv;
 }
 export function addTab(data, folderDiv, tab, tier, handler) {
@@ -83,14 +83,16 @@ export function addTab(data, folderDiv, tab, tier, handler) {
     itemNode.addEventListener("dragend", handler.dragend_handler);
     folderDiv.appendChild(itemNode);
     if (data.mode == Mode.Move)
-        folderDiv.appendChild(createInbetween(tab, handler));
+        folderDiv.appendChild(createInbetween(tab, tier, handler));
     return itemNode;
 }
-function createInbetween(element, handler) {
+function createInbetween(element, tier, handler) {
     var inbetween = document.createElement("div");
     var container = document.createElement("div");
     container.classList.add("noEvents");
-    container.innerHTML = "Insert Below";
+    container.innerHTML = "<small>Insert Below " + (('folderID' in element) ? element.name : element.title) + "</small>";
+    container.classList.add("inbetween");
+    container.style.marginLeft = tier * 4 + "px";
     inbetween.appendChild(container);
     inbetween.setAttribute("isInbetween", "true");
     inbetween.setAttribute("parentFolderID", element.parentFolderID);

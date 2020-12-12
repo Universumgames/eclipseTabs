@@ -26,7 +26,8 @@ export var addHTMLHandler: htmlAdder.addHTMLhandler = {
 
 var firefoxHandlerStruct: firefoxHandler.firefoxHandler = {
     refreshTabListOnActiveChange: refreshTabListOnActiveChange,
-    refreshTabListOnSiteUpdated: refreshTabListOnSiteUpdated
+    refreshTabListOnSiteUpdated: refreshTabListOnSiteUpdated,
+    refreshTabListOnTabRemoved: refreshTabListOnTabRemoved
 }
 
 var dragging: HTMLElement
@@ -80,6 +81,15 @@ export function setupHandler(setupFun: Function) {
     trashcan.addEventListener("dragleave", addHTMLHandler.dragleave_handler)
     trashcan.addEventListener("drop", addHTMLHandler.drop_handler)
     trashcan.setAttribute("isTrashCan", "true");
+
+    var htmlBody = document.getElementById("body")
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        htmlBody.classList.add("darkmode")
+        htmlBody.classList.remove("lightmode")
+    } else {
+        htmlBody.classList.add("lightmode");
+        htmlBody.classList.remove("darkmode");
+    }
 }
 
 async function dragstart_handler(event) {
@@ -298,6 +308,10 @@ function refreshTabListOnActiveChange(activeInfoa) {
 }
 
 function refreshTabListOnTabClosed(tabId, removeInfo) {
+    refreshTabList()
+}
+
+function refreshTabListOnTabRemoved() {
     refreshTabList()
 }
 

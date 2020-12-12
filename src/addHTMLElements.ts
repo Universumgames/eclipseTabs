@@ -77,7 +77,7 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
     htmlParent.appendChild(folderDiv)
 
     if (data.mode == Mode.Move)
-        htmlParent.appendChild(createInbetween(folder, handler))
+        folderDiv.appendChild(createInbetween(folder, tier, handler))
 
     return folderDiv
 }
@@ -117,17 +117,18 @@ export function addTab(data: tabStructData, folderDiv: HTMLElement, tab: itemDat
     folderDiv.appendChild(itemNode)
 
     if (data.mode == Mode.Move)
-        folderDiv.appendChild(createInbetween(tab, handler))
+        folderDiv.appendChild(createInbetween(tab, tier, handler))
     return itemNode
 }
 
-function createInbetween(element: itemData | folderData, handler: addHTMLhandler): HTMLElement {
+function createInbetween(element: itemData | folderData, tier: number, handler: addHTMLhandler): HTMLElement {
     var inbetween = document.createElement("div")
     var container = document.createElement("div")
     container.classList.add("noEvents")
     //container.innerHTML = '<svg viewBox="0 0 100 2" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-width="2" /></svg>'
-    container.innerHTML = "Insert Below"
-    //inbetween.style.marginTop = "-5%"
+    container.innerHTML = "<small>Insert Below " + (('folderID' in element) ? (element as folderData).name : (element as itemData).title) + "</small>"
+    container.classList.add("inbetween")
+    container.style.marginLeft = tier * 4 + "px"
     inbetween.appendChild(container)
     inbetween.setAttribute("isInbetween", "true")
     inbetween.setAttribute("parentFolderID", element.parentFolderID)

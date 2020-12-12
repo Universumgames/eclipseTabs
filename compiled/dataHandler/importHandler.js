@@ -17,7 +17,6 @@ function setup() {
 function onClickButton(event) {
     var json = document.getElementById("jsonInput");
     var text = json.value;
-    console.log(text);
     importData(text);
 }
 export function importData(json) {

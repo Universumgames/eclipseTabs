@@ -1,6 +1,7 @@
 export interface firefoxHandler {
     refreshTabListOnActiveChange: any,
-    refreshTabListOnSiteUpdated: any
+    refreshTabListOnSiteUpdated: any,
+    refreshTabListOnTabRemoved: any
 }
 
 export interface firefoxStartupHandler {
@@ -17,6 +18,8 @@ export function registerListener(handler: firefoxHandler) {
     browser.tabs.onActivated.addListener(handler.refreshTabListOnActiveChange)
     //@ts-ignore
     browser.tabs.onUpdated.addListener(handler.refreshTabListOnSiteUpdated)
+    //@ts-ignore
+    browser.tabs.onRemoved.addListener(handler.refreshTabListOnTabRemoved)
 }
 
 export async function tabQuery(query: any): Promise<any> {

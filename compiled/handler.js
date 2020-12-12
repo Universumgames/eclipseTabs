@@ -33,7 +33,8 @@ export var addHTMLHandler = {
 };
 var firefoxHandlerStruct = {
     refreshTabListOnActiveChange: refreshTabListOnActiveChange,
-    refreshTabListOnSiteUpdated: refreshTabListOnSiteUpdated
+    refreshTabListOnSiteUpdated: refreshTabListOnSiteUpdated,
+    refreshTabListOnTabRemoved: refreshTabListOnTabRemoved
 };
 var dragging;
 var draggingJSON;
@@ -73,6 +74,15 @@ export function setupHandler(setupFun) {
     trashcan.addEventListener("dragleave", addHTMLHandler.dragleave_handler);
     trashcan.addEventListener("drop", addHTMLHandler.drop_handler);
     trashcan.setAttribute("isTrashCan", "true");
+    var htmlBody = document.getElementById("body");
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        htmlBody.classList.add("darkmode");
+        htmlBody.classList.remove("lightmode");
+    }
+    else {
+        htmlBody.classList.add("lightmode");
+        htmlBody.classList.remove("darkmode");
+    }
 }
 function dragstart_handler(event) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -279,6 +289,9 @@ function refreshTabListOnActiveChange(activeInfoa) {
     refreshTabList();
 }
 function refreshTabListOnTabClosed(tabId, removeInfo) {
+    refreshTabList();
+}
+function refreshTabListOnTabRemoved() {
     refreshTabList();
 }
 function refreshTabListOnSiteUpdated(tabId, changeInfo, tabInfo) {

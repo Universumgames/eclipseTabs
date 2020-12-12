@@ -13,6 +13,7 @@ export function reload() {
 export function registerListener(handler) {
     browser.tabs.onActivated.addListener(handler.refreshTabListOnActiveChange);
     browser.tabs.onUpdated.addListener(handler.refreshTabListOnSiteUpdated);
+    browser.tabs.onRemoved.addListener(handler.refreshTabListOnTabRemoved);
 }
 export function tabQuery(query) {
     return __awaiter(this, void 0, void 0, function* () {
