@@ -1,4 +1,4 @@
-import { itemData, folderData } from './interfaces.js'
+import { itemData, folderData, tabStructData, Mode } from './interfaces.js'
 
 export interface addHTMLhandler {
     folderRenameSubmit_handler: any,
@@ -19,7 +19,7 @@ export interface addHTMLhandler {
     addFolderSubmit_handler: any
 }
 
-export function addFolder(htmlParent: HTMLElement, folder: folderData, tier: number, handler: addHTMLhandler) {
+export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: folderData, tier: number, handler: addHTMLhandler) {
     var folderDiv = document.createElement("div")
     folderDiv.setAttribute("folderID", folder.folderID)
     folderDiv.setAttribute("isFolder", "true")
@@ -76,10 +76,13 @@ export function addFolder(htmlParent: HTMLElement, folder: folderData, tier: num
 
     htmlParent.appendChild(folderDiv)
 
+    if (data.mode == Mode.Move)
+        htmlParent.appendChild(createInbetween(folder, handler))
+
     return folderDiv
 }
 
-export function addTab(folderDiv: HTMLElement, tab: itemData, tier: number, handler: addHTMLhandler) {
+export function addTab(data: tabStructData, folderDiv: HTMLElement, tab: itemData, tier: number, handler: addHTMLhandler) {
     var itemNode = document.createElement("div")
     itemNode.setAttribute("tabID", tab.tabID)
     itemNode.setAttribute("itemID", tab.itemID)
@@ -112,12 +115,23 @@ export function addTab(folderDiv: HTMLElement, tab: itemData, tier: number, hand
     itemNode.addEventListener("dropend", handler.dropend_handler)
     itemNode.addEventListener("dragend", handler.dragend_handler)
     folderDiv.appendChild(itemNode)
+
+    if (data.mode == Mode.Move)
+        folderDiv.appendChild(createInbetween(tab, handler))
     return itemNode
 }
 
 function createInbetween(element: itemData | folderData, handler: addHTMLhandler): HTMLElement {
-    var inbetween = document.createElement("div");
-    inbetween.setAttribute("isInbetween", "true");
-    if (element)
-        return new HTMLElement();
+    var inbetween = document.createElement("div")
+    var container = document.createElement("div")
+    container.classList.add("noEvents")
+    //container.innerHTML = '<svg viewBox="0 0 100 2" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-width="2" /></svg>'
+    container.innerHTML = "Insert Below"
+    //inbetween.style.marginTop = "-5%"
+    inbetween.appendChild(container)
+    inbetween.setAttribute("isInbetween", "true")
+    inbetween.setAttribute("parentFolderID", element.parentFolderID)
+    inbetween.setAttribute("index", element.index + "")
+    inbetween.addEventListener("drop", handler.dropend_handler);
+    return inbetween
 }

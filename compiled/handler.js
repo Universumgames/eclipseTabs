@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as htmlAdder from './addHTMLElements.js';
 import * as tabHelper from './tabHelper.js';
 import * as helper from './helper.js';
+import { Mode } from './interfaces.js';
 import * as firefoxHandler from './firefoxHandler.js';
 import { addFolder, createEmptyData, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js';
 export var addHTMLHandler = {
@@ -49,6 +50,7 @@ const addFolderBtn = document.getElementById("addFolder");
 const trashcan = document.getElementById("delete");
 const exportBtn = document.getElementById("exportData");
 const importBtn = document.getElementById("importData");
+const moveBtn = document.getElementById("moveElements");
 var setup;
 export function setupHandler(setupFun) {
     setup = setupFun;
@@ -62,6 +64,7 @@ export function setupHandler(setupFun) {
     addFolderNameInput.addEventListener("keyup", addHTMLHandler.addFolderSubmit_handler);
     exportBtn.onclick = exportData_handler;
     importBtn.onclick = importData_handler;
+    moveBtn.onclick = moveData_handler;
     trashcan.addEventListener("dragstart", addHTMLHandler.dragstart_handler);
     trashcan.addEventListener("dragover", addHTMLHandler.dragover_handler);
     trashcan.addEventListener("dropend", addHTMLHandler.dropend_handler);
@@ -77,7 +80,7 @@ function dragstart_handler(event) {
         if (helper.isFolder(dragging))
             draggingJSON = getFolderJSONObjectByID(dragging.getAttribute("folderID"), (yield getDataStructFromFirefox()));
         else if (helper.isItem(dragging))
-            draggingJSON = getItemJSONObjectByItemID(dragging.getAttribute("itemID"), (yield getDataStructFromFirefox()).elements);
+            draggingJSON = getItemJSONObjectByItemID(dragging.getAttribute("itemID"), (yield getDataStructFromFirefox()));
         event.target.classList.add("hover");
     });
 }
@@ -124,11 +127,38 @@ function drop_handler(event) {
             }
             triggerListReload();
         }
+        else if (helper.isInbetween(target)) {
+            var parentFolderID = target.getAttribute("parentFolderID");
+            var data = yield getDataStructFromFirefox();
+            var parentFolder = getFolderJSONObjectByID(parentFolderID, data);
+            var element;
+            if ('itemID' in draggingJSON) {
+                element = getItemJSONObjectByItemID(draggingJSON.itemID, data);
+            }
+            else if ('folderID' in draggingJSON) {
+                element = getFolderJSONObjectByID(draggingJSON.folderID, data);
+            }
+            element.index = +target.getAttribute("index");
+            for (var key in parentFolder.elements) {
+                var checkElement = parentFolder.elements[key];
+                if (checkElement.index != element.index)
+                    continue;
+                if ('itemID' in checkElement && 'itemID' in element) {
+                    if (checkElement.itemID != element.itemID)
+                        element.index++;
+                }
+                else if ('folderID' in checkElement && 'folderID' in element) {
+                    if (checkElement.folderID != element.folderID)
+                        element.index++;
+                }
+            }
+            yield saveDataInFirefox(data);
+            triggerListReload();
+        }
         dragging = undefined;
     });
 }
 function dropend_handler(event) {
-    console.log(event);
 }
 function clearStruct_handler() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -175,7 +205,7 @@ function itemClick(e) {
         var tabs = yield tabHelper.getTabByTabID(tabID);
         var tab = (yield tabHelper.tabExists(tabID)) ? tabs : { pinned: false };
         var itemID = tabElement.getAttribute("itemID");
-        var jsonTab = getItemJSONObjectByItemID(itemID, data.elements);
+        var jsonTab = getItemJSONObjectByItemID(itemID, data);
         if (!tab.pinned) {
             if (!helper.toBoolean(tabElement.getAttribute("hiddenTab"))) {
                 if ((yield tabHelper.tabExists(tabID)) && (yield tabHelper.hideTab(tabID))) {
@@ -268,7 +298,6 @@ export function loadFolderList(tabs, data) {
     return __awaiter(this, void 0, void 0, function* () {
         updateTabsOnStartUp(data, tabs);
         updateTabs(data, tabs);
-        console.log(data);
         saveDataInFirefox(data);
         displayHTMLList(data);
     });
@@ -278,22 +307,22 @@ function displayHTMLList(data) {
         if (listContainer) {
             listContainer.innerHTML = "";
             listContainer.innerHTML = "";
-            displayElements(data.elements, listContainer, 1);
+            displayElements(data, data, listContainer, 1);
             var tabs = yield tabHelper.getTabs();
         }
     });
 }
-function displayElements(elements, htmlContainer, layer) {
-    for (var key in elements) {
-        var item = elements[key];
+function displayElements(data, currentData, htmlContainer, layer) {
+    for (var key in currentData.elements) {
+        var item = currentData.elements[key];
         if (item != undefined) {
             if ('itemID' in item) {
-                htmlAdder.addTab(htmlContainer, item, layer, addHTMLHandler);
+                htmlAdder.addTab(data, htmlContainer, item, layer, addHTMLHandler);
             }
             else if ('folderID' in item) {
                 var folder = item;
-                var htmlFolder = htmlAdder.addFolder(htmlContainer, folder, layer, addHTMLHandler);
-                displayElements(folder.elements, htmlFolder.children[folderChildItemListIndex], layer + 1);
+                var htmlFolder = htmlAdder.addFolder(data, htmlContainer, folder, layer, addHTMLHandler);
+                displayElements(data, folder, htmlFolder.children[folderChildItemListIndex], layer + 1);
                 setChildrenVisible(folder.open, htmlFolder.children);
             }
         }
@@ -330,6 +359,23 @@ function exportData_handler(event) {
 function importData_handler(event) {
     return __awaiter(this, void 0, void 0, function* () {
         tabHelper.createTab("../dataImport.html");
+    });
+}
+function moveData_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var data = yield getDataStructFromFirefox();
+        switch (data.mode) {
+            case Mode.Default:
+                data.mode = Mode.Move;
+                break;
+            case Mode.Move:
+                data.mode = Mode.Default;
+                break;
+            default:
+                data.mode = Mode.Default;
+        }
+        yield saveDataInFirefox(data);
+        triggerListReload();
     });
 }
 //# sourceMappingURL=handler.js.map

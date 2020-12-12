@@ -2,14 +2,18 @@ import { elementData, folderData, folderIDType, itemData, itemIDType, tabIDType,
 import * as firefoxHandler from '../firefoxHandler.js'
 
 //#region getter
-export function getItemJSONObjectByItemID(itemID: itemIDType, data: Array<elementData>): itemData | undefined {
-    return getItemJSONObjectByItemIDRecursion(itemID, data)
+export function getItemJSONObjectByItemID(itemID: itemIDType, data: tabStructData | folderData): itemData | undefined {
+    return getItemJSONObjectByItemIDRecursion(itemID, data.elements)
 }
 
 function getItemJSONObjectByItemIDRecursion(itemID: itemIDType, items: Array<elementData>): itemData | undefined {
     var returnVal: itemData | undefined
     for (var key in items) {
         var element = items[key]
+        if (element == undefined) {
+            console.error("Element undefined (item array, element)", items, element)
+            continue
+        }
         if ('itemID' in element) {
             if ((element as itemData).itemID == itemID) return element
         }
@@ -123,7 +127,7 @@ export function saveDataInFirefox(data: tabStructData) {
     return firefoxHandler.localStorageSet({ data })
 }
 
-export function getFirefoxStructFromFirefox() {
+function getFirefoxStructFromFirefox() {
     return firefoxHandler.localStorageGet("data")
 }
 
@@ -151,6 +155,11 @@ export function getNumberOfFoldersAlreadyExisting(folderContainer) {
     var number = 0
     for (var key in folderContainer) {
         var item = folderContainer[key]
+        if (item == undefined) {
+            console.error("Item undefined (folder struct, item)", folderContainer, item)
+
+            continue
+        }
         if ('folderID' in item) {
             number++
             number += getNumberOfFoldersAlreadyExisting(item.elements)

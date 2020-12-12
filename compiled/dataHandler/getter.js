@@ -9,12 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as firefoxHandler from '../firefoxHandler.js';
 export function getItemJSONObjectByItemID(itemID, data) {
-    return getItemJSONObjectByItemIDRecursion(itemID, data);
+    return getItemJSONObjectByItemIDRecursion(itemID, data.elements);
 }
 function getItemJSONObjectByItemIDRecursion(itemID, items) {
     var returnVal;
     for (var key in items) {
         var element = items[key];
+        if (element == undefined) {
+            console.error("Element undefined (item array, element)", items, element);
+            continue;
+        }
         if ('itemID' in element) {
             if (element.itemID == itemID)
                 return element;
@@ -126,7 +130,7 @@ export function getFoldersInFolder(folder) {
 export function saveDataInFirefox(data) {
     return firefoxHandler.localStorageSet({ data });
 }
-export function getFirefoxStructFromFirefox() {
+function getFirefoxStructFromFirefox() {
     return firefoxHandler.localStorageGet("data");
 }
 export function getDataStructFromFirefox() {
@@ -153,6 +157,10 @@ export function getNumberOfFoldersAlreadyExisting(folderContainer) {
     var number = 0;
     for (var key in folderContainer) {
         var item = folderContainer[key];
+        if (item == undefined) {
+            console.error("Item undefined (folder struct, item)", folderContainer, item);
+            continue;
+        }
         if ('folderID' in item) {
             number++;
             number += getNumberOfFoldersAlreadyExisting(item.elements);

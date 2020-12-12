@@ -22,20 +22,23 @@ document.addEventListener("DOMContentLoaded", () => setup())
 
 async function startup() {
     var dataTmp = await getDataStructFromFirefox()
-    if (dataTmp == undefined)
+    if (dataTmp == undefined) {
         saveDataInFirefox(data)
+        console.log("Data cleared or extension is newly installed, created new storage structure: ", data)
+    }
     else data = dataTmp
     tabHelper.getTabs().then((tabs) => {
         console.log(tabs)
         updateTabsOnStartUp(data, tabs)
     })
-    console.log("query");
 }
 
 async function setup() {
     var dataTmp = await getDataStructFromFirefox()
-    if (dataTmp == undefined)
+    if (dataTmp == undefined) {
         saveDataInFirefox(data)
+        console.log("Data cleared or extension is newly installed, created new storage structure: ", data)
+    }
     else data = dataTmp
     //load up pinned tabs
     tabHelper.getTabs().then((tabs) => { handler.loadFolderList(tabs, data) })

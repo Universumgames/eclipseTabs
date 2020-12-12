@@ -20,22 +20,25 @@ document.addEventListener("DOMContentLoaded", () => setup());
 function startup() {
     return __awaiter(this, void 0, void 0, function* () {
         var dataTmp = yield getDataStructFromFirefox();
-        if (dataTmp == undefined)
+        if (dataTmp == undefined) {
             saveDataInFirefox(data);
+            console.log("Data cleared or extension is newly installed, created new storage structure: ", data);
+        }
         else
             data = dataTmp;
         tabHelper.getTabs().then((tabs) => {
             console.log(tabs);
             updateTabsOnStartUp(data, tabs);
         });
-        console.log("query");
     });
 }
 function setup() {
     return __awaiter(this, void 0, void 0, function* () {
         var dataTmp = yield getDataStructFromFirefox();
-        if (dataTmp == undefined)
+        if (dataTmp == undefined) {
             saveDataInFirefox(data);
+            console.log("Data cleared or extension is newly installed, created new storage structure: ", data);
+        }
         else
             data = dataTmp;
         tabHelper.getTabs().then((tabs) => { handler.loadFolderList(tabs, data); });

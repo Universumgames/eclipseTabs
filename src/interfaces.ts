@@ -1,4 +1,5 @@
 export interface tabStructData extends folderData {
+    mode: Mode
 }
 
 export interface folderData extends elementData {
@@ -21,6 +22,11 @@ export interface itemData extends elementData {
 export interface elementData {
     parentFolderID: string,
     index: number
+}
+
+export enum Mode {
+    Default,
+    Move
 }
 
 export type tabIDType = string

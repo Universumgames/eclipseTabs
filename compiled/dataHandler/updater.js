@@ -15,6 +15,7 @@ function updatePinnedTabs(tabStruct, tabs) {
             index: defs.pinnedIndex
         };
         tabStruct.elements[defs.pinnedIndex] = pinnedFolder;
+        console.warn("Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initizialising new Pinned Folder. New Struct: ", tabStruct);
     }
     pinnedFolder.elements = new Array();
     for (var key in tabs) {
@@ -36,6 +37,7 @@ function updateUnorderedTabs(tabStruct, tabs) {
             index: defs.unorderedIndex
         };
         tabStruct.elements[defs.unorderedIndex] = unorderedFolder;
+        console.warn("Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initizialising new unordered Folder. New Struct: ", tabStruct);
     }
     unorderedFolder.elements = new Array();
     for (var tab of tabs) {
@@ -69,8 +71,8 @@ export function updateTabsOnStartUp(data, tabs) {
 void function updateOrganisedTabs(elements, tabs) {
 };
 export function updateTabs(tabData, tabs) {
-    updateUnorderedTabs(tabData, tabs);
     updatePinnedTabs(tabData, tabs);
+    updateUnorderedTabs(tabData, tabs);
     recursiveSelectionSort(tabData);
 }
 //# sourceMappingURL=updater.js.map

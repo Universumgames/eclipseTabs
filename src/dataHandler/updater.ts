@@ -18,6 +18,7 @@ function updatePinnedTabs(tabStruct: tabStructData, tabs): void {
             index: defs.pinnedIndex
         }
         tabStruct.elements[defs.pinnedIndex] = pinnedFolder
+        console.warn("Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initizialising new Pinned Folder. New Struct: ", tabStruct)
     }
     pinnedFolder.elements = new Array<elementData>();
     for (var key in tabs) {
@@ -40,6 +41,8 @@ function updateUnorderedTabs(tabStruct: tabStructData, tabs): void {
             index: defs.unorderedIndex
         }
         tabStruct.elements[defs.unorderedIndex] = unorderedFolder
+        console.warn("Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initizialising new unordered Folder. New Struct: ", tabStruct)
+
     }
     unorderedFolder.elements = new Array<elementData>();
     for (var tab of tabs) {
@@ -81,8 +84,8 @@ void function updateOrganisedTabs(elements: tabStructData, tabs): void {
 }
 
 export function updateTabs(tabData: tabStructData, tabs): void {
-    updateUnorderedTabs(tabData, tabs)
     updatePinnedTabs(tabData, tabs)
+    updateUnorderedTabs(tabData, tabs)
     recursiveSelectionSort(tabData)
 }
 

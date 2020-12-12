@@ -15,4 +15,9 @@ export function isFolder(element) {
 export function isItem(element) {
     return (element.getAttribute("isItem") != undefined && toBoolean(element.getAttribute("isItem")));
 }
+export function isInbetween(element) {
+    return (element.getAttribute("isInbetween") != undefined && toBoolean(element.getAttribute("isInbetween")));
+}
+export function isTrashcan(element) {
+}
 //# sourceMappingURL=helper.js.map

@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import { getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, getKeyByIDAndType, saveDataInFirefox } from "./getter.js";
 import * as tabHelper from '../tabHelper.js';
+import { generateIndexInFolder } from "./adder.js";
 export function renameFolder(folderID, newName) {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
@@ -22,12 +23,13 @@ export function moveItem(itemID, oldParentFolderID, newParentFolderID) {
         var data = yield getDataStructFromFirefox();
         var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data);
         var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data);
-        var item = getItemJSONObjectByItemID(itemID, data.elements);
+        var item = getItemJSONObjectByItemID(itemID, data);
         var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID);
         if (oldParentFolder != undefined && newParentFolder != undefined && item != undefined && key != undefined) {
             item.parentFolderID = newParentFolderID;
-            newParentFolder.elements.push(item);
-            oldParentFolder.elements.splice(key, 1);
+            item.index = generateIndexInFolder(newParentFolder);
+            newParentFolder.elements[item.index] = Object.assign({}, item);
+            delete oldParentFolder.elements[key];
             yield saveDataInFirefox(data);
             return true;
         }
@@ -45,8 +47,9 @@ export function moveFolder(folderID, oldParentFolderID, newParentFolderID) {
         var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID);
         if (oldParentFolder != undefined && newParentFolder != undefined && folder != undefined && key != undefined) {
             folder.parentFolderID = newParentFolderID;
+            folder.index = generateIndexInFolder(newParentFolder);
             newParentFolder.elements.push(folder);
-            oldParentFolder.elements.splice(key, 1);
+            delete oldParentFolder.elements[key];
             yield saveDataInFirefox(data);
             return true;
         }
@@ -82,7 +85,7 @@ export function removeItem(itemID, oldParentFolderID) {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
         var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data);
-        var item = getItemJSONObjectByItemID(itemID, data.elements);
+        var item = getItemJSONObjectByItemID(itemID, data);
         var key = getKeyByIDAndType(oldParentFolder.elements, false, item.itemID);
         if (oldParentFolder != undefined && item != undefined && key != undefined) {
             delete oldParentFolder.elements[key];

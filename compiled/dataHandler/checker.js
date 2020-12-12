@@ -1,7 +1,7 @@
 import { unorderedFolderID } from "./definitions.js";
 import { getItemJSONObjectByItemID, getItemJSONObjectByTabID } from "./getter.js";
-export function tabExistsByItemID(itemID, elements) {
-    var item = getItemJSONObjectByItemID(itemID, elements);
+export function tabExistsByItemID(itemID, dataStruct) {
+    var item = getItemJSONObjectByItemID(itemID, dataStruct);
     return item != undefined && item.parentFolderID != unorderedFolderID;
 }
 export function tabExistsByTabID(tabID, elements) {
