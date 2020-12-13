@@ -31,7 +31,6 @@ export function addFolder(data, htmlParent, folder, tier, handler) {
         renameNode.classList.add("disabled");
         renameNode.addEventListener("keyup", handler.folderRenameSubmit_handler);
         folderDiv.appendChild(renameNode);
-        folderDiv.ondblclick = handler.folderRenameClick_handler;
     }
     if (folder.folderID != "pinned" && folder.folderID != "unordered")
         folderDiv.draggable = true;
@@ -96,7 +95,7 @@ function createInbetween(element, tier, handler) {
     inbetween.appendChild(container);
     inbetween.setAttribute("isInbetween", "true");
     inbetween.setAttribute("parentFolderID", element.parentFolderID);
-    inbetween.setAttribute("index", element.index + "");
+    inbetween.setAttribute("index", (element.index + 1) + "");
     inbetween.addEventListener("drop", handler.dropend_handler);
     return inbetween;
 }

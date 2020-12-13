@@ -2,7 +2,6 @@ import { itemData, folderData, tabStructData, Mode } from './interfaces.js'
 
 export interface addHTMLhandler {
     folderRenameSubmit_handler: any,
-    folderRenameClick_handler: any,
     dragstart_handler: any,
     drop_handler: any,
     dragover_handler: any,
@@ -58,12 +57,12 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
         renameNode.classList.add("disabled")
         renameNode.addEventListener("keyup", handler.folderRenameSubmit_handler)
         folderDiv.appendChild(renameNode)
-        folderDiv.ondblclick = handler.folderRenameClick_handler
     }
 
     //eventhandler
     //draggable
-    if (folder.folderID != "pinned" && folder.folderID != "unordered") folderDiv.draggable = true
+    if (folder.folderID != "pinned" && folder.folderID != "unordered")
+        folderDiv.draggable = true
     folderDiv.addEventListener("dragstart", handler.dragstart_handler)
     folderDiv.addEventListener("drop", handler.drop_handler)
     folderDiv.addEventListener("dragover", handler.dragover_handler)
@@ -132,7 +131,7 @@ function createInbetween(element: itemData | folderData, tier: number, handler: 
     inbetween.appendChild(container)
     inbetween.setAttribute("isInbetween", "true")
     inbetween.setAttribute("parentFolderID", element.parentFolderID)
-    inbetween.setAttribute("index", element.index + "")
+    inbetween.setAttribute("index", (element.index + 1) + "")
     inbetween.addEventListener("drop", handler.dropend_handler);
     return inbetween
 }

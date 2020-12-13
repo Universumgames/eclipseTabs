@@ -12,10 +12,9 @@ import * as tabHelper from './tabHelper.js';
 import * as helper from './helper.js';
 import { Mode } from './interfaces.js';
 import * as firefoxHandler from './firefoxHandler.js';
-import { addFolder, createEmptyData, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js';
+import { addFolder, collapseAll, createEmptyData, expandAll, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js';
 export var addHTMLHandler = {
     folderRenameSubmit_handler: folderRenameSubmit_handler,
-    folderRenameClick_handler: folderRenameClick_handler,
     dragstart_handler: dragstart_handler,
     drop_handler: drop_handler,
     dragover_handler: dragover_handler,
@@ -52,37 +51,59 @@ const trashcan = document.getElementById("delete");
 const exportBtn = document.getElementById("exportData");
 const importBtn = document.getElementById("importData");
 const moveBtn = document.getElementById("moveElements");
+const contextMenu = document.getElementById("contextMenu");
+const contextMenu_generic_collapseAll = document.getElementById("contextMenu_generic_collapseAll");
+const contextMenu_generic_expandAll = document.getElementById("contextMenu_generic_expandAll");
+const contextMenu_folder = document.getElementById("contextMenu_folder");
+const contextMenu_folder_rename = document.getElementById("contextMenu_folder_rename");
+var contextMenuTarget;
 var setup;
 export function setupHandler(setupFun) {
-    setup = setupFun;
-    firefoxHandler.registerListener(firefoxHandlerStruct);
-    document.getElementById("emptyList").classList.add("disabled");
-    document.getElementById("list").classList.remove("disabled");
-    structCleaner.onclick = addHTMLHandler.clearStruct_handler;
-    structReloader.onclick = addHTMLHandler.structReloader_handler;
-    extensionReloader.onclick = addHTMLHandler.extensionReloader_handler;
-    addFolderBtn.onclick = addHTMLHandler.addFolderClick_handler;
-    addFolderNameInput.addEventListener("keyup", addHTMLHandler.addFolderSubmit_handler);
-    exportBtn.onclick = exportData_handler;
-    importBtn.onclick = importData_handler;
-    moveBtn.onclick = moveData_handler;
-    trashcan.addEventListener("dragstart", addHTMLHandler.dragstart_handler);
-    trashcan.addEventListener("dragover", addHTMLHandler.dragover_handler);
-    trashcan.addEventListener("dropend", addHTMLHandler.dropend_handler);
-    trashcan.addEventListener("dragend", addHTMLHandler.dragend_handler);
-    trashcan.addEventListener("dragenter", addHTMLHandler.dragenter_handler);
-    trashcan.addEventListener("dragleave", addHTMLHandler.dragleave_handler);
-    trashcan.addEventListener("drop", addHTMLHandler.drop_handler);
-    trashcan.setAttribute("isTrashCan", "true");
-    var htmlBody = document.getElementById("body");
-    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        htmlBody.classList.add("darkmode");
-        htmlBody.classList.remove("lightmode");
-    }
-    else {
-        htmlBody.classList.add("lightmode");
-        htmlBody.classList.remove("darkmode");
-    }
+    return __awaiter(this, void 0, void 0, function* () {
+        setup = setupFun;
+        var data = yield getDataStructFromFirefox();
+        firefoxHandler.registerListener(firefoxHandlerStruct);
+        document.getElementById("emptyList").classList.add("disabled");
+        document.getElementById("list").classList.remove("disabled");
+        structCleaner.onclick = addHTMLHandler.clearStruct_handler;
+        structReloader.onclick = addHTMLHandler.structReloader_handler;
+        extensionReloader.onclick = addHTMLHandler.extensionReloader_handler;
+        addFolderBtn.onclick = addHTMLHandler.addFolderClick_handler;
+        addFolderNameInput.addEventListener("keyup", addHTMLHandler.addFolderSubmit_handler);
+        exportBtn.onclick = exportData_handler;
+        importBtn.onclick = importData_handler;
+        moveBtn.onclick = moveData_handler;
+        trashcan.addEventListener("dragstart", addHTMLHandler.dragstart_handler);
+        trashcan.addEventListener("dragover", addHTMLHandler.dragover_handler);
+        trashcan.addEventListener("dropend", addHTMLHandler.dropend_handler);
+        trashcan.addEventListener("dragend", addHTMLHandler.dragend_handler);
+        trashcan.addEventListener("dragenter", addHTMLHandler.dragenter_handler);
+        trashcan.addEventListener("dragleave", addHTMLHandler.dragleave_handler);
+        trashcan.addEventListener("drop", addHTMLHandler.drop_handler);
+        trashcan.setAttribute("isTrashCan", "true");
+        var htmlBody = document.getElementById("body");
+        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+            htmlBody.classList.add("darkmode");
+            htmlBody.classList.remove("lightmode");
+        }
+        else {
+            htmlBody.classList.add("lightmode");
+            htmlBody.classList.remove("darkmode");
+        }
+        switch (data.mode) {
+            case Mode.Default:
+                moveBtn.classList.remove("selected");
+                break;
+            case Mode.Move:
+                moveBtn.classList.add("selected");
+                break;
+        }
+        document.oncontextmenu = contextMenu_handler;
+        document.onclick = contextMenuClose_handler;
+        contextMenu_generic_collapseAll.onclick = contextMenu_generic_collapseAll_handler;
+        contextMenu_generic_expandAll.onclick = contextMenu_generic_expandAll_handler;
+        contextMenu_folder_rename.onclick = contextMenu_folder_rename_handler;
+    });
 }
 function dragstart_handler(event) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -149,19 +170,6 @@ function drop_handler(event) {
                 element = getFolderJSONObjectByID(draggingJSON.folderID, data);
             }
             element.index = +target.getAttribute("index");
-            for (var key in parentFolder.elements) {
-                var checkElement = parentFolder.elements[key];
-                if (checkElement.index != element.index)
-                    continue;
-                if ('itemID' in checkElement && 'itemID' in element) {
-                    if (checkElement.itemID != element.itemID)
-                        element.index++;
-                }
-                else if ('folderID' in checkElement && 'folderID' in element) {
-                    if (checkElement.folderID != element.folderID)
-                        element.index++;
-                }
-            }
             yield saveDataInFirefox(data);
             triggerListReload();
         }
@@ -261,20 +269,13 @@ function addFolderSubmit_handler(event) {
         }
     });
 }
-function folderRenameClick_handler(event) {
-    if (event.explicitOriginalTarget.localName == "div") {
-        var divContainer = event.originalTarget;
-        if (divContainer.isFolder)
-            divContainer.children[2].classList.toggle("disabled");
-    }
-}
 function folderRenameSubmit_handler(event) {
     return __awaiter(this, void 0, void 0, function* () {
         if (event.keyCode == 13) {
             event.preventDefault();
             var value = event.originalTarget.value;
             var parent = event.originalTarget.parentNode;
-            yield renameFolder(parent.folderID, value);
+            yield renameFolder(parent.getAttribute("folderID"), value);
             triggerListReload();
         }
     });
@@ -380,15 +381,55 @@ function moveData_handler(event) {
         switch (data.mode) {
             case Mode.Default:
                 data.mode = Mode.Move;
+                moveBtn.classList.add("selected");
                 break;
             case Mode.Move:
                 data.mode = Mode.Default;
+                moveBtn.classList.remove("selected");
                 break;
             default:
                 data.mode = Mode.Default;
         }
         yield saveDataInFirefox(data);
         triggerListReload();
+    });
+}
+function contextMenu_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        event.preventDefault();
+        var target = event.explicitOriginalTarget;
+        contextMenu.classList.remove("disabled");
+        contextMenu.style.left = event.clientX + "px";
+        contextMenu.style.top = event.clientY + "px";
+        if (target.getAttribute("folderID") != undefined) {
+            contextMenu_folder.classList.remove("disabled");
+        }
+        contextMenuTarget = target;
+    });
+}
+function contextMenuClose_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        contextMenu.classList.add("disabled");
+        contextMenu_folder.classList.add("disabled");
+    });
+}
+function contextMenu_generic_collapseAll_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield collapseAll();
+        triggerListReload();
+    });
+}
+function contextMenu_generic_expandAll_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        yield expandAll();
+        triggerListReload();
+    });
+}
+function contextMenu_folder_rename_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var divContainer = contextMenuTarget;
+        if (divContainer.getAttribute("isFolder"))
+            divContainer.children[3].classList.toggle("disabled");
     });
 }
 //# sourceMappingURL=handler.js.map

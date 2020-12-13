@@ -1,4 +1,4 @@
-import { folderData, itemData } from "../interfaces.js"
+import { folderData, itemData, tabStructData } from "../interfaces.js"
 import { getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, getKeyByIDAndType, getNumberOfItemsAlreadyExisting, saveDataInFirefox } from "./getter.js"
 import * as tabHelper from '../tabHelper.js'
 import { generateIndexInFolder } from "./adder.js"
@@ -84,4 +84,36 @@ export async function removeItem(itemID: string, oldParentFolderID: string): Pro
         return true
     }
     return false
+}
+
+export async function expandAll() {
+    var data = await getDataStructFromFirefox()
+    expandRecursion(data)
+    await saveDataInFirefox(data)
+}
+
+function expandRecursion(data: tabStructData | folderData) {
+    data.elements.forEach(element => {
+        if ('folderID' in element) {
+            var folder = element as folderData
+            folder.open = true
+            expandRecursion(folder)
+        }
+    })
+}
+
+export async function collapseAll() {
+    var data = await getDataStructFromFirefox()
+    collapseAllRecusrion(data)
+    await saveDataInFirefox(data)
+}
+
+function collapseAllRecusrion(data: tabStructData | folderData) {
+    data.elements.forEach(element => {
+        if ('folderID' in element) {
+            var folder = element as folderData
+            folder.open = false
+            expandRecursion(folder)
+        }
+    })
 }

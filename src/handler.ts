@@ -3,11 +3,10 @@ import * as tabHelper from './tabHelper.js'
 import * as helper from './helper.js'
 import { elementData, folderData, itemData, Mode, tabStructData } from './interfaces.js'
 import * as firefoxHandler from './firefoxHandler.js'
-import { addFolder, createEmptyData, exportData, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js'
+import { addFolder, collapseAll, createEmptyData, expandAll, exportData, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js'
 
 export var addHTMLHandler: htmlAdder.addHTMLhandler = {
     folderRenameSubmit_handler: folderRenameSubmit_handler,
-    folderRenameClick_handler: folderRenameClick_handler,
     dragstart_handler: dragstart_handler,
     drop_handler: drop_handler,
     dragover_handler: dragover_handler,
@@ -51,10 +50,20 @@ const exportBtn = document.getElementById("exportData")
 const importBtn = document.getElementById("importData")
 const moveBtn = document.getElementById("moveElements")
 
+const contextMenu = document.getElementById("contextMenu")
+const contextMenu_generic_collapseAll = document.getElementById("contextMenu_generic_collapseAll")
+const contextMenu_generic_expandAll = document.getElementById("contextMenu_generic_expandAll")
+const contextMenu_folder = document.getElementById("contextMenu_folder")
+const contextMenu_folder_rename = document.getElementById("contextMenu_folder_rename")
+
+var contextMenuTarget: HTMLElement
+
 var setup: Function
 
-export function setupHandler(setupFun: Function) {
+export async function setupHandler(setupFun: Function) {
     setup = setupFun
+
+    var data = await getDataStructFromFirefox()
     firefoxHandler.registerListener(firefoxHandlerStruct)
 
     //set placeholder invisible
@@ -90,6 +99,23 @@ export function setupHandler(setupFun: Function) {
         htmlBody.classList.add("lightmode");
         htmlBody.classList.remove("darkmode");
     }
+
+    switch (data.mode) {
+        case Mode.Default:
+            moveBtn.classList.remove("selected")
+            break;
+        case Mode.Move:
+            moveBtn.classList.add("selected")
+            break;
+    }
+
+    document.oncontextmenu = contextMenu_handler
+    document.onclick = contextMenuClose_handler
+
+    contextMenu_generic_collapseAll.onclick = contextMenu_generic_collapseAll_handler
+    contextMenu_generic_expandAll.onclick = contextMenu_generic_expandAll_handler
+
+    contextMenu_folder_rename.onclick = contextMenu_folder_rename_handler
 }
 
 async function dragstart_handler(event) {
@@ -159,7 +185,7 @@ async function drop_handler(event) {
             element = getFolderJSONObjectByID(draggingJSON.folderID, data);
         }
         element.index = +target.getAttribute("index")
-        for (var key in parentFolder.elements) {
+        /*for (var key in parentFolder.elements) {
             var checkElement = parentFolder.elements[key]
             if (checkElement.index != element.index)
                 continue
@@ -170,7 +196,7 @@ async function drop_handler(event) {
                 if ((checkElement as folderData).folderID != (element as folderData).folderID)
                     (element as folderData).index++
             }
-        }
+        }*/
         await saveDataInFirefox(data)
         triggerListReload()
     }
@@ -279,21 +305,12 @@ async function addFolderSubmit_handler(event) {
     }
 }
 
-function folderRenameClick_handler(event) {
-    if (event.explicitOriginalTarget.localName == "div") {
-        var divContainer = event.originalTarget
-        if (divContainer.isFolder)
-            //divContainer.innerText = ""
-            divContainer.children[2].classList.toggle("disabled")
-    }
-}
-
 async function folderRenameSubmit_handler(event) {
     if (event.keyCode == 13) {
         event.preventDefault()
         var value = event.originalTarget.value
         var parent = event.originalTarget.parentNode
-        await renameFolder(parent.folderID, value)
+        await renameFolder(parent.getAttribute("folderID"), value)
         triggerListReload()
     }
 }
@@ -401,13 +418,49 @@ async function moveData_handler(event: any) {
     switch (data.mode) {
         case Mode.Default:
             data.mode = Mode.Move
+            moveBtn.classList.add("selected")
             break;
         case Mode.Move:
             data.mode = Mode.Default
+            moveBtn.classList.remove("selected")
             break;
         default:
             data.mode = Mode.Default
     }
     await saveDataInFirefox(data)
     triggerListReload()
+}
+
+async function contextMenu_handler(event: any) {
+    event.preventDefault()
+    var target = event.explicitOriginalTarget as HTMLElement
+    contextMenu.classList.remove("disabled")
+    contextMenu.style.left = event.clientX + "px"
+    contextMenu.style.top = event.clientY + "px"
+    if (target.getAttribute("folderID") != undefined) {
+        contextMenu_folder.classList.remove("disabled")
+    }
+    contextMenuTarget = target
+}
+
+async function contextMenuClose_handler(event: any) {
+    contextMenu.classList.add("disabled")
+    contextMenu_folder.classList.add("disabled")
+}
+
+async function contextMenu_generic_collapseAll_handler(event: any) {
+    await collapseAll()
+    triggerListReload()
+}
+
+async function contextMenu_generic_expandAll_handler(event: any) {
+    await expandAll()
+    triggerListReload()
+}
+
+async function contextMenu_folder_rename_handler(event: any) {
+    var divContainer = contextMenuTarget
+    if (divContainer.getAttribute("isFolder"))
+        //divContainer.innerText = ""
+        divContainer.children[3].classList.toggle("disabled")
 }

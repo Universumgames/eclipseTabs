@@ -95,4 +95,36 @@ export function removeItem(itemID, oldParentFolderID) {
         return false;
     });
 }
+export function expandAll() {
+    return __awaiter(this, void 0, void 0, function* () {
+        var data = yield getDataStructFromFirefox();
+        expandRecursion(data);
+        yield saveDataInFirefox(data);
+    });
+}
+function expandRecursion(data) {
+    data.elements.forEach(element => {
+        if ('folderID' in element) {
+            var folder = element;
+            folder.open = true;
+            expandRecursion(folder);
+        }
+    });
+}
+export function collapseAll() {
+    return __awaiter(this, void 0, void 0, function* () {
+        var data = yield getDataStructFromFirefox();
+        collapseAllRecusrion(data);
+        yield saveDataInFirefox(data);
+    });
+}
+function collapseAllRecusrion(data) {
+    data.elements.forEach(element => {
+        if ('folderID' in element) {
+            var folder = element;
+            folder.open = false;
+            expandRecursion(folder);
+        }
+    });
+}
 //# sourceMappingURL=changer.js.map

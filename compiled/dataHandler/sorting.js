@@ -24,6 +24,9 @@ export function recursiveSelectionSort(element) {
         element.elements[indexSmallest] = switchA;
         sortedIndex++;
     }
+    for (var i = 0; i < element.elements.length; i++) {
+        element.elements[i].index = 2 * i;
+    }
 }
 function compareItems(element1, element2) {
     return element1.index < element2.index;

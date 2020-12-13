@@ -35,9 +35,9 @@
       <div id="delete" class="bottomElement">
         <img src="../icons/trashcan-256.png" class="bottomElementPic noEvents">
       </div>
-      <div id="exportData" class="bottomElement">
-        <svg class="bottomElementPic noEvents" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-          style="fill:rgb(216, 216, 216);transform: rotate(-90deg);">
+      <div id="exportData" class="bottomElement" style="fill:rgb(216, 216, 216)">
+        <svg class=" bottomElementPic noEvents" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+          style="transform: rotate(-90deg);">
           <path
             d="M 8 2 C 6.895 2 6 2.895 6 4 L 6 20 C 6 21.105 6.895 22 8 22 L 16 22 C 17.105 22 18 21.105 18 20 L 18 15 L 16 15 L 16 20 L 8 20 L 8 4 L 16 4 L 16 9 L 18 9 L 18 4 C 18 2.895 17.105 2 16 2 L 8 2 z M 20 8 L 20 11 L 11 11 L 11 13 L 20 13 L 20 16 L 24 12 L 20 8 z">
           </path>
@@ -45,15 +45,15 @@
       </div>
       <div id="importData" class="bottomElement">
         <svg class="bottomElementPic noEvents" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-          style="fill:rgb(216, 216, 216);transform: rotate(90deg);">
+          style="transform: rotate(90deg);">
           <path
             d="M 8 2 C 6.895 2 6 2.895 6 4 L 6 20 C 6 21.105 6.895 22 8 22 L 16 22 C 17.105 22 18 21.105 18 20 L 18 15 L 16 15 L 16 20 L 8 20 L 8 4 L 16 4 L 16 9 L 18 9 L 18 4 C 18 2.895 17.105 2 16 2 L 8 2 z M 20 8 L 20 11 L 11 11 L 11 13 L 20 13 L 20 16 L 24 12 L 20 8 z">
           </path>
         </svg>
       </div>
-      <div id="moveElements" class="bottomElement">
-        <svg class="bottomElementPic noEvents" style="fill:rgb(216, 216, 216)" xmlns:svg="http://www.w3.org/2000/svg"
-          xmlns="http://www.w3.org/2000/svg" width="210mm" height="297mm" viewBox="0 0 210 297" version="1.1" id="svg8">
+      <div id="moveElements" class="bottomElement" style="fill:rgb(216, 216, 216)">
+        <svg class="bottomElementPic noEvents" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg"
+          width="210mm" height="297mm" viewBox="0 0 210 297" version="1.1" id="svg8">
           <g style="opacity:1;stroke-width:1.33973" transform="scale(0.61904762,0.9)">
             <path d="M 112.6369,89.202384 210,105 105,0 0,105 Z" />
           </g>
@@ -79,5 +79,30 @@
   </div>
 
 </body>
+
+<div id="contextMenu" class="disabled">
+  <div class="noEvents">eclipseTabMenu</div>
+  <svg viewBox="0 0 100 2" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+    <line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-width="2" />
+  </svg>
+  <div id="contextMenuList">
+    <div id="contextMenu_generic">
+      <div id="contextMenu_generic_collapseAll">
+        Collapse All
+      </div>
+      <div id="contextMenu_generic_expandAll">
+        Expand All
+      </div>
+    </div>
+    <div id="contextMenu_folder" class="disabled">
+      <svg viewBox="0 0 100 2" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+        <line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-width="2" />
+      </svg>
+      <div id="contextMenu_folder_rename">
+        Rename Folder
+      </div>
+    </div>
+  </div>
+</div>
 
 </html>
