@@ -8,8 +8,7 @@
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "eclipseTab@universegame.de",
-      "strict_min_version": "42.0"
+      "id": "eclipseTab@universegame.de"
     }
   },
   "description": "Easy management of your tabs and own bookmark system",
