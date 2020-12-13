@@ -11,15 +11,15 @@ export function reloadExtension(): void {
 }
 
 export function isFolder(element: HTMLElement): Boolean {
-    return (element.getAttribute("isFolder") != undefined && toBoolean(element.getAttribute("isFolder")))
+    return (element.getAttribute("isfolder") != undefined && toBoolean(element.getAttribute("isFolder")))
 }
 
 export function isItem(element: HTMLElement): Boolean {
-    return (element.getAttribute("isItem") != undefined && toBoolean(element.getAttribute("isItem")))
+    return (element.getAttribute("isitem") != undefined && toBoolean(element.getAttribute("isItem")))
 }
 
 export function isInbetween(element: HTMLElement): Boolean {
-    return (element.getAttribute("isInbetween") != undefined && toBoolean(element.getAttribute("isInbetween")))
+    return (element.getAttribute("isinbetween") != undefined && toBoolean(element.getAttribute("isInbetween")))
 }
 
 export function isTrashcan(element: HTMLElement) {

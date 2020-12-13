@@ -10,13 +10,13 @@ export function reloadExtension() {
     firefoxHandler.reload();
 }
 export function isFolder(element) {
-    return (element.getAttribute("isFolder") != undefined && toBoolean(element.getAttribute("isFolder")));
+    return (element.getAttribute("isfolder") != undefined && toBoolean(element.getAttribute("isFolder")));
 }
 export function isItem(element) {
-    return (element.getAttribute("isItem") != undefined && toBoolean(element.getAttribute("isItem")));
+    return (element.getAttribute("isitem") != undefined && toBoolean(element.getAttribute("isItem")));
 }
 export function isInbetween(element) {
-    return (element.getAttribute("isInbetween") != undefined && toBoolean(element.getAttribute("isInbetween")));
+    return (element.getAttribute("isinbetween") != undefined && toBoolean(element.getAttribute("isInbetween")));
 }
 export function isTrashcan(element) {
 }

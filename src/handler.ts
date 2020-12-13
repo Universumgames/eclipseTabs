@@ -55,6 +55,9 @@ const contextMenu_generic_collapseAll = document.getElementById("contextMenu_gen
 const contextMenu_generic_expandAll = document.getElementById("contextMenu_generic_expandAll")
 const contextMenu_folder = document.getElementById("contextMenu_folder")
 const contextMenu_folder_rename = document.getElementById("contextMenu_folder_rename")
+const contextMenu_folder_delete = document.getElementById("contextMenu_folder_delete")
+const contextMenu_item = document.getElementById("contextMenu_item")
+const contextMenu_item_delete = document.getElementById("contextMenu_item_delete")
 
 var contextMenuTarget: HTMLElement
 
@@ -116,6 +119,8 @@ export async function setupHandler(setupFun: Function) {
     contextMenu_generic_expandAll.onclick = contextMenu_generic_expandAll_handler
 
     contextMenu_folder_rename.onclick = contextMenu_folder_rename_handler
+    contextMenu_folder_delete.onclick = contextMenu_folder_delete_handler
+    contextMenu_item_delete.onclick = contextMenu_item_delete_handler
 }
 
 async function dragstart_handler(event) {
@@ -437,15 +442,17 @@ async function contextMenu_handler(event: any) {
     contextMenu.classList.remove("disabled")
     contextMenu.style.left = event.clientX + "px"
     contextMenu.style.top = event.clientY + "px"
-    if (target.getAttribute("folderID") != undefined) {
+    if (target.getAttribute("folderID") != undefined)
         contextMenu_folder.classList.remove("disabled")
-    }
+    if (target.getAttribute("itemID") != undefined)
+        contextMenu_item.classList.remove("disabled")
     contextMenuTarget = target
 }
 
 async function contextMenuClose_handler(event: any) {
     contextMenu.classList.add("disabled")
     contextMenu_folder.classList.add("disabled")
+    contextMenu_item.classList.add("disabled")
 }
 
 async function contextMenu_generic_collapseAll_handler(event: any) {
@@ -463,4 +470,24 @@ async function contextMenu_folder_rename_handler(event: any) {
     if (divContainer.getAttribute("isFolder"))
         //divContainer.innerText = ""
         divContainer.children[3].classList.toggle("disabled")
+}
+
+async function contextMenu_folder_delete_handler(event: any) {
+    var folder: folderData
+    var data = await getDataStructFromFirefox()
+    if (helper.isFolder(contextMenuTarget)) {
+        folder = getFolderJSONObjectByID(contextMenuTarget.getAttribute("folderID"), data)
+        await removeFolder(folder.folderID, folder.parentFolderID)
+        triggerListReload()
+    }
+}
+
+async function contextMenu_item_delete_handler(event: any) {
+    var item: itemData
+    var data = await getDataStructFromFirefox()
+    if (helper.isItem(contextMenuTarget)) {
+        item = getItemJSONObjectByItemID(contextMenuTarget.getAttribute("itemID"), data)
+        await removeItem(item.itemID, item.parentFolderID)
+        triggerListReload()
+    } else console.warn("Method item delete handler was called on a non item element")
 }

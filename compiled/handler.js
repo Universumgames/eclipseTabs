@@ -56,6 +56,9 @@ const contextMenu_generic_collapseAll = document.getElementById("contextMenu_gen
 const contextMenu_generic_expandAll = document.getElementById("contextMenu_generic_expandAll");
 const contextMenu_folder = document.getElementById("contextMenu_folder");
 const contextMenu_folder_rename = document.getElementById("contextMenu_folder_rename");
+const contextMenu_folder_delete = document.getElementById("contextMenu_folder_delete");
+const contextMenu_item = document.getElementById("contextMenu_item");
+const contextMenu_item_delete = document.getElementById("contextMenu_item_delete");
 var contextMenuTarget;
 var setup;
 export function setupHandler(setupFun) {
@@ -103,6 +106,8 @@ export function setupHandler(setupFun) {
         contextMenu_generic_collapseAll.onclick = contextMenu_generic_collapseAll_handler;
         contextMenu_generic_expandAll.onclick = contextMenu_generic_expandAll_handler;
         contextMenu_folder_rename.onclick = contextMenu_folder_rename_handler;
+        contextMenu_folder_delete.onclick = contextMenu_folder_delete_handler;
+        contextMenu_item_delete.onclick = contextMenu_item_delete_handler;
     });
 }
 function dragstart_handler(event) {
@@ -401,9 +406,10 @@ function contextMenu_handler(event) {
         contextMenu.classList.remove("disabled");
         contextMenu.style.left = event.clientX + "px";
         contextMenu.style.top = event.clientY + "px";
-        if (target.getAttribute("folderID") != undefined) {
+        if (target.getAttribute("folderID") != undefined)
             contextMenu_folder.classList.remove("disabled");
-        }
+        if (target.getAttribute("itemID") != undefined)
+            contextMenu_item.classList.remove("disabled");
         contextMenuTarget = target;
     });
 }
@@ -411,6 +417,7 @@ function contextMenuClose_handler(event) {
     return __awaiter(this, void 0, void 0, function* () {
         contextMenu.classList.add("disabled");
         contextMenu_folder.classList.add("disabled");
+        contextMenu_item.classList.add("disabled");
     });
 }
 function contextMenu_generic_collapseAll_handler(event) {
@@ -430,6 +437,30 @@ function contextMenu_folder_rename_handler(event) {
         var divContainer = contextMenuTarget;
         if (divContainer.getAttribute("isFolder"))
             divContainer.children[3].classList.toggle("disabled");
+    });
+}
+function contextMenu_folder_delete_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var folder;
+        var data = yield getDataStructFromFirefox();
+        if (helper.isFolder(contextMenuTarget)) {
+            folder = getFolderJSONObjectByID(contextMenuTarget.getAttribute("folderID"), data);
+            yield removeFolder(folder.folderID, folder.parentFolderID);
+            triggerListReload();
+        }
+    });
+}
+function contextMenu_item_delete_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var item;
+        var data = yield getDataStructFromFirefox();
+        if (helper.isItem(contextMenuTarget)) {
+            item = getItemJSONObjectByItemID(contextMenuTarget.getAttribute("itemID"), data);
+            yield removeItem(item.itemID, item.parentFolderID);
+            triggerListReload();
+        }
+        else
+            console.warn("Method item delete handler was called on a non item element");
     });
 }
 //# sourceMappingURL=handler.js.map

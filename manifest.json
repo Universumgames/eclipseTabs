@@ -23,9 +23,6 @@
     "tabHide",
     "contextMenus"
   ],
-  "options_ui": {
-    "page": "Settings.html"
-  },
   "sidebar_action": {
     "default_title": "eclipseTab",
     "default_panel": "sidebar/sidebar.html",
