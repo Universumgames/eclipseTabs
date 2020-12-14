@@ -21,6 +21,7 @@
   "dependencies": {
     "@types/chrome": "0.0.126",
     "@types/firefox": "0.0.30",
+    "@types/util.promisify": "^1.0.4",
     "tcs": "^10.0.0"
   }
 }

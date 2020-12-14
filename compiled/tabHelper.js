@@ -7,11 +7,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as firefoxHandler from './firefoxHandler.js';
+import * as chromiumHandler from './chromiumHandler.js';
 export function hideTab(id) {
     return __awaiter(this, void 0, void 0, function* () {
         if (id != undefined) {
-            if ((yield getCurrentTab()).id == id)
+            if ((yield getCurrentTab()).id == Number(id))
                 return false;
             console.log(`hide ${id}`);
             yield browser.tabs.hide(+id);
@@ -49,7 +49,7 @@ export function getTabByTabID(tabID) {
             return undefined;
         var tabs = yield getTabs();
         for (var tab of tabs) {
-            if (tab.id == tabID)
+            if (tab.id == Number(tabID))
                 return tab;
         }
         return undefined;
@@ -57,12 +57,12 @@ export function getTabByTabID(tabID) {
 }
 export function getTabs() {
     return __awaiter(this, void 0, void 0, function* () {
-        return yield firefoxHandler.tabQuery({});
+        return yield chromiumHandler.tabQuery({});
     });
 }
 export function getCurrentTab() {
     return __awaiter(this, void 0, void 0, function* () {
-        return (yield firefoxHandler.tabQuery({ active: true }))[0];
+        return (yield chromiumHandler.tabQuery({ active: true }))[0];
     });
 }
 export function closeTab(id) {

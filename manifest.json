@@ -6,11 +6,6 @@
     "name": "UniversumGames",
     "url": "https://universegame.de/"
   },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "eclipseTab@universegame.de"
-    }
-  },
   "description": "Easy management of your tabs and own bookmark system",
   "icons": {
     "48": "icons/logo-48.png"
@@ -19,7 +14,6 @@
     "storage",
     "<all_urls>",
     "tabs",
-    "tabHide",
     "contextMenus"
   ],
   "sidebar_action": {

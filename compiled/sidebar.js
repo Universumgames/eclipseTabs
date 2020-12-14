@@ -9,18 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import * as tabHelper from './tabHelper.js';
 import * as handler from './handler.js';
-import * as firefoxHandler from './firefoxHandler.js';
+import * as chromiumHandler from './chromiumHandler.js';
 import { createEmptyData, getDataStructFromFirefox, saveDataInFirefox, updateTabsOnStartUp } from './dataHandler/importer.js';
 var data = createEmptyData();
 var firefoxStartHandler = {
     startup: startup
 };
-firefoxHandler.startupHandler(firefoxStartHandler);
+chromiumHandler.startupHandler(firefoxStartHandler);
 document.addEventListener("DOMContentLoaded", () => setup());
 function startup() {
     return __awaiter(this, void 0, void 0, function* () {
         var dataTmp = yield getDataStructFromFirefox();
         if (dataTmp == undefined) {
+            console.log(yield getDataStructFromFirefox());
             saveDataInFirefox(data);
             console.log("Data cleared or extension is newly installed, created new storage structure: ", data);
         }
@@ -30,6 +31,7 @@ function startup() {
             console.log(tabs);
             updateTabsOnStartUp(data, tabs);
         });
+        console.log(yield getDataStructFromFirefox());
     });
 }
 function setup() {

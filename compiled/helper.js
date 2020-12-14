@@ -1,4 +1,4 @@
-import * as firefoxHandler from './firefoxHandler.js';
+import * as chromiumHandler from './chromiumHandler.js';
 export function toBoolean(bool) {
     if (bool == "true")
         return true;
@@ -7,7 +7,7 @@ export function toBoolean(bool) {
     return false;
 }
 export function reloadExtension() {
-    firefoxHandler.reload();
+    chromiumHandler.reload();
 }
 export function isFolder(element) {
     return (element.getAttribute("isfolder") != undefined && toBoolean(element.getAttribute("isFolder")));
