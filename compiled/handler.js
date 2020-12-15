@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 import * as htmlAdder from './addHTMLElements.js';
 import * as tabHelper from './tabHelper.js';
 import * as helper from './helper.js';
-import { Mode } from './interfaces.js';
+import { ColorScheme, Mode } from './interfaces.js';
 import * as firefoxHandler from './firefoxHandler.js';
 import { addFolder, collapseAll, createEmptyData, expandAll, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js';
 export var addHTMLHandler = {
@@ -46,11 +46,14 @@ const structReloader = document.getElementById("structReloader");
 const extensionReloader = document.getElementById("extensioReloader");
 const addFolderNameInputContainer = document.getElementById("addFolderNameInputContainer");
 const addFolderNameInput = document.getElementById("addFolderNameInput");
+const bottom = document.getElementById("bottom");
 const addFolderBtn = document.getElementById("addFolder");
 const trashcan = document.getElementById("delete");
 const exportBtn = document.getElementById("exportData");
 const importBtn = document.getElementById("importData");
 const moveBtn = document.getElementById("moveElements");
+const darkModeSW_checkbox = document.getElementById("darkModeSW_checkbox");
+const bottomElementIcons = [];
 const contextMenu = document.getElementById("contextMenu");
 const contextMenu_generic_collapseAll = document.getElementById("contextMenu_generic_collapseAll");
 const contextMenu_generic_expandAll = document.getElementById("contextMenu_generic_expandAll");
@@ -60,6 +63,7 @@ const contextMenu_folder_delete = document.getElementById("contextMenu_folder_de
 const contextMenu_item = document.getElementById("contextMenu_item");
 const contextMenu_item_delete = document.getElementById("contextMenu_item_delete");
 var contextMenuTarget;
+var oldColorScheme = ColorScheme.dark;
 var setup;
 export function setupHandler(setupFun) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -84,15 +88,6 @@ export function setupHandler(setupFun) {
         trashcan.addEventListener("dragleave", addHTMLHandler.dragleave_handler);
         trashcan.addEventListener("drop", addHTMLHandler.drop_handler);
         trashcan.setAttribute("isTrashCan", "true");
-        var htmlBody = document.getElementById("body");
-        if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-            htmlBody.classList.add("darkmode");
-            htmlBody.classList.remove("lightmode");
-        }
-        else {
-            htmlBody.classList.add("lightmode");
-            htmlBody.classList.remove("darkmode");
-        }
         switch (data.mode) {
             case Mode.Default:
                 moveBtn.classList.remove("selected");
@@ -101,6 +96,8 @@ export function setupHandler(setupFun) {
                 moveBtn.classList.add("selected");
                 break;
         }
+        darkModeSW_checkbox.onchange = darkModeSW_checkbox_handler;
+        darkModeSW_checkbox.checked = (data.colorScheme == ColorScheme.light) ? true : false;
         document.oncontextmenu = contextMenu_handler;
         document.onclick = contextMenuClose_handler;
         contextMenu_generic_collapseAll.onclick = contextMenu_generic_collapseAll_handler;
@@ -108,6 +105,12 @@ export function setupHandler(setupFun) {
         contextMenu_folder_rename.onclick = contextMenu_folder_rename_handler;
         contextMenu_folder_delete.onclick = contextMenu_folder_delete_handler;
         contextMenu_item_delete.onclick = contextMenu_item_delete_handler;
+        bottomElementIcons.push(addFolderBtn.children[0]);
+        bottomElementIcons.push(trashcan.children[0]);
+        bottomElementIcons.push(exportBtn.children[0]);
+        bottomElementIcons.push(importBtn.children[0]);
+        bottomElementIcons.push(moveBtn.children[0]);
+        setColorScheme(data);
     });
 }
 function dragstart_handler(event) {
@@ -205,16 +208,19 @@ function folderClick(e) {
             var newOpened = dataObj.open;
             HTMLFolder.setAttribute("open", newOpened + "");
             var childs = HTMLFolder.children;
+            var image = document.getElementById(dataObj.folderID + "_image");
+            console.log(image);
             if (newOpened) {
-                HTMLFolder.children[folderChildImageIndex].classList.add("rotated");
+                image.classList.add("rotated");
                 HTMLFolder.classList.add("closed");
                 setChildrenVisible(false, childs);
             }
             else {
-                HTMLFolder.children[folderChildImageIndex].classList.remove("rotated");
+                image.classList.remove("rotated");
                 HTMLFolder.classList.remove("closed");
                 setChildrenVisible(true, childs);
             }
+            console.log(image);
             yield saveDataInFirefox(data);
             triggerListReload();
         }
@@ -289,6 +295,7 @@ function refreshTabList() {
     return __awaiter(this, void 0, void 0, function* () {
         var data = yield getDataStructFromFirefox();
         tabHelper.getTabs().then((tabs) => { loadFolderList(tabs, data); });
+        setColorScheme(data);
     });
 }
 function refreshTabListOnActiveChange(activeInfoa) {
@@ -462,5 +469,39 @@ function contextMenu_item_delete_handler(event) {
         else
             console.warn("Method item delete handler was called on a non item element");
     });
+}
+function darkModeSW_checkbox_handler(event) {
+    return __awaiter(this, void 0, void 0, function* () {
+        var data = yield getDataStructFromFirefox();
+        data.colorScheme = (event.target.checked) ? ColorScheme.light : ColorScheme.dark;
+        yield saveDataInFirefox(data);
+        triggerListReload();
+    });
+}
+function setColorScheme(data) {
+    var htmlBody = document.getElementById("body");
+    if (data.colorScheme == ColorScheme.dark) {
+        htmlBody.classList.add("darkmode");
+        htmlBody.classList.remove("lightmode");
+        contextMenu.classList.add("darkmode");
+        contextMenu.classList.remove("lightmode");
+        bottom.classList.add("darkmode");
+        bottom.classList.remove("lightmode");
+    }
+    else {
+        htmlBody.classList.add("lightmode");
+        htmlBody.classList.remove("darkmode");
+        contextMenu.classList.add("lightmode");
+        contextMenu.classList.remove("darkmode");
+        bottom.classList.add("lightmode");
+        bottom.classList.remove("darkmode");
+    }
+    if (data.colorScheme != oldColorScheme) {
+        bottomElementIcons.forEach(element => {
+            var filename = element.getAttribute("filename");
+            element.setAttribute("data", "icons/" + ((data.colorScheme == ColorScheme.dark) ? "dark" : "light") + "/" + filename);
+        });
+    }
+    oldColorScheme = data.colorScheme;
 }
 //# sourceMappingURL=handler.js.map

@@ -1,5 +1,6 @@
 export interface tabStructData extends folderData {
-    mode: Mode
+    mode: Mode,
+    colorScheme: ColorScheme
 }
 
 export interface folderData extends elementData {
@@ -27,6 +28,11 @@ export interface elementData {
 export enum Mode {
     Default,
     Move
+}
+
+export enum ColorScheme {
+    dark,
+    light
 }
 
 export type tabIDType = string

@@ -1,0 +1,14 @@
+#contextMenu {
+    position: fixed;
+    padding: 2%;
+    border-radius: 10%;
+    width: fit-content;
+}
+
+#contextMenu.lightmode {
+    background-color: #d1d1d1;
+}
+
+#contextMenu.darkmode {
+    background-color: #121111;
+}

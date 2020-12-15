@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="./style/style.css">
+  <link rel="stylesheet" type="text/css" href="./style/list.css">
+  <link rel="stylesheet" type="text/css" href="./style/bottom.css">
+  <link rel="stylesheet" type="text/css" href="./style/context.css">
+  <script src="./compiled/sidebar.js" type="module"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
+  <meta name="author" content="UniversumGames">
+  <title>eclipseTab</title>
+</head>
+
+<body id="body">
+  <div id="emptyList">
+    <noscript>
+      The tab structure is going to be listed here, if this is shown to you, the extension is propably not working
+      correctly. The reason is that javascript is disabled...
+    </noscript>
+  </div>
+  <div id="list" class="disabled list"></div>
+  <div id="addFolderNameInputContainer" class="disabled">
+    <input type="text" id="addFolderNameInput" placeholder="foldername">
+  </div>
+  <div><br> <br></div>
+
+  <!-- Debugging buttons-->
+  <div class="bottom bottomElement" id="bottom">
+    <div class="bottomElements bottomElement">
+      <svg viewBox="0 0 100 2" class="bottomElement" xmlns="http://www.w3.org/2000/svg">
+        <line x1="0" y1="0" x2="100" y2="0" stroke-width="2" />
+      </svg>
+      <div id="addFolder" class="bottomElement">
+        <object class="bottomElementPic noEvents" data="icons/dark/addFolder.svg" filename="addFolder.svg"
+          type="image/svg+xml"></object>
+      </div>
+      <div id="delete" class="bottomElement">
+        <object class="bottomElementPic noEvents" data="icons/dark/bin.svg" filename="bin.svg"
+          type="image/svg+xml"></object>
+      </div>
+      <div id="exportData" class="bottomElement">
+        <object class="bottomElementPic noEvents" data="icons/dark/export.svg" filename="export.svg"
+          type="image/svg+xml"></object>
+      </div>
+      <div id="importData" class="bottomElement">
+        <object class="bottomElementPic noEvents" data="icons/dark/import.svg" filename="import.svg"
+          type="image/svg+xml"></object>
+      </div>
+      <div id="moveElements" class="bottomElement">
+        <object class="bottomElementPic noEvents" data="icons/dark/move.svg" filename="move.svg"
+          type="image/svg+xml"></object>
+      </div>
+      <div id="darkmodeSW" class="bottomElement">
+        <label class="switch">
+          <input type="checkbox" id="darkModeSW_checkbox">
+          <span class="slider round"></span>
+        </label>
+      </div>
+
+
+    </div>
+    <br>
+    <div id=" debugElements">
+      <button id="structCleaner">Clear Data Struct</button>
+      <button id="structReloader">Reload Data Struct</button>
+      <button id="extensioReloader"> Reload Extension</button>
+    </div>
+  </div>
+
+</body>
+
+<div id="contextMenu" class="disabled">
+  <div class="noEvents">eclipseTabMenu</div>
+  <svg viewBox="0 0 100 2" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+    <line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-width="2" />
+  </svg>
+  <div id="contextMenuList">
+    <div id="contextMenu_generic">
+      <div id="contextMenu_generic_collapseAll">
+        Collapse All
+      </div>
+      <div id="contextMenu_generic_expandAll">
+        Expand All
+      </div>
+    </div>
+    <div id="contextMenu_folder" class="disabled">
+      <svg viewBox="0 0 100 2" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+        <line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-width="2" />
+      </svg>
+      <div id="contextMenu_folder_rename">
+        Rename Folder
+      </div>
+      <div id="contextMenu_folder_delete">
+        Delete Folder
+      </div>
+    </div>
+    <div id="contextMenu_item" class="disabled">
+      <svg viewBox="0 0 100 2" xmlns="http://www.w3.org/2000/svg" style="width:100%">
+        <line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-width="2" />
+      </svg>
+      <div id="contextMenu_item_delete">
+        Delete item
+      </div>
+    </div>
+  </div>
+</div>
+
+</html>

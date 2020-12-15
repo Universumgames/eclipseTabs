@@ -26,8 +26,13 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
     folderDiv.setAttribute("index", folder.index + "")
     folderDiv.style.marginLeft = tier * 4 + "px"
 
-    var imgNode = document.createElement("img")
-    imgNode.src = "../icons/arrow_down-256.png"
+    /*var imgNode = document.createElement("svg")
+    imgNode.setAttribute("xmlns", "http://www.w3.org/2000/svg")
+    imgNode.setAttribute("version", "1.1")
+    imgNode.setAttribute("preserveAspectRatio", "none")
+    imgNode.setAttribute("viewBox", "0 0 13 13")
+    imgNode.innerHTML = '<path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" />'
+    //imgNode.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 12 12" class="arrow noEvents" id="image" preserveAspectRatio="none"><path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" /></svg>'
     imgNode.id = "image"
     imgNode.classList.add("arrow")
     imgNode.classList.add("noEvents")
@@ -35,8 +40,8 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
         imgNode.classList.add("rotated")
         folderDiv.classList.add("closed")
     }
-    folderDiv.appendChild(imgNode)
-
+    folderDiv.appendChild(imgNode)*/
+    folderDiv.insertAdjacentHTML("afterbegin", '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 12 12" class="arrow noEvents" id="' + folder.folderID + '_image" preserveAspectRatio="none"><path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" /></svg>')
     var textContainerNode = document.createElement("div")
     textContainerNode.classList.add("noEvents")
     textContainerNode.style.display = "inline"
@@ -77,6 +82,10 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
 
     if (data.mode == Mode.Move)
         folderDiv.appendChild(createInbetween(folder, tier, handler))
+
+    var image = document.getElementById(folder.folderID + "_image")
+    if (!folder.open)
+        image.classList.add("rotated")
 
     return folderDiv
 }

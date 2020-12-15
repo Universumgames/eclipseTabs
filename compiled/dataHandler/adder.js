@@ -7,10 +7,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import { Mode } from "../interfaces.js";
+import { ColorScheme, Mode } from "../interfaces.js";
 import { getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter.js";
 export function createEmptyData() {
-    return { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, mode: Mode.Default };
+    return { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, mode: Mode.Default, colorScheme: ColorScheme.dark };
 }
 export function addFolder(parentID, newFolderID, name) {
     return __awaiter(this, void 0, void 0, function* () {

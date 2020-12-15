@@ -1,8 +1,8 @@
-import { folderData, itemData, Mode, tabStructData } from "../interfaces.js"
+import { ColorScheme, folderData, itemData, Mode, tabStructData } from "../interfaces.js"
 import { getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter.js"
 
 export function createEmptyData(): tabStructData {
-    return { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, mode: Mode.Default }
+    return { elements: [], folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, mode: Mode.Default, colorScheme: ColorScheme.dark }
 }
 
 export async function addFolder(parentID: string, newFolderID: string, name: string): Promise<folderData> {

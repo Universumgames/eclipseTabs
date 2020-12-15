@@ -1,7 +1,7 @@
 import * as htmlAdder from './addHTMLElements.js'
 import * as tabHelper from './tabHelper.js'
 import * as helper from './helper.js'
-import { elementData, folderData, itemData, Mode, tabStructData } from './interfaces.js'
+import { ColorScheme, elementData, folderData, itemData, Mode, tabStructData } from './interfaces.js'
 import * as firefoxHandler from './firefoxHandler.js'
 import { addFolder, collapseAll, createEmptyData, expandAll, exportData, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js'
 
@@ -44,11 +44,14 @@ const extensionReloader = document.getElementById("extensioReloader")
 const addFolderNameInputContainer = document.getElementById("addFolderNameInputContainer")
 const addFolderNameInput = document.getElementById("addFolderNameInput") as HTMLTextAreaElement
 
+const bottom = document.getElementById("bottom")
 const addFolderBtn = document.getElementById("addFolder")
 const trashcan = document.getElementById("delete")
-const exportBtn = document.getElementById("exportData")
-const importBtn = document.getElementById("importData")
-const moveBtn = document.getElementById("moveElements")
+const exportBtn = document.getElementById("exportData") as HTMLInputElement
+const importBtn = document.getElementById("importData") as HTMLInputElement
+const moveBtn = document.getElementById("moveElements") as HTMLInputElement
+const darkModeSW_checkbox = document.getElementById("darkModeSW_checkbox") as HTMLInputElement
+const bottomElementIcons: Array<HTMLElement> = []
 
 const contextMenu = document.getElementById("contextMenu")
 const contextMenu_generic_collapseAll = document.getElementById("contextMenu_generic_collapseAll")
@@ -60,6 +63,8 @@ const contextMenu_item = document.getElementById("contextMenu_item")
 const contextMenu_item_delete = document.getElementById("contextMenu_item_delete")
 
 var contextMenuTarget: HTMLElement
+
+var oldColorScheme = ColorScheme.dark
 
 var setup: Function
 
@@ -92,16 +97,7 @@ export async function setupHandler(setupFun: Function) {
     trashcan.addEventListener("dragenter", addHTMLHandler.dragenter_handler)
     trashcan.addEventListener("dragleave", addHTMLHandler.dragleave_handler)
     trashcan.addEventListener("drop", addHTMLHandler.drop_handler)
-    trashcan.setAttribute("isTrashCan", "true");
-
-    var htmlBody = document.getElementById("body")
-    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        htmlBody.classList.add("darkmode")
-        htmlBody.classList.remove("lightmode")
-    } else {
-        htmlBody.classList.add("lightmode");
-        htmlBody.classList.remove("darkmode");
-    }
+    trashcan.setAttribute("isTrashCan", "true")
 
     switch (data.mode) {
         case Mode.Default:
@@ -112,6 +108,9 @@ export async function setupHandler(setupFun: Function) {
             break;
     }
 
+    darkModeSW_checkbox.onchange = darkModeSW_checkbox_handler
+    darkModeSW_checkbox.checked = (data.colorScheme == ColorScheme.light) ? true : false
+
     document.oncontextmenu = contextMenu_handler
     document.onclick = contextMenuClose_handler
 
@@ -121,6 +120,14 @@ export async function setupHandler(setupFun: Function) {
     contextMenu_folder_rename.onclick = contextMenu_folder_rename_handler
     contextMenu_folder_delete.onclick = contextMenu_folder_delete_handler
     contextMenu_item_delete.onclick = contextMenu_item_delete_handler
+
+    bottomElementIcons.push(addFolderBtn.children[0] as HTMLElement)
+    bottomElementIcons.push(trashcan.children[0] as HTMLElement)
+    bottomElementIcons.push(exportBtn.children[0] as HTMLElement)
+    bottomElementIcons.push(importBtn.children[0] as HTMLElement)
+    bottomElementIcons.push(moveBtn.children[0] as HTMLElement)
+
+    setColorScheme(data)
 }
 
 async function dragstart_handler(event) {
@@ -245,15 +252,18 @@ async function folderClick(e) {
         HTMLFolder.setAttribute("open", newOpened + "")
 
         var childs = HTMLFolder.children
+        var image = document.getElementById(dataObj.folderID + "_image")
+        console.log(image)
         if (newOpened) {
-            HTMLFolder.children[folderChildImageIndex].classList.add("rotated")
+            image.classList.add("rotated")
             HTMLFolder.classList.add("closed")
             setChildrenVisible(false, childs)
         } else {
-            HTMLFolder.children[folderChildImageIndex].classList.remove("rotated")
+            image.classList.remove("rotated")
             HTMLFolder.classList.remove("closed")
             setChildrenVisible(true, childs)
         }
+        console.log(image)
         await saveDataInFirefox(data)
         triggerListReload();
     }
@@ -323,6 +333,7 @@ async function folderRenameSubmit_handler(event) {
 async function refreshTabList() {
     var data = await getDataStructFromFirefox()
     tabHelper.getTabs().then((tabs) => { loadFolderList(tabs, data) })
+    setColorScheme(data)
 }
 
 function refreshTabListOnActiveChange(activeInfoa) {
@@ -490,4 +501,38 @@ async function contextMenu_item_delete_handler(event: any) {
         await removeItem(item.itemID, item.parentFolderID)
         triggerListReload()
     } else console.warn("Method item delete handler was called on a non item element")
+}
+
+async function darkModeSW_checkbox_handler(event: any) {
+    var data = await getDataStructFromFirefox()
+    data.colorScheme = (event.target.checked) ? ColorScheme.light : ColorScheme.dark
+    await saveDataInFirefox(data)
+    triggerListReload()
+}
+
+function setColorScheme(data: tabStructData) {
+    var htmlBody = document.getElementById("body")
+    if (data.colorScheme == ColorScheme.dark) {
+        htmlBody.classList.add("darkmode")
+        htmlBody.classList.remove("lightmode")
+        contextMenu.classList.add("darkmode")
+        contextMenu.classList.remove("lightmode")
+        bottom.classList.add("darkmode")
+        bottom.classList.remove("lightmode")
+    } else {
+        htmlBody.classList.add("lightmode")
+        htmlBody.classList.remove("darkmode")
+        contextMenu.classList.add("lightmode")
+        contextMenu.classList.remove("darkmode")
+        bottom.classList.add("lightmode")
+        bottom.classList.remove("darkmode")
+    }
+
+    if (data.colorScheme != oldColorScheme) {
+        bottomElementIcons.forEach(element => {
+            var filename = element.getAttribute("filename")
+            element.setAttribute("data", "icons/" + ((data.colorScheme == ColorScheme.dark) ? "dark" : "light") + "/" + filename)
+        })
+    }
+    oldColorScheme = data.colorScheme
 }

@@ -1,0 +1,28 @@
+@import "switch.css";
+.bottom {
+    bottom: 0;
+    position: fixed;
+}
+
+.bottomElements {
+    margin: 2%;
+}
+
+.bottomElement {
+    display: inline-block;
+}
+
+.bottomElement.darkmode {
+    fill: #d8d8d8;
+    stroke: #d8d8d8;
+}
+
+.bottomElement.lightmode {
+    fill: #000000;
+    stroke: #000000;
+}
+
+.bottomElementPic {
+    width: 25px;
+    height: 25px;
+}
