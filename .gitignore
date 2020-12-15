@@ -1,2 +1,5 @@
 ﻿Browser_Extension_tabFolders.zip
 node_modules
+*.zip
+compiled
+.vscode
