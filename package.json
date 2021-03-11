@@ -22,5 +22,8 @@
     "@types/chrome": "0.0.126",
     "@types/firefox": "0.0.30",
     "tcs": "^10.0.0"
+  },
+  "devDependencies": {
+    "web-ext-types": "^3.2.1"
   }
 }

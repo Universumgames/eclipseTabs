@@ -1,8 +1,8 @@
 {
     "compilerOptions": {
         "experimentalDecorators": true,
-        "target": "ES2015",
-        "module": "es2015",
+        "target": "ES2020",
+        "module": "es2020",
         "declaration": false,
         "noImplicitAny": false,
         "removeComments": true,
@@ -17,15 +17,14 @@
     ],
     "exclude": [
         "icons",
-        "node_moules",
+        "node_modules",
         "compiled",
         ".vscode"
     ],
     "lib": [
-        "es2015.promise",
-        "es5"
+        "es2020"
     ],
     "target-engines": [
-        "dom.firefox.42+"
+        "dom.firefox.46+"
     ]
 }

@@ -1,8 +1,8 @@
-import { elementData, folderData, folderIDType, itemData, itemIDType, tabIDType, tabStructData } from "../interfaces.js"
+import { elementData, folderData, folderIDType, itemData, itemIDType, tabIDType, tabStructData } from '../interfaces.js'
 import * as firefoxHandler from '../firefoxHandler.js'
 
 //#region getter
-export function getItemJSONObjectByItemID(itemID: itemIDType, data: tabStructData | folderData): itemData | undefined {
+export function getItemJSONObjectByItemID(itemID: itemIDType, data: folderData): itemData | undefined {
     return getItemJSONObjectByItemIDRecursion(itemID, data.elements)
 }
 
@@ -11,13 +11,12 @@ function getItemJSONObjectByItemIDRecursion(itemID: itemIDType, items: Array<ele
     for (var key in items) {
         var element = items[key]
         if (element == undefined) {
-            console.error("Element undefined (item array, element)", items, element)
+            console.error('Element undefined (item array, element)', items, element)
             continue
         }
         if ('itemID' in element) {
             if ((element as itemData).itemID == itemID) return element
-        }
-        else if ('folderID' in element) {
+        } else if ('folderID' in element) {
             returnVal = getItemJSONObjectByItemIDRecursion(itemID, (element as folderData).elements)
             if (returnVal != undefined) return returnVal
         }
@@ -36,8 +35,7 @@ function getItemJSONObjectByTabIDRecursion(tabID: tabIDType, items: Array<elemen
         if (element != undefined) {
             if ('itemID' in element) {
                 if ((element as itemData).tabID == tabID) return element
-            }
-            else if ('folderID' in element) {
+            } else if ('folderID' in element) {
                 returnVal = getItemJSONObjectByTabIDRecursion(tabID, (element as folderData).elements)
                 if (returnVal != undefined) return returnVal
             }
@@ -46,9 +44,9 @@ function getItemJSONObjectByTabIDRecursion(tabID: tabIDType, items: Array<elemen
     return undefined
 }
 
-export function getFolderJSONObjectByID(id: folderIDType, data: tabStructData | folderData): tabStructData | folderData | undefined {
+export function getFolderJSONObjectByID(id: folderIDType, data: folderData): folderData | undefined {
     //for selectTab -1 is baseDir
-    if (id == "-1") return data
+    if (id == '-1') return data
     return getFolderJSONObjectByIDRecursion(id, data.elements)
 }
 
@@ -95,8 +93,7 @@ function getItemJSONObjectByURLRecursion(items: Array<elementData>, url: string)
         var element = items[key]
         if ('itemID' in element) {
             if ((element as itemData).url == url) return element
-        }
-        else if ('folderID' in element) {
+        } else if ('folderID' in element) {
             returnVal = getItemJSONObjectByURLRecursion((element as folderData).elements, url)
             if (returnVal != undefined) return returnVal
         }
@@ -123,16 +120,16 @@ export function getFoldersInFolder(folder: folderData): Array<folderData> {
     return folderArr
 }
 
-export function saveDataInFirefox(data: tabStructData) {
-    return firefoxHandler.localStorageSet({ data })
+export function saveDataInFirefox(eclipseData: tabStructData) {
+    return firefoxHandler.localStorageSet({ eclipseData })
 }
 
-function getFirefoxStructFromFirefox() {
-    return firefoxHandler.localStorageGet("data")
+async function getFirefoxStructFromFirefox() {
+    return firefoxHandler.localStorageGetTabStructData('eclipseData')
 }
 
 export async function getDataStructFromFirefox(): Promise<tabStructData> {
-    return (await getFirefoxStructFromFirefox()).data
+    return await getFirefoxStructFromFirefox()
 }
 //#endregion
 
@@ -141,28 +138,28 @@ export async function getActiveTab() {
 }
 
 export function getCurrentWindowTabs() {
-    return firefoxHandler.tabQuery({ currentWindow: true });
+    return firefoxHandler.tabQuery({ currentWindow: true })
 }
 
 //#region genertators
 export async function generateFolderID() {
     var collectedFolders = 0
     var data = await getDataStructFromFirefox()
-    return getNumberOfFoldersAlreadyExisting(data.elements)
+    return getNumberOfFoldersAlreadyExisting(data.rootFolder.elements)
 }
 
-export function getNumberOfFoldersAlreadyExisting(folderContainer) {
+export function getNumberOfFoldersAlreadyExisting(folderContainer: elementData[]) {
     var number = 0
     for (var key in folderContainer) {
         var item = folderContainer[key]
         if (item == undefined) {
-            console.error("Item undefined (folder struct, item)", folderContainer, item)
+            console.error('Item undefined (folder struct, item)', folderContainer, item)
 
             continue
         }
         if ('folderID' in item) {
             number++
-            number += getNumberOfFoldersAlreadyExisting(item.elements)
+            number += getNumberOfFoldersAlreadyExisting((item as folderData).elements)
         }
     }
     return number

@@ -4,5 +4,11 @@
 			"path": "."
 		}
   ],
-  "settings": {}
+"settings": {
+	"cSpell.words": [
+		"Struct",
+		"sidepanel"
+	],
+	"prettier.printWidth": 150
+}
 }

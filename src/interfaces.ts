@@ -1,38 +1,39 @@
-export interface tabStructData extends folderData {
-    mode: Mode,
+export interface tabStructData {
+    mode: Mode
+    rootFolder: folderData
     colorScheme: ColorScheme
 }
 
 export interface folderData extends elementData {
-    name: string,
-    open: Boolean,
-    folderID: folderIDType,
+    name: string
+    open: Boolean
+    folderID: folderIDType
     elements: Array<elementData>
 }
 
 export interface itemData extends elementData {
-    url: string,
-    tabID: tabIDType,
-    itemID: itemIDType,
-    hidden: Boolean,
-    tabExists: Boolean,
-    favIconURL: string,
+    url: string
+    tabID: tabIDType
+    itemID: itemIDType
+    hidden: Boolean
+    tabExists: Boolean
+    favIconURL: string
     title: string
 }
 
 export interface elementData {
-    parentFolderID: string,
+    parentFolderID: string
     index: number
 }
 
 export enum Mode {
     Default,
-    Move
+    Move,
 }
 
 export enum ColorScheme {
     dark,
-    light
+    light,
 }
 
 export type tabIDType = string

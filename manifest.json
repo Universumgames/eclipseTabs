@@ -1,31 +1,34 @@
 {
-  "manifest_version": 2,
-  "name": "eclipseTab",
-  "version": "1.0.2",
-  "developer": {
-    "name": "UniversumGames",
-    "url": "https://universegame.de/"
-  },
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "eclipseTab@universegame.de"
+    "manifest_version": 2,
+    "name": "eclipseTab",
+    "version": "1.0.3",
+    "developer": {
+        "name": "UniversumGames",
+        "url": "https://universegame.de/"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "eclipseTab@universegame.de"
+        }
+    },
+    "description": "Easy management of your tabs and own bookmark system",
+    "icons": {
+        "48": "icons/eclipse_48.png"
+    },
+    "permissions": [
+        "storage",
+        "<all_urls>",
+        "tabs",
+        "tabHide",
+        "contextMenus"
+    ],
+    "sidebar_action": {
+        "default_title": "eclipseTab",
+        "default_panel": "sidebar.html",
+        "default_icon": "icons/eclipse_126.png",
+        "open_at_install": true
+    },
+    "options_ui": {
+        "page": "options.html"
     }
-  },
-  "description": "Easy management of your tabs and own bookmark system",
-  "icons": {
-    "48": "icons/eclipse_48.png"
-  },
-  "permissions": [
-    "storage",
-    "<all_urls>",
-    "tabs",
-    "tabHide",
-    "contextMenus"
-  ],
-  "sidebar_action": {
-    "default_title": "eclipseTab",
-    "default_panel": "sidebar.html",
-    "default_icon": "icons/eclipse_126.png",
-    "open_at_install": true
-  }
 }
