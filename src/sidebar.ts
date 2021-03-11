@@ -17,7 +17,7 @@ firefoxHandler.startupHandler(firefoxStartHandler);
 //on sidepanel fully loaded
 document.addEventListener("DOMContentLoaded", () => setup())
 
-//add updatteHTML listener
+//add updateHTML listener
 //browser.tabs.addEventListener("updateHTMLList", () => updateHTMLList())
 
 async function startup() {
