@@ -1,20 +1,20 @@
-import { itemData, folderData, tabStructData, Mode } from './interfaces.js'
+import { itemData, folderData, tabStructData, Mode } from "./interfaces.js"
 
 export interface addHTMLhandler {
-    folderRenameSubmit_handler: any,
-    dragstart_handler: any,
-    drop_handler: any,
-    dragover_handler: any,
-    dropend_handler: any,
-    dragend_handler: any,
-    dragenter_handler: any,
-    dragleave_handler: any,
-    folderClick: any,
-    itemClick: any,
-    clearStruct_handler: any,
-    structReloader_handler: any,
-    extensionReloader_handler: any,
-    addFolderClick_handler: any,
+    folderRenameSubmit_handler: any
+    dragstart_handler: any
+    drop_handler: any
+    dragover_handler: any
+    dropend_handler: any
+    dragend_handler: any
+    dragenter_handler: any
+    dragleave_handler: any
+    folderClick: any
+    itemClick: any
+    clearStruct_handler: any
+    structReloader_handler: any
+    extensionReloader_handler: any
+    addFolderClick_handler: any
     addFolderSubmit_handler: any
 }
 
@@ -41,7 +41,12 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
         folderDiv.classList.add("closed")
     }
     folderDiv.appendChild(imgNode)*/
-    folderDiv.insertAdjacentHTML("afterbegin", '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 12 12" class="arrow noEvents" id="' + folder.folderID + '_image" preserveAspectRatio="none"><path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" /></svg>')
+    folderDiv.insertAdjacentHTML(
+        "afterbegin",
+        '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-2 -2 15 15" class="arrow noEvents" id="' +
+            folder.folderID +
+            '_image" preserveAspectRatio="none"><path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" /></svg>'
+    )
     var textContainerNode = document.createElement("div")
     textContainerNode.classList.add("noEvents")
     textContainerNode.style.display = "inline"
@@ -51,8 +56,6 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
 
     var childContainer = document.createElement("div")
     folderDiv.appendChild(childContainer)
-
-
 
     //rename functionality
     if (folder.folderID != "pinned" && folder.folderID != "unordered") {
@@ -66,8 +69,7 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
 
     //eventhandler
     //draggable
-    if (folder.folderID != "pinned" && folder.folderID != "unordered")
-        folderDiv.draggable = true
+    if (folder.folderID != "pinned" && folder.folderID != "unordered") folderDiv.draggable = true
     folderDiv.addEventListener("dragstart", handler.dragstart_handler)
     folderDiv.addEventListener("drop", handler.drop_handler)
     folderDiv.addEventListener("dragover", handler.dragover_handler)
@@ -80,12 +82,10 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
 
     htmlParent.appendChild(folderDiv)
 
-    if (data.mode == Mode.Move)
-        folderDiv.appendChild(createInbetween(folder, tier, handler))
+    if (data.mode == Mode.Move) folderDiv.appendChild(createInbetween(folder, tier, handler))
 
     var image = document.getElementById(folder.folderID + "_image")
-    if (!folder.open)
-        image.classList.add("rotated")
+    if (!folder.open) image.classList.add("rotated")
 
     return folderDiv
 }
@@ -99,16 +99,14 @@ export function addTab(data: tabStructData, folderDiv: HTMLElement, tab: itemDat
     itemNode.setAttribute("favIconUrl", tab.favIconURL)
     itemNode.setAttribute("isItem", "true")
     itemNode.setAttribute("index", tab.index + "")
-    if (tab.parentFolderID != "pinned")
-        itemNode.onclick = handler.itemClick
-    else
-        itemNode.ondblclick = handler.itemClick
+    if (tab.parentFolderID != "pinned") itemNode.onclick = handler.itemClick
+    else itemNode.ondblclick = handler.itemClick
     itemNode.setAttribute("hiddenTab", tab.hidden + "")
     if (tab.hidden) itemNode.classList.add("tabHidden")
     itemNode.style.marginLeft = tier * 4 + "px"
     var iconNode = document.createElement("img")
     iconNode.src = tab.favIconURL
-    iconNode.classList.add("favicon");
+    iconNode.classList.add("favicon")
     itemNode.appendChild(iconNode)
     var titleContainerNode = document.createElement("div")
     titleContainerNode.classList.add("noEvents")
@@ -124,8 +122,7 @@ export function addTab(data: tabStructData, folderDiv: HTMLElement, tab: itemDat
     itemNode.addEventListener("dragend", handler.dragend_handler)
     folderDiv.appendChild(itemNode)
 
-    if (data.mode == Mode.Move)
-        folderDiv.appendChild(createInbetween(tab, tier, handler))
+    if (data.mode == Mode.Move) folderDiv.appendChild(createInbetween(tab, tier, handler))
     return itemNode
 }
 
@@ -135,13 +132,13 @@ function createInbetween(element: itemData | folderData, tier: number, handler: 
     container.classList.add("noEvents")
     //container.innerHTML = '<svg viewBox="0 0 100 2" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-width="2" /></svg>'
     //@TODO
-    container.innerHTML = "<small>Insert Below " + (('folderID' in element) ? (element as folderData).name : (element as itemData).title) + "</small>"
+    container.innerHTML = "<small>Insert Below " + ("folderID" in element ? (element as folderData).name : (element as itemData).title) + "</small>"
     container.classList.add("inbetween")
     container.style.marginLeft = tier * 4 + "px"
     inbetween.appendChild(container)
     inbetween.setAttribute("isInbetween", "true")
     inbetween.setAttribute("parentFolderID", element.parentFolderID)
-    inbetween.setAttribute("index", (element.index + 1) + "")
-    inbetween.addEventListener("drop", handler.dropend_handler);
+    inbetween.setAttribute("index", element.index + 1 + "")
+    inbetween.addEventListener("drop", handler.dropend_handler)
     return inbetween
 }

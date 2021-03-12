@@ -1,23 +1,24 @@
-function saveOptions(e) {
-    e.preventDefault();
-    // @ts-ignore
-    browser.storage.sync.set({color: document.querySelector("#color").value});
-}
+import { getDataStructFromFirefox, saveDataInFirefox } from "./dataHandler/getter.js"
+import { tabStructData } from "./interfaces.js"
 
+async function saveOptions(e) {
+    e.preventDefault()
+    var data = await getDataStructFromFirefox()
+    console.log(data)
+    //@ts-ignore
+    data.devMode = document.getElementById("developerMode_checkbox").checked
+    saveDataInFirefox(data)
+}
 function restoreOptions() {
-
-    function setCurrentChoice(result) { // @ts-ignore
-        document.querySelector("#color").value = result.color || "blue";
+    function setCurrentChoices(storage: tabStructData) {
+        //@ts-ignore
+        document.getElementById("developerMode_checkbox").checked = storage.devMode
     }
 
-    function onError(error) {
-        console.log(`Error: ${error}`);
-    }
-
-    // @ts-ignore
-    let getting = browser.storage.sync.get("color");
-    getting.then(setCurrentChoice, onError);
+    getDataStructFromFirefox().then((eclipseStorage) => {
+        setCurrentChoices(eclipseStorage)
+    })
 }
 
-document.addEventListener("DOMContentLoaded", restoreOptions);
-document.querySelector("form").addEventListener("submit", saveOptions);
+document.addEventListener("DOMContentLoaded", restoreOptions)
+document.querySelector("form").addEventListener("submit", saveOptions)

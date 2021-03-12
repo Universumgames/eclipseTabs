@@ -2,6 +2,7 @@ export interface tabStructData {
     mode: Mode
     rootFolder: folderData
     colorScheme: ColorScheme
+    devMode: Boolean
 }
 
 export interface folderData extends elementData {

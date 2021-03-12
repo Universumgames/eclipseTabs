@@ -80,6 +80,8 @@ const contextMenu_folder_delete = document.getElementById("contextMenu_folder_de
 const contextMenu_item = document.getElementById("contextMenu_item")
 const contextMenu_item_delete = document.getElementById("contextMenu_item_delete")
 
+const debugElements = document.getElementById("debugElements")
+
 var contextMenuTarget: HTMLElement
 
 var oldColorScheme = ColorScheme.dark
@@ -144,6 +146,8 @@ export async function setupHandler(setupFun: Function) {
     bottomElementIcons.push(exportBtn.children[0] as HTMLElement)
     bottomElementIcons.push(importBtn.children[0] as HTMLElement)
     bottomElementIcons.push(moveBtn.children[0] as HTMLElement)
+
+    setDevMode(true)
 
     setColorScheme(data)
 }
@@ -360,6 +364,7 @@ async function refreshTabList() {
         loadFolderList(tabs, data)
     })
     setColorScheme(data)
+    setDevMode(data.devMode)
 }
 
 function refreshTabListOnActiveChange(activeInfoa) {
@@ -453,11 +458,11 @@ async function loadFirefoxData(): Promise<tabStructData> {
 }
 
 async function exportData_handler(event: any) {
-    tabHelper.createTab("../dataExport.html")
+    tabHelper.createTab("../pages/dataExport.html")
 }
 
 async function importData_handler(event: any) {
-    tabHelper.createTab("../dataImport.html")
+    tabHelper.createTab("../pages/dataImport.html")
 }
 
 async function moveData_handler(event: any) {
@@ -562,8 +567,13 @@ function setColorScheme(data: tabStructData) {
     if (data.colorScheme != oldColorScheme) {
         bottomElementIcons.forEach((element) => {
             var filename = element.getAttribute("filename")
-            element.setAttribute("data", "icons/" + (data.colorScheme == ColorScheme.dark ? "dark" : "light") + "/" + filename)
+            element.setAttribute("data", "../icons/" + (data.colorScheme == ColorScheme.dark ? "dark" : "light") + "/" + filename)
         })
     }
     oldColorScheme = data.colorScheme
+}
+
+function setDevMode(devMode: Boolean) {
+    if (devMode) debugElements.classList.remove("disabled")
+    else debugElements.classList.add("disabled")
 }

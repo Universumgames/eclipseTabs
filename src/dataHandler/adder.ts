@@ -1,15 +1,16 @@
-import { ColorScheme, folderData, itemData, Mode, tabStructData } from '../interfaces.js'
-import { getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from './getter.js'
+import { ColorScheme, folderData, itemData, Mode, tabStructData } from "../interfaces.js"
+import { getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter.js"
 
 export function createEmptyRoot(): folderData {
-    return { folderID: '-1', name: 'root', open: true, parentFolderID: '-1', index: 0, elements: [] } as folderData
+    return { folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, elements: [] } as folderData
 }
 
 export function createEmptyData(): tabStructData {
     var data = {
         mode: Mode.Default,
-        rootFolder: { folderID: '-1', name: 'root', open: true, parentFolderID: '-1', index: 0, elements: [] },
+        rootFolder: { folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, elements: [] },
         colorScheme: ColorScheme.dark,
+        devMode: false,
     } as tabStructData
     return data
 }

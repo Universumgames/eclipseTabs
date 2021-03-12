@@ -44,6 +44,7 @@ export async function localStorageGetTabStructData(name: string): Promise<tabStr
     //@ts-ignore
     var storage = await browser.storage.local.get(name)
     var data = storage.eclipseData
+    if (data === undefined) return undefined
 
     //transition to new object
     if ("rootFolder" in data) {
@@ -59,6 +60,7 @@ export async function localStorageGetTabStructData(name: string): Promise<tabStr
             mode: data.mode,
             colorScheme: data.colorScheme,
             rootFolder: root,
+            devMode: false,
         } as tabStructData
     }
     return undefined

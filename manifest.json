@@ -24,11 +24,11 @@
     ],
     "sidebar_action": {
         "default_title": "eclipseTab",
-        "default_panel": "sidebar.html",
+        "default_panel": "pages/sidebar.html",
         "default_icon": "icons/eclipse_126.png",
         "open_at_install": true
     },
     "options_ui": {
-        "page": "options.html"
+        "page": "pages/options.html"
     }
 }
