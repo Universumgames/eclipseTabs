@@ -11,6 +11,7 @@ export function createEmptyData(): tabStructData {
         rootFolder: { folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, elements: [] },
         colorScheme: ColorScheme.dark,
         devMode: false,
+        closeTabsInDeletingFolder: false,
     } as tabStructData
     return data
 }

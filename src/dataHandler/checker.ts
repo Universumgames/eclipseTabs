@@ -1,9 +1,9 @@
-import { elementData, folderIDType, itemIDType, tabIDType, tabStructData } from '../interfaces.js'
-import { unorderedFolderID } from './definitions.js'
-import { getItemJSONObjectByItemID, getItemJSONObjectByTabID } from './getter.js'
+import { elementData, folderIDType, itemIDType, tabIDType, tabStructData } from "../interfaces.js"
+import { unorderedFolderID } from "./definitions.js"
+import { getItemJSONObjectByItemID, getItemJSONObjectByTabID } from "./getter.js"
 
 export function tabExistsByItemID(itemID: itemIDType, dataStruct: tabStructData): Boolean {
-    var item = getItemJSONObjectByItemID(itemID, dataStruct.layer0Folderkjklasjdfökjsfg)
+    var item = getItemJSONObjectByItemID(itemID, dataStruct.rootFolder)
     return item != undefined && item.parentFolderID != unorderedFolderID
 }
 

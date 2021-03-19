@@ -35,38 +35,60 @@
                 <svg viewBox="0 0 100 2" class="bottomElement" xmlns="http://www.w3.org/2000/svg">
                     <line x1="0" y1="0" x2="100" y2="0" stroke-width="2" />
                 </svg>
+
                 <div id="addFolder" class="bottomElement">
-                    <object
-                        class="bottomElementPic noEvents"
-                        data="../icons/dark/addFolder.svg"
-                        filename="addFolder.svg"
-                        type="image/svg+xml"
-                    ></object>
+                    <span title="Need order? Create a new folder, name it and move it to andy subdirectory you want">
+                        <object
+                            class="bottomElementPic noEvents"
+                            data="../icons/dark/addFolder.svg"
+                            filename="addFolder.svg"
+                            type="image/svg+xml"
+                        ></object>
+                    </span>
                 </div>
+
                 <div id="delete" class="bottomElement">
-                    <object class="bottomElementPic noEvents" data="../icons/dark/bin.svg" filename="bin.svg" type="image/svg+xml"></object>
+                    <span title="Just drag stuff over here to erase it from existence">
+                        <object class="bottomElementPic noEvents" data="../icons/dark/bin.svg" filename="bin.svg" type="image/svg+xml"></object>
+                    </span>
                 </div>
                 <div id="exportData" class="bottomElement">
-                    <object class="bottomElementPic noEvents" data="../icons/dark/export.svg" filename="export.svg" type="image/svg+xml"></object>
+                    <span
+                        title="You create a backup from time to time, especially before updating the addon. Click this and the corresponding json ill be displayed in a new tab"
+                    >
+                        <object class="bottomElementPic noEvents" data="../icons/dark/export.svg" filename="export.svg" type="image/svg+xml"></object>
+                    </span>
                 </div>
                 <div id="importData" class="bottomElement">
-                    <object class="bottomElementPic noEvents" data="../icons/dark/import.svg" filename="import.svg" type="image/svg+xml"></object>
+                    <span
+                        title="Old data got deleted or you transferred your exported data from an other pc to this one? Click here to import your json data"
+                    >
+                        <object class="bottomElementPic noEvents" data="../icons/dark/import.svg" filename="import.svg" type="image/svg+xml"></object>
+                    </span>
                 </div>
                 <div id="moveElements" class="bottomElement">
-                    <object class="bottomElementPic noEvents" data="../icons/dark/move.svg" filename="move.svg" type="image/svg+xml"></object>
-                </div>
-                <div id="darkmodeSW" class="bottomElement">
-                    <label class="switch">
-                        <input type="checkbox" id="darkModeSW_checkbox" />
-                        <span class="slider round"></span>
-                    </label>
+                    <span title="Not happy with the order? Use this to change the view so you can properly change the order of your folders or items">
+                        <object class="bottomElementPic noEvents" data="../icons/dark/move.svg" filename="move.svg" type="image/svg+xml"></object>
+                    </span>
                 </div>
             </div>
             <br />
             <div id="debugElements" class="disabled">
-                <button id="structCleaner">Clear Data Struct</button>
-                <button id="structReloader">Reload Data Struct</button>
-                <button id="extensioReloader">Reload Extension</button>
+                <button id="structCleaner">
+                    <span title="You * up your data struct? Just reset it to default values to test and try again">Clear Data Struct</span>
+                </button>
+                <button id="structReloader">
+                    <span
+                        title="You are not sure, the displayed data ist the newest? Reload everything, it's like restarting your browser or the addon"
+                        >Reload Data Struct</span
+                    >
+                </button>
+                <button id="extensioReloader">
+                    <span
+                        title="Don't want to switch the tab to the debugging window and reload the addon to load the newest creations? Reload the addon from here, unless you * up the whole addon"
+                        >Reload Extension</span
+                    >
+                </button>
             </div>
         </div>
     </body>

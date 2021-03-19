@@ -68,7 +68,7 @@ const trashcan = document.getElementById("delete")
 const exportBtn = document.getElementById("exportData") as HTMLInputElement
 const importBtn = document.getElementById("importData") as HTMLInputElement
 const moveBtn = document.getElementById("moveElements") as HTMLInputElement
-const darkModeSW_checkbox = document.getElementById("darkModeSW_checkbox") as HTMLInputElement
+//const darkModeSW_checkbox = document.getElementById("darkModeSW_checkbox") as HTMLInputElement
 const bottomElementIcons: Array<HTMLElement> = []
 
 const contextMenu = document.getElementById("contextMenu")
@@ -128,8 +128,8 @@ export async function setupHandler(setupFun: Function) {
             break
     }
 
-    darkModeSW_checkbox.onchange = darkModeSW_checkbox_handler
-    darkModeSW_checkbox.checked = data.colorScheme == ColorScheme.light ? true : false
+    //darkModeSW_checkbox.onchange = darkModeSW_checkbox_handler
+    //darkModeSW_checkbox.checked = data.colorScheme == ColorScheme.light ? true : false
 
     document.oncontextmenu = contextMenu_handler
     document.onclick = contextMenuClose_handler
@@ -539,12 +539,12 @@ async function contextMenu_item_delete_handler(event: any) {
     } else console.warn("Method item delete handler was called on a non item element")
 }
 
-async function darkModeSW_checkbox_handler(event: any) {
+/*async function darkModeSW_checkbox_handler(event: any) {
     var data = await getDataStructFromFirefox()
     data.colorScheme = event.target.checked ? ColorScheme.light : ColorScheme.dark
     await saveDataInFirefox(data)
     triggerListReload()
-}
+}*/
 
 function setColorScheme(data: tabStructData) {
     var htmlBody = document.getElementById("body")

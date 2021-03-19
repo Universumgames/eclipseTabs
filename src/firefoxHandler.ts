@@ -61,6 +61,7 @@ export async function localStorageGetTabStructData(name: string): Promise<tabStr
             colorScheme: data.colorScheme,
             rootFolder: root,
             devMode: false,
+            closeTabsInDeletingFolder: false,
         } as tabStructData
     }
     return undefined

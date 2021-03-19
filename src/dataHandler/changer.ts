@@ -1,4 +1,4 @@
-import { folderData, itemData, tabStructData } from '../interfaces.js'
+import { folderData, itemData, tabStructData } from "../interfaces.js"
 import {
     getDataStructFromFirefox,
     getFolderJSONObjectByID,
@@ -6,9 +6,9 @@ import {
     getKeyByIDAndType,
     getNumberOfItemsAlreadyExisting,
     saveDataInFirefox,
-} from './getter.js'
-import * as tabHelper from '../tabHelper.js'
-import { generateIndexInFolder } from './adder.js'
+} from "./getter.js"
+import * as tabHelper from "../tabHelper.js"
+import { generateIndexInFolder } from "./adder.js"
 
 export async function renameFolder(folderID: string, newName: string): Promise<void> {
     var data = await getDataStructFromFirefox()
@@ -61,10 +61,10 @@ export async function removeFolder(folderID: string, oldParentFolderID: string):
 
     for (var key in folder.elements) {
         var item = folder.elements[key]
-        if ('itemID' in item) {
-            if ((item as itemData).tabID != '-1' && (await tabHelper.tabExists((item as itemData).tabID)))
+        if ("itemID" in item) {
+            if (data.closeTabsInDeletingFolder && (item as itemData).tabID != "-1" && (await tabHelper.tabExists((item as itemData).tabID)))
                 tabHelper.closeTab((item as itemData).tabID)
-        } else if ('folderID' in item) {
+        } else if ("folderID" in item) {
             removeFolder((item as folderData).folderID, folderID)
         }
     }
@@ -101,7 +101,7 @@ export async function expandAll() {
 
 function expandRecursion(data: folderData) {
     data.elements.forEach((element) => {
-        if ('folderID' in element) {
+        if ("folderID" in element) {
             var folder = element as folderData
             folder.open = true
             expandRecursion(folder)
@@ -117,7 +117,7 @@ export async function collapseAll() {
 
 function collapseAllRecusrion(data: folderData) {
     data.elements.forEach((element) => {
-        if ('folderID' in element) {
+        if ("folderID" in element) {
             var folder = element as folderData
             folder.open = false
             expandRecursion(folder)

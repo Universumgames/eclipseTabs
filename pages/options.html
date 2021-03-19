@@ -11,9 +11,27 @@
         <form>
             <br />
             <div id="developerMode">
-                Developer View
+                <span title="Active Developer View to use important developer tools like resetting the data struct or reloading the addon"
+                    >Developer View</span
+                >
                 <label class="switch">
                     <input type="checkbox" id="developerMode_checkbox" />
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div id="darkmodeSW">
+                <span title="You are not a dark-mode fan? Let there be light!">Light Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeSW_checkbox" />
+                    <span class="slider round"></span>
+                </label>
+            </div>
+            <div id="closeTabsSW">
+                <span title="When deleting a folder with open (or hidden) tabs, those will be not closed by default, unless you activate that here"
+                    >Close Tabs when deleting folder</span
+                >
+                <label class="switch">
+                    <input type="checkbox" id="closeTabsSW_checkbox" />
                     <span class="slider round"></span>
                 </label>
             </div>

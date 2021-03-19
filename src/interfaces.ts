@@ -3,6 +3,7 @@ export interface tabStructData {
     rootFolder: folderData
     colorScheme: ColorScheme
     devMode: Boolean
+    closeTabsInDeletingFolder: Boolean
 }
 
 export interface folderData extends elementData {

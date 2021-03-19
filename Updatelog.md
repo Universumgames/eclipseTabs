@@ -1,3 +1,12 @@
+Update 1.0.4:
+
+-   moved dark-/light-mode switch from bottom sidebar to settings
+-   added new setting: Delete items in folders when deleting folder
+-
+
+IMPORTANT NOTE BEFORE UPGRADING
+Just like in every update we encourage you to export your current data before upgrading due to potential data loss in project structures. In this update the data will be overwritten for sure but can be easily reimported...
+
 Update 1.0.3:
 In this update we did minor visual upgrades:
 

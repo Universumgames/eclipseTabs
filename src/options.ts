@@ -1,18 +1,26 @@
 import { getDataStructFromFirefox, saveDataInFirefox } from "./dataHandler/getter.js"
-import { tabStructData } from "./interfaces.js"
+import { ColorScheme, tabStructData } from "./interfaces.js"
+
+const devModeSW = document.getElementById("developerMode_checkbox") as HTMLInputElement
+const darkModeSW = document.getElementById("darkModeSW_checkbox") as HTMLInputElement
+const closeTabsDeletingFolderSW = document.getElementById("closeTabsSW_checkbox") as HTMLInputElement
 
 async function saveOptions(e) {
     e.preventDefault()
     var data = await getDataStructFromFirefox()
     console.log(data)
-    //@ts-ignore
-    data.devMode = document.getElementById("developerMode_checkbox").checked
+    data.devMode = devModeSW.checked
+    data.closeTabsInDeletingFolder = closeTabsDeletingFolderSW.checked
+    data.colorScheme = darkModeSW.checked ? ColorScheme.light : ColorScheme.dark
+    console.log(data.colorScheme)
     saveDataInFirefox(data)
 }
+
 function restoreOptions() {
     function setCurrentChoices(storage: tabStructData) {
-        //@ts-ignore
-        document.getElementById("developerMode_checkbox").checked = storage.devMode
+        devModeSW.checked = storage.devMode as boolean
+        closeTabsDeletingFolderSW.checked = storage.closeTabsInDeletingFolder as boolean
+        darkModeSW.checked = storage.colorScheme == ColorScheme.light
     }
 
     getDataStructFromFirefox().then((eclipseStorage) => {
