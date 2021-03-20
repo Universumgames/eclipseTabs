@@ -41,3 +41,8 @@ export enum ColorScheme {
 export type tabIDType = string
 export type itemIDType = string
 export type folderIDType = string
+
+export enum KeyCode {
+    enter = 13,
+    escape = 27,
+}

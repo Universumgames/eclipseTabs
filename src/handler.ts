@@ -1,7 +1,7 @@
 import * as htmlAdder from "./addHTMLElements.js"
 import * as tabHelper from "./tabHelper.js"
 import * as helper from "./helper.js"
-import { ColorScheme, elementData, folderData, itemData, Mode, tabStructData } from "./interfaces.js"
+import { ColorScheme, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "./interfaces.js"
 import * as firefoxHandler from "./firefoxHandler.js"
 import {
     addFolder,
@@ -41,11 +41,7 @@ export var addHTMLHandler: htmlAdder.addHTMLhandler = {
     addFolderSubmit_handler: addFolderSubmit_handler,
 }
 
-var firefoxHandlerStruct: firefoxHandler.firefoxHandler = {
-    refreshTabListOnActiveChange: refreshTabListOnActiveChange,
-    refreshTabListOnSiteUpdated: refreshTabListOnSiteUpdated,
-    refreshTabListOnTabRemoved: refreshTabListOnTabRemoved,
-}
+var firefoxHandlerStruct: firefoxHandler.firefoxHandler = { updateList: updateList }
 
 var dragging: HTMLElement
 var draggingJSON: folderData | itemData
@@ -147,7 +143,7 @@ export async function setupHandler(setupFun: Function) {
     bottomElementIcons.push(importBtn.children[0] as HTMLElement)
     bottomElementIcons.push(moveBtn.children[0] as HTMLElement)
 
-    setDevMode(true)
+    setDevMode(data.devMode)
 
     setColorScheme(data)
 }
@@ -192,37 +188,38 @@ async function drop_handler(event) {
     event.preventDefault()
     var target = event.target as HTMLElement
     target.classList.remove("hover")
-    dragging.classList.remove("hover")
+    if (dragging != undefined) {
+        dragging.classList.remove("hover")
 
-    if (helper.isFolder(target)) {
-        if ("folderID" in draggingJSON) {
-            await moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.getAttribute("folderID"))
-        } else if ("itemID" in draggingJSON) {
-            await moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.getAttribute("folderID"))
-        }
+        if (helper.isFolder(target)) {
+            if ("folderID" in draggingJSON) {
+                await moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.getAttribute("folderID"))
+            } else if ("itemID" in draggingJSON) {
+                await moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.getAttribute("folderID"))
+            }
 
-        triggerListReload()
-    } else if (helper.toBoolean(target.getAttribute("isTrashCan"))) {
-        if ("itemID" in draggingJSON) {
-            if (draggingJSON.tabID != "-1") tabHelper.closeTab(draggingJSON.tabID)
+            triggerListReload()
+        } else if (helper.toBoolean(target.getAttribute("isTrashCan"))) {
+            if ("itemID" in draggingJSON) {
+                if (draggingJSON.tabID != "-1") tabHelper.closeTab(draggingJSON.tabID)
 
-            await removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
-        } else if ("folderID" in draggingJSON) {
-            await removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
-        }
-        triggerListReload()
-    } else if (helper.isInbetween(target)) {
-        var parentFolderID: string = target.getAttribute("parentFolderID")
-        var data: tabStructData = await getDataStructFromFirefox()
-        var parentFolder: folderData = getFolderJSONObjectByID(parentFolderID, data.rootFolder)
-        var element: elementData
-        if ("itemID" in draggingJSON) {
-            element = getItemJSONObjectByItemID(draggingJSON.itemID, data.rootFolder)
-        } else if ("folderID" in draggingJSON) {
-            element = getFolderJSONObjectByID(draggingJSON.folderID, data.rootFolder)
-        }
-        element.index = +target.getAttribute("index")
-        /*for (var key in parentFolder.elements) {
+                await removeItem(draggingJSON.itemID, draggingJSON.parentFolderID)
+            } else if ("folderID" in draggingJSON) {
+                await removeFolder(draggingJSON.folderID, draggingJSON.parentFolderID)
+            }
+            triggerListReload()
+        } else if (helper.isInbetween(target)) {
+            var parentFolderID: string = target.getAttribute("parentFolderID")
+            var data: tabStructData = await getDataStructFromFirefox()
+            var parentFolder: folderData = getFolderJSONObjectByID(parentFolderID, data.rootFolder)
+            var element: elementData
+            if ("itemID" in draggingJSON) {
+                element = getItemJSONObjectByItemID(draggingJSON.itemID, data.rootFolder)
+            } else if ("folderID" in draggingJSON) {
+                element = getFolderJSONObjectByID(draggingJSON.folderID, data.rootFolder)
+            }
+            element.index = +target.getAttribute("index")
+            /*for (var key in parentFolder.elements) {
             var checkElement = parentFolder.elements[key]
             if (checkElement.index != element.index)
                 continue
@@ -234,9 +231,12 @@ async function drop_handler(event) {
                     (element as folderData).index++
             }
         }*/
-        await saveDataInFirefox(data)
-        triggerListReload()
+            await saveDataInFirefox(data)
+            triggerListReload()
+        }
     }
+
+    console.log(event)
 
     dragging = undefined
 
@@ -335,13 +335,19 @@ async function itemClick(e) {
 
 function addFolderClick_handler() {
     addFolderNameInputContainer.classList.remove("disabled")
+    addFolderNameInput.focus()
 }
 
 async function addFolderSubmit_handler(event) {
-    if (event.keyCode == 13) {
+    if (event.keyCode == KeyCode.enter) {
         event.preventDefault()
         var value = addFolderNameInput.value
-        await addFolder("-1", (await generateFolderID()).toString(), value)
+        if (value != "") await addFolder("-1", (await generateFolderID()).toString(), value, await getDataStructFromFirefox())
+        addFolderNameInput.value = ""
+        addFolderNameInputContainer.classList.add("disabled")
+        triggerListReload()
+    }
+    if (event.keyCode == KeyCode.escape) {
         addFolderNameInput.value = ""
         addFolderNameInputContainer.classList.add("disabled")
         triggerListReload()
@@ -349,11 +355,14 @@ async function addFolderSubmit_handler(event) {
 }
 
 async function folderRenameSubmit_handler(event) {
-    if (event.keyCode == 13) {
+    if (event.keyCode == KeyCode.enter) {
         event.preventDefault()
         var value = event.originalTarget.value
         var parent = event.originalTarget.parentNode
-        await renameFolder(parent.getAttribute("folderID"), value)
+        if (value != "") await renameFolder(parent.getAttribute("folderID"), value)
+        triggerListReload()
+    }
+    if (event.keyCode == KeyCode.escape) {
         triggerListReload()
     }
 }
@@ -367,32 +376,12 @@ async function refreshTabList() {
     setDevMode(data.devMode)
 }
 
-function refreshTabListOnActiveChange(activeInfoa) {
-    refreshTabList()
-}
-
-function refreshTabListOnTabClosed(tabId, removeInfo) {
-    refreshTabList()
-}
-
-function refreshTabListOnTabRemoved() {
+function updateList() {
     refreshTabList()
 }
 
 async function refreshTabListOnSiteUpdated(tabId, changeInfo, tabInfo) {
     if (changeInfo.status != undefined) refreshTabList()
-}
-
-// not used anymore
-async function tabUpdateListener(tabId, changeInfo, tabInfo) {
-    document.getElementById("list").innerHTML = ""
-    var data = await getDataStructFromFirefox()
-    firefoxHandler.tabQuery({}).then(
-        (element) => {
-            loadFolderList(element, data)
-        },
-        (element) => console.error(element)
-    )
 }
 
 export async function loadFolderList(tabs: any, data: tabStructData) {
@@ -448,13 +437,6 @@ function setChildrenVisible(value: Boolean, childs: Array<HTMLElement> | HTMLCol
 
 function tabClosed(event) {
     setup()
-}
-
-async function loadFirefoxData(): Promise<tabStructData> {
-    var dataF = await getDataStructFromFirefox()
-    if (dataF != undefined) return dataF
-
-    return undefined
 }
 
 async function exportData_handler(event: any) {
@@ -514,9 +496,12 @@ async function contextMenu_generic_expandAll_handler(event: any) {
 
 async function contextMenu_folder_rename_handler(event: any) {
     var divContainer = contextMenuTarget
-    if (divContainer.getAttribute("isFolder"))
+    if (divContainer.getAttribute("isFolder")) {
         // divContainer.innerText = ""
         divContainer.children[3].classList.toggle("disabled")
+        //@ts-ignore
+        divContainer.children[3].focus()
+    }
 }
 
 async function contextMenu_folder_delete_handler(event: any) {
@@ -574,6 +559,11 @@ function setColorScheme(data: tabStructData) {
 }
 
 function setDevMode(devMode: Boolean) {
-    if (devMode) debugElements.classList.remove("disabled")
-    else debugElements.classList.add("disabled")
+    if (devMode) {
+        debugElements.classList.remove("disabled")
+        listContainer.classList.add("devMode")
+    } else {
+        debugElements.classList.add("disabled")
+        listContainer.classList.remove("devMode")
+    }
 }

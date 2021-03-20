@@ -2,6 +2,7 @@
     "manifest_version": 2,
     "name": "eclipseTab",
     "version": "1.0.4",
+    "author": "UniversumGames",
     "developer": {
         "name": "UniversumGames",
         "url": "https://universegame.de/"
@@ -20,7 +21,8 @@
         "<all_urls>",
         "tabs",
         "tabHide",
-        "contextMenus"
+        "contextMenus",
+        "bookmarks"
     ],
     "sidebar_action": {
         "default_title": "eclipseTab",

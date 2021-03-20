@@ -2,7 +2,9 @@ Update 1.0.4:
 
 -   moved dark-/light-mode switch from bottom sidebar to settings
 -   added new setting: Delete items in folders when deleting folder
--
+-   autofocus when adding or renaming folders
+-   bugfix: folder could be named "" and could not be deleted, now folders cannot be called ""
+-   updated design flaw: when dev mode disabled, the size of the viewable list did not increase
 
 IMPORTANT NOTE BEFORE UPGRADING
 Just like in every update we encourage you to export your current data before upgrading due to potential data loss in project structures. In this update the data will be overwritten for sure but can be easily reimported...

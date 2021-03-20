@@ -16,8 +16,7 @@ export function createEmptyData(): tabStructData {
     return data
 }
 
-export async function addFolder(parentID: string, newFolderID: string, name: string): Promise<folderData> {
-    var data = await getDataStructFromFirefox()
+export async function addFolder(parentID: string, newFolderID: string, name: string, data: tabStructData): Promise<folderData> {
     var parentFolder = getFolderJSONObjectByID(parentID, data.rootFolder)
     var folder: folderData = {
         open: true,
@@ -57,7 +56,7 @@ export function addTabSync(
     return storedTab
 }
 
-export async function addTab(
+/*export async function addTab(
     folderID: string,
     title: string,
     url: string,
@@ -65,14 +64,14 @@ export async function addTab(
     tabExists: Boolean,
     tabID: string,
     itemID: string,
-    hidden: Boolean
+    hidden: Boolean,
+    data: tabStructData
 ): Promise<itemData> {
-    var data = await getDataStructFromFirefox()
     var folder = getFolderJSONObjectByID(folderID, data.rootFolder)
     var item = addTabSync(folder, title, url, favIconURL, tabExists, tabID, itemID, hidden)
     await saveDataInFirefox(data)
     return item
-}
+}*/
 
 export function createItemIDByTab(tab) {
     return tab.url

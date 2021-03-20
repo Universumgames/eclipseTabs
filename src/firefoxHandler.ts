@@ -1,10 +1,11 @@
 import { createEmptyData, createEmptyRoot } from "./dataHandler/adder.js"
 import { folderData, tabStructData } from "./interfaces.js"
 
+//@ts-ignore
+const firefoxBrowser: any = browser
+
 export interface firefoxHandler {
-    refreshTabListOnActiveChange: any
-    refreshTabListOnSiteUpdated: any
-    refreshTabListOnTabRemoved: any
+    updateList: any
 }
 
 export interface firefoxStartupHandler {
@@ -12,37 +13,37 @@ export interface firefoxStartupHandler {
 }
 
 export function reload() {
-    //@ts-ignore
-    browser.runtime.reload()
+    firefoxBrowser.runtime.reload()
 }
 
-export function registerListener(handler: firefoxHandler) {
-    //@ts-ignore
-    browser.tabs.onActivated.addListener(handler.refreshTabListOnActiveChange)
-    //@ts-ignore
-    browser.tabs.onUpdated.addListener(handler.refreshTabListOnSiteUpdated)
-    //@ts-ignore
-    browser.tabs.onRemoved.addListener(handler.refreshTabListOnTabRemoved)
+export async function registerListener(handler: firefoxHandler) {
+    firefoxBrowser.tabs.onActivated.addListener(handler.updateList)
+    firefoxBrowser.tabs.onUpdated.addListener(handler.updateList)
+    firefoxBrowser.tabs.onRemoved.addListener(handler.updateList)
+    firefoxBrowser.tabs.onMoved.addListener(handler.updateList)
+    firefoxBrowser.tabs.onDetached.addListener(handler.updateList)
+    firefoxBrowser.tabs.onCreated.addListener(handler.updateList)
+
+    /*while (true) {
+        handler.updateList()
+        await setTimeout(() => {}, 300)
+    }*/
 }
 
 export async function tabQuery(query: any): Promise<any> {
-    //@ts-ignore
-    return await browser.tabs.query(query)
+    return await firefoxBrowser.tabs.query(query)
 }
 
 export async function startupHandler(handler: firefoxStartupHandler) {
-    //@ts-ignore
-    browser.runtime.onStartup.addListener(handler.startup)
+    firefoxBrowser.runtime.onStartup.addListener(handler.startup)
 }
 
 export async function localStorageSet(data: any): Promise<any> {
-    //@ts-ignore
-    return await browser.storage.local.set(data)
+    return await firefoxBrowser.storage.local.set(data)
 }
 
 export async function localStorageGetTabStructData(name: string): Promise<tabStructData> {
-    //@ts-ignore
-    var storage = await browser.storage.local.get(name)
+    var storage = await firefoxBrowser.storage.local.get(name)
     var data = storage.eclipseData
     if (data === undefined) return undefined
 

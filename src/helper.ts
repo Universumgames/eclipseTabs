@@ -1,4 +1,4 @@
-import * as firefoxHandler from './firefoxHandler.js'
+import * as firefoxHandler from "./firefoxHandler.js"
 
 export function toBoolean(bool: string): Boolean {
     if (bool == "true") return true
@@ -11,17 +11,15 @@ export function reloadExtension(): void {
 }
 
 export function isFolder(element: HTMLElement): Boolean {
-    return (element.getAttribute("isfolder") != undefined && toBoolean(element.getAttribute("isFolder")))
+    return element != undefined && element.getAttribute("isfolder") != undefined && toBoolean(element.getAttribute("isFolder"))
 }
 
 export function isItem(element: HTMLElement): Boolean {
-    return (element.getAttribute("isitem") != undefined && toBoolean(element.getAttribute("isItem")))
+    return element != undefined && element.getAttribute("isitem") != undefined && toBoolean(element.getAttribute("isItem"))
 }
 
 export function isInbetween(element: HTMLElement): Boolean {
-    return (element.getAttribute("isinbetween") != undefined && toBoolean(element.getAttribute("isInbetween")))
+    return element != undefined && element.getAttribute("isinbetween") != undefined && toBoolean(element.getAttribute("isInbetween"))
 }
 
-export function isTrashcan(element: HTMLElement) {
-
-}
+export function isTrashcan(element: HTMLElement) {}

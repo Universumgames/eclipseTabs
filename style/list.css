@@ -4,11 +4,15 @@
 
 #list {
   overflow: auto;
-  max-height: calc(100vh - 10rem);
+  max-height: calc(100vh - 4rem);
   -ms-overflow-style: none;
   /* IE and Edge */
   scrollbar-width: none;
   /* Firefox */
+}
+
+#list.devMode{
+  max-height: calc(100vh - 10rem);
 }
 
 #list::-webkit-scrollbar {

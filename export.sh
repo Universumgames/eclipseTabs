@@ -22,6 +22,9 @@ compressSource(){
 }
 
 compressProgram(){
+    echo "Compiling (transpiling) source"
+    tsc 
+    echo "Transpiled!!"
     ECLIPSE_EXPORT_PROG_FILE="${1}.zip"
     zip -r -q "${ECLIPSE_EXPORT_PROG_FILE}" compiled/* icons/* pages/* manifest.json style/*
     echo "Program files zippen in ${ECLIPSE_EXPORT_PROG_FILE}"
