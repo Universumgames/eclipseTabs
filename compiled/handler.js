@@ -11,7 +11,7 @@ import * as htmlAdder from './addHTMLElements.js';
 import * as tabHelper from './tabHelper.js';
 import * as helper from './helper.js';
 import { Mode } from './interfaces.js';
-import * as chromiumHandler from './chromiumHandler.js';
+import * as firefoxHandler from './firefoxHandler.js';
 import { addFolder, collapseAll, createEmptyData, expandAll, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js';
 export var addHTMLHandler = {
     folderRenameSubmit_handler: folderRenameSubmit_handler,
@@ -65,7 +65,7 @@ export function setupHandler(setupFun) {
     return __awaiter(this, void 0, void 0, function* () {
         setup = setupFun;
         var data = yield getDataStructFromFirefox();
-        chromiumHandler.registerListener(firefoxHandlerStruct);
+        firefoxHandler.registerListener(firefoxHandlerStruct);
         document.getElementById("emptyList").classList.add("disabled");
         document.getElementById("list").classList.remove("disabled");
         structCleaner.onclick = addHTMLHandler.clearStruct_handler;
@@ -310,7 +310,7 @@ function tabUpdateListener(tabId, changeInfo, tabInfo) {
     return __awaiter(this, void 0, void 0, function* () {
         document.getElementById("list").innerHTML = "";
         var data = yield getDataStructFromFirefox();
-        chromiumHandler.tabQuery({}).then((element) => { loadFolderList(element, data); }, (element) => console.error(element));
+        firefoxHandler.tabQuery({}).then((element) => { loadFolderList(element, data); }, (element) => console.error(element));
     });
 }
 export function loadFolderList(tabs, data) {

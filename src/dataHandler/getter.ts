@@ -1,5 +1,5 @@
 import { elementData, folderData, folderIDType, itemData, itemIDType, tabIDType, tabStructData } from "../interfaces.js"
-import * as chromiumHandler from '../chromiumHandler.js'
+import * as firefoxHandler from '../firefoxHandler.js'
 
 //#region getter
 export function getItemJSONObjectByItemID(itemID: itemIDType, data: tabStructData | folderData): itemData | undefined {
@@ -124,26 +124,24 @@ export function getFoldersInFolder(folder: folderData): Array<folderData> {
 }
 
 export function saveDataInFirefox(data: tabStructData) {
-    return chromiumHandler.localStorageSet(data)
+    return firefoxHandler.localStorageSet({ data })
 }
 
-async function getFirefoxStructFromFirefox() {
-    var data: tabStructData
-    data = (await chromiumHandler.localStorageGet())['data']
-    return data
+function getFirefoxStructFromFirefox() {
+    return firefoxHandler.localStorageGet("data")
 }
 
 export async function getDataStructFromFirefox(): Promise<tabStructData> {
-    return (await getFirefoxStructFromFirefox())
+    return (await getFirefoxStructFromFirefox()).data
 }
 //#endregion
 
 export async function getActiveTab() {
-    return (await chromiumHandler.tabQuery({ currentWindow: true, active: true }))[0]
+    return (await firefoxHandler.tabQuery({ currentWindow: true, active: true }))[0]
 }
 
 export function getCurrentWindowTabs() {
-    return chromiumHandler.tabQuery({ currentWindow: true });
+    return firefoxHandler.tabQuery({ currentWindow: true });
 }
 
 //#region genertators

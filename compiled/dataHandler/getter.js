@@ -7,7 +7,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-import * as chromiumHandler from '../chromiumHandler.js';
+import * as firefoxHandler from '../firefoxHandler.js';
 export function getItemJSONObjectByItemID(itemID, data) {
     return getItemJSONObjectByItemIDRecursion(itemID, data.elements);
 }
@@ -128,27 +128,23 @@ export function getFoldersInFolder(folder) {
     return folderArr;
 }
 export function saveDataInFirefox(data) {
-    return chromiumHandler.localStorageSet(data);
+    return firefoxHandler.localStorageSet({ data });
 }
 function getFirefoxStructFromFirefox() {
-    return __awaiter(this, void 0, void 0, function* () {
-        var data;
-        data = (yield chromiumHandler.localStorageGet())['data'];
-        return data;
-    });
+    return firefoxHandler.localStorageGet("data");
 }
 export function getDataStructFromFirefox() {
     return __awaiter(this, void 0, void 0, function* () {
-        return (yield getFirefoxStructFromFirefox());
+        return (yield getFirefoxStructFromFirefox()).data;
     });
 }
 export function getActiveTab() {
     return __awaiter(this, void 0, void 0, function* () {
-        return (yield chromiumHandler.tabQuery({ currentWindow: true, active: true }))[0];
+        return (yield firefoxHandler.tabQuery({ currentWindow: true, active: true }))[0];
     });
 }
 export function getCurrentWindowTabs() {
-    return chromiumHandler.tabQuery({ currentWindow: true });
+    return firefoxHandler.tabQuery({ currentWindow: true });
 }
 export function generateFolderID() {
     return __awaiter(this, void 0, void 0, function* () {

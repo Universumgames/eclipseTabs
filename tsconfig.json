@@ -26,6 +26,6 @@
         "es5"
     ],
     "target-engines": [
-        "dom.chrome.45+"
+        "dom.firefox.42+"
     ]
 }

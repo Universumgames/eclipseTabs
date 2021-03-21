@@ -2,7 +2,7 @@ import * as htmlAdder from './addHTMLElements.js'
 import * as tabHelper from './tabHelper.js'
 import * as helper from './helper.js'
 import { elementData, folderData, itemData, Mode, tabStructData } from './interfaces.js'
-import * as chromiumHandler from './chromiumHandler.js'
+import * as firefoxHandler from './firefoxHandler.js'
 import { addFolder, collapseAll, createEmptyData, expandAll, exportData, generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, moveFolder, moveItem, removeFolder, removeItem, renameFolder, saveDataInFirefox, updateTabs, updateTabsOnStartUp } from './dataHandler/importer.js'
 
 export var addHTMLHandler: htmlAdder.addHTMLhandler = {
@@ -23,7 +23,7 @@ export var addHTMLHandler: htmlAdder.addHTMLhandler = {
     addFolderSubmit_handler: addFolderSubmit_handler
 }
 
-var firefoxHandlerStruct: chromiumHandler.chromiumHandler = {
+var firefoxHandlerStruct: firefoxHandler.firefoxHandler = {
     refreshTabListOnActiveChange: refreshTabListOnActiveChange,
     refreshTabListOnSiteUpdated: refreshTabListOnSiteUpdated,
     refreshTabListOnTabRemoved: refreshTabListOnTabRemoved
@@ -67,7 +67,7 @@ export async function setupHandler(setupFun: Function) {
     setup = setupFun
 
     var data = await getDataStructFromFirefox()
-    chromiumHandler.registerListener(firefoxHandlerStruct)
+    firefoxHandler.registerListener(firefoxHandlerStruct)
 
     //set placeholder invisible
     document.getElementById("emptyList").classList.add("disabled")
@@ -345,7 +345,7 @@ async function refreshTabListOnSiteUpdated(tabId, changeInfo, tabInfo) {
 async function tabUpdateListener(tabId, changeInfo, tabInfo) {
     document.getElementById("list").innerHTML = ""
     var data = await getDataStructFromFirefox()
-    chromiumHandler.tabQuery({}).then((element) => { loadFolderList(element, data) }, (element) => console.error(element))
+    firefoxHandler.tabQuery({}).then((element) => { loadFolderList(element, data) }, (element) => console.error(element))
 }
 
 export async function loadFolderList(tabs: any, data: tabStructData) {
