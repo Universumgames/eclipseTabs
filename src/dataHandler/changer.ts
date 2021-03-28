@@ -59,6 +59,9 @@ export async function removeFolder(folderID: string, oldParentFolderID: string):
     var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.rootFolder)
     var folder = getFolderJSONObjectByID(folderID, data.rootFolder)
 
+    console.log(oldParentFolder)
+    console.log(folder)
+
     for (var key in folder.elements) {
         var item = folder.elements[key]
         if ("itemID" in item) {

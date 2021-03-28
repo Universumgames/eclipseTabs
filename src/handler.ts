@@ -199,7 +199,7 @@ async function drop_handler(event) {
             }
 
             triggerListReload()
-        } else if (helper.toBoolean(target.getAttribute("isTrashCan"))) {
+        } else if (helper.toBoolean(target.getAttribute("istrashcan"))) {
             if ("itemID" in draggingJSON) {
                 if (draggingJSON.tabID != "-1") tabHelper.closeTab(draggingJSON.tabID)
 
@@ -235,8 +235,6 @@ async function drop_handler(event) {
             triggerListReload()
         }
     }
-
-    console.log(event)
 
     dragging = undefined
 
