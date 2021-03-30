@@ -1,14 +1,20 @@
-import { tabStructData } from '../interfaces.js'
-import { closeTab, getCurrentTab } from '../tabHelper.js'
-import { saveDataInFirefox } from './getter.js'
+import { getBookmarks } from "../firefoxHandler.js"
+import { FirefoxBookmarksRoot, tabStructData } from "../interfaces.js"
+import { closeTab, getCurrentTab } from "../tabHelper.js"
+import { saveDataInFirefox } from "./getter.js"
+import { importBookmarks, importData } from "./importer.js"
 
 document.addEventListener("DOMContentLoaded", () => setup())
 
-var button: any
+var jsonImportBtn: any
+var bookmarkImportBtn: any
 
 function setup() {
-    button = document.getElementById("inputJSONSubmit")
-    button.onclick = onClickButton
+    jsonImportBtn = document.getElementById("inputJSONSubmit")
+    jsonImportBtn.onclick = onClickButton
+
+    bookmarkImportBtn = document.getElementById("inputBookmarkImport")
+    bookmarkImportBtn.onclick = onBookmarkClick
 }
 
 function onClickButton(event: any) {
@@ -17,7 +23,6 @@ function onClickButton(event: any) {
     importData(text)
 }
 
-export async function importData(json: string) {
-    var jsonData = JSON.parse(json);
-    await saveDataInFirefox(jsonData as tabStructData);
+async function onBookmarkClick(event: any) {
+    importBookmarks(await getBookmarks())
 }

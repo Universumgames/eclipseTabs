@@ -2,7 +2,6 @@
     "manifest_version": 2,
     "name": "eclipseTab",
     "version": "1.0.7",
-    "author": "UniversumGames",
     "developer": {
         "name": "UniversumGames",
         "url": "https://universegame.de/"
@@ -12,6 +11,7 @@
             "id": "eclipseTab@universegame.de"
         }
     },
+    "homepage_url": "https://universegame.de", 
     "description": "Easy management of your tabs and own bookmark system",
     "icons": {
         "48": "icons/eclipse_48.png"
@@ -32,5 +32,11 @@
     },
     "options_ui": {
         "page": "pages/options.html"
-    }
+    },
+    "web_accessible_resources": [
+        "/icons/*",
+        "/icons/light/*",
+        "/icons/dark/*",
+        "/pages/howToImgs/*.png"
+    ]
 }

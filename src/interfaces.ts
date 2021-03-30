@@ -66,3 +66,44 @@ export interface FirefoxManifest {
     version: String
     manifest_version: Number
 }
+
+export interface FirefoxBookmarksRoot {
+    children: Array<any>
+    dateAdded: Number
+    dateGroupModified: Number
+    id: String
+    index: Number
+    parentId: any
+    title: String
+    type: String
+    url: String
+}
+
+export interface FirefoxTab {
+    active: boolean
+    attentions: boolean
+    audible: boolean
+    autoDiscarded: boolean
+    cookieStoreId: string
+    discarded: boolean
+    favIconUrl: string
+    height: Number
+    hidden: boolean
+    highlighted: boolean
+    id: Number
+    incognito: boolean
+    index: Number
+    isArticle: boolean
+    isInReaderMode: boolean
+    lastAccessed: Number
+    mutedInfo: any
+    openerTabId: Number
+    pinned: boolean
+    sessionId: string
+    status: string
+    successorTabId: Number
+    title: string
+    url: string
+    width: Number
+    windowId: Number
+}

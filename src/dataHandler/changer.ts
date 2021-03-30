@@ -4,6 +4,7 @@ import {
     getDataStructFromFirefox,
     getFolderJSONObjectByID,
     getItemJSONObjectByItemID,
+    getItemJSONObjectByTabID,
     getKeyByIDAndType,
     getNumberOfItemsAlreadyExisting,
     saveDataInFirefox,
@@ -15,6 +16,17 @@ export async function renameFolder(folderID: string, newName: string): Promise<v
     var data = await getDataStructFromFirefox()
     var folder = getFolderJSONObjectByID(folderID, data.rootFolder)
     folder.name = newName
+    await saveDataInFirefox(data)
+}
+
+export async function renameItem(itemId: string, newName: string): Promise<void> {
+    var data = await getDataStructFromFirefox()
+    var item = getItemJSONObjectByItemID(itemId, data.rootFolder)
+    if (item.parentFolderID == defs.pinnedFolderID || item.parentFolderID == defs.unorderedFolderID) {
+        console.warn("Item cannot be renamed because the renaming will be stored nowhere", item)
+        return
+    }
+    item.title = newName
     await saveDataInFirefox(data)
 }
 
@@ -61,26 +73,29 @@ export async function removeFolder(folderID: string, oldParentFolderID: string):
     var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.rootFolder)
     var folder = getFolderJSONObjectByID(folderID, data.rootFolder)
 
-    console.log(oldParentFolder)
-    console.log(folder)
+    console.log("Parent folder: ", oldParentFolder)
+    console.log("Folder deleted: ", folder)
 
-    for (var key in folder.elements) {
-        var item = folder.elements[key]
-        if ("itemID" in item) {
-            if (data.closeTabsInDeletingFolder && (item as itemData).tabID != "-1" && (await tabHelper.tabExists((item as itemData).tabID)))
-                tabHelper.closeTab((item as itemData).tabID)
-        } else if ("folderID" in item) {
-            removeFolder((item as folderData).folderID, folderID)
+    if (data.closeTabsInDeletingFolder == true && folder != undefined && oldParentFolder != undefined && folder.elements != undefined) {
+        for (var key in folder.elements) {
+            var item = folder.elements[key]
+            if ("itemID" in item) {
+                if (data.closeTabsInDeletingFolder && (item as itemData).tabID != "-1" && (await tabHelper.tabExists((item as itemData).tabID)))
+                    tabHelper.closeTab((item as itemData).tabID)
+            } else if ("folderID" in item) {
+                removeFolder((item as folderData).folderID, folderID)
+            }
         }
     }
 
-    var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
-
-    if (oldParentFolder != undefined && folder != undefined && key != undefined) {
-        delete oldParentFolder.elements[key]
-        oldParentFolder.elements.length -= 1
-        await saveDataInFirefox(data)
-        return true
+    if (oldParentFolder != undefined && folder != undefined) {
+        var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
+        if (key != undefined) {
+            delete oldParentFolder.elements[key]
+            oldParentFolder.elements.length -= 1
+            await saveDataInFirefox(data)
+            return true
+        }
     }
     return false
 }
@@ -116,11 +131,11 @@ function expandRecursion(data: folderData) {
 
 export async function collapseAll() {
     var data = await getDataStructFromFirefox()
-    collapseAllRecusrion(data.rootFolder)
+    collapseAllRecursion(data.rootFolder)
     await saveDataInFirefox(data)
 }
 
-function collapseAllRecusrion(data: folderData) {
+function collapseAllRecursion(data: folderData) {
     data.elements.forEach((element) => {
         if ("folderID" in element) {
             var folder = element as folderData

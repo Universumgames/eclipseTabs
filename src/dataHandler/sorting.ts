@@ -1,7 +1,7 @@
 import { elementData, folderData, tabStructData } from "../interfaces.js"
 import { generateIndexInFolder } from "./adder.js"
 
-export function recursiveSelectionSort(element: folderData) {
+export async function recursiveSelectionSort(element: folderData): Promise<void> {
     var sortedIndex: number = 0
     var indexSmallest: number = 0
     while (sortedIndex < element.elements.length) {

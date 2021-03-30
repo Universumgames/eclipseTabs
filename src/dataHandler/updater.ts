@@ -1,12 +1,13 @@
-import { elementData, folderData, itemData, tabStructData } from "../interfaces.js"
+import { elementData, FirefoxTab, folderData, itemData, tabStructData } from "../interfaces.js"
 import { recursiveSelectionSort } from "./sorting.js"
 import * as defs from "./definitions.js"
-import { getFirefoxTabByURL, getFolderJSONObjectByID } from "./getter.js"
+import { getFirefoxTabByURL, getFolderJSONObjectByID, getItemJSONObjectByUrl } from "./getter.js"
 import { addTabSync, createItemIDByTab } from "./adder.js"
 import { tabExistsByTabID } from "./checker.js"
+import { getCurrentTab } from "../tabHelper.js"
 
 //#region update tabs
-function updatePinnedTabs(tabStruct: tabStructData, tabs): void {
+async function updatePinnedTabs(tabStruct: tabStructData, tabs): Promise<void> {
     var pinnedFolder: folderData = getFolderJSONObjectByID(defs.pinnedFolderID, tabStruct.rootFolder)
     if (pinnedFolder == undefined) {
         pinnedFolder = {
@@ -33,7 +34,7 @@ function updatePinnedTabs(tabStruct: tabStructData, tabs): void {
     }
 }
 
-function updateUnorderedTabs(tabStruct: tabStructData, tabs): void {
+async function updateUnorderedTabs(tabStruct: tabStructData, tabs): Promise<void> {
     var unorderedFolder: folderData = getFolderJSONObjectByID(defs.unorderedFolderID, tabStruct.rootFolder)
     if (unorderedFolder == undefined) {
         unorderedFolder = {
@@ -60,7 +61,7 @@ function updateUnorderedTabs(tabStruct: tabStructData, tabs): void {
     }
 }
 
-export function updateTabsOnStartUp(data: folderData, tabs): void {
+export async function updateTabsOnStartUp(data: folderData, tabs): Promise<void> {
     for (var key in data.elements) {
         var element = data.elements[key]
         if (element != undefined) {
@@ -72,8 +73,10 @@ export function updateTabsOnStartUp(data: folderData, tabs): void {
                     item.tabID = "-1"
                     item.hidden = true
                 } else {
-                    item.tabID = firefoxTab.id
+                    item.tabID = (firefoxTab.id as unknown) as string
                     item.hidden = firefoxTab.hidden
+                    if (item.favIconURL == undefined || item.favIconURL == "" || item.favIconURL.startsWith("http"))
+                        item.favIconURL = firefoxTab.favIconUrl
                 }
             }
         }
@@ -85,10 +88,14 @@ export function updateTabsOnStartUp(data: folderData, tabs): void {
     }*/
 }
 
-export function updateTabs(tabData: tabStructData, tabs): void {
+export async function updateTabs(tabData: tabStructData, tabs: Array<FirefoxTab>): Promise<void> {
     updatePinnedTabs(tabData, tabs)
     updateUnorderedTabs(tabData, tabs)
     recursiveSelectionSort(tabData.rootFolder)
+
+    /*var cur = await getCurrentTab()
+    var item = getItemJSONObjectByUrl(tabData.rootFolder.elements, cur.url)
+    if (item.favIconURL == undefined || item.favIconURL == "" || item.favIconURL.startsWith("http")) item.favIconURL = cur.favIconUrl*/
 }
 
 //#endregion

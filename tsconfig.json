@@ -22,7 +22,8 @@
         ".vscode"
     ],
     "lib": [
-        "es2020"
+        "es2020",
+        "axios"
     ],
     "target-engines": [
         "dom.firefox.46+"

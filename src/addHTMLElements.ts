@@ -1,7 +1,9 @@
 import { itemData, folderData, tabStructData, Mode } from "./interfaces.js"
+import * as defs from "./dataHandler/definitions.js"
 
 export interface addHTMLhandler {
     folderRenameSubmit_handler: any
+    itemRenameSubmit_handler: any
     dragstart_handler: any
     drop_handler: any
     dragover_handler: any
@@ -26,21 +28,6 @@ export function addFolder(data: tabStructData, htmlParent: HTMLElement, folder: 
     folderDiv.setAttribute("index", folder.index + "")
     folderDiv.style.marginLeft = tier * 4 + "px"
 
-    /*var imgNode = document.createElement("svg")
-    imgNode.setAttribute("xmlns", "http://www.w3.org/2000/svg")
-    imgNode.setAttribute("version", "1.1")
-    imgNode.setAttribute("preserveAspectRatio", "none")
-    imgNode.setAttribute("viewBox", "0 0 13 13")
-    imgNode.innerHTML = '<path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" />'
-    //imgNode.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 12 12" class="arrow noEvents" id="image" preserveAspectRatio="none"><path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" /></svg>'
-    imgNode.id = "image"
-    imgNode.classList.add("arrow")
-    imgNode.classList.add("noEvents")
-    if (!folder.open) {
-        imgNode.classList.add("rotated")
-        folderDiv.classList.add("closed")
-    }
-    folderDiv.appendChild(imgNode)*/
     folderDiv.insertAdjacentHTML(
         "afterbegin",
         '<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="-2 -2 15 15" class="arrow noEvents" id="' +
@@ -120,6 +107,19 @@ export function addTab(data: tabStructData, folderDiv: HTMLElement, tab: itemDat
     itemNode.addEventListener("dragstart", handler.dragstart_handler)
     itemNode.addEventListener("dropend", handler.dropend_handler)
     itemNode.addEventListener("dragend", handler.dragend_handler)
+
+    //rename functionality
+    //if (tab.parentFolderID != defs.pinnedFolderID && tab.parentFolderID != defs.unorderedFolderID) {
+    var lBr = document.createElement("br")
+    itemNode.appendChild(lBr)
+    var renameNode = document.createElement("input")
+    renameNode.type = "text"
+    renameNode.placeholder = "New Name"
+    renameNode.classList.add("disabled")
+    renameNode.addEventListener("keyup", handler.itemRenameSubmit_handler)
+    itemNode.appendChild(renameNode)
+    //}
+
     folderDiv.appendChild(itemNode)
 
     if (data.mode == Mode.Move) folderDiv.appendChild(createInbetween(tab, tier, handler))
@@ -130,8 +130,6 @@ function createInbetween(element: itemData | folderData, tier: number, handler: 
     var inbetween = document.createElement("div")
     var container = document.createElement("div")
     container.classList.add("noEvents")
-    //container.innerHTML = '<svg viewBox="0 0 100 2" xmlns="http://www.w3.org/2000/svg"><line x1="0" y1="0" x2="100" y2="0" stroke="white" stroke-width="2" /></svg>'
-    //@TODO
     container.innerHTML = "<small>Insert Below " + ("folderID" in element ? (element as folderData).name : (element as itemData).title) + "</small>"
     container.classList.add("inbetween")
     container.style.marginLeft = tier * 4 + "px"

@@ -1,16 +1,22 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" type="text/css" href="../style/style.css" />
+        <script src="../compiled/dataHandler/importHandler.js" type="module"></script>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet" />
+        <link rel="shortcut icon" type="image/jpg" href="../icons/eclipse_48.png" />
+        <meta name="author" content="UniversumGames" />
+        <title>eclipseTab Import JSON</title>
+    </head>
 
-<head>
-    <meta charset="UTF-8">
-    <script src="../compiled/dataHandler/importHandler.js" type="module"></script>
-</head>
-
-<body>
-    <textarea id="jsonInput" style='width:100%;margin:-3px;border:2px inset #eee'>put the exported json in here, old data will be deleted in the process
-    </textarea>
-    <br><br>
-    <input id="inputJSONSubmit" type="button" value="Submit">
-</body>
-
+    <body style="height: max-content">
+        <textarea id="jsonInput" style="width: 100%; margin: -3px; border: 2px inset #eee; max-height: 90vh; min-height: 50vh; height: 60%">
+put the exported json in here, old data will be deleted in the process
+    </textarea
+        >
+        <br /><br />
+        <input id="inputJSONSubmit" type="button" value="Submit" />
+        <input id="inputBookmarkImport" type="button" value="Import Bookmarks" />
+    </body>
 </html>

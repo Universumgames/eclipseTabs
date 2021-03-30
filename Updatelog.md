@@ -4,6 +4,8 @@ Update 1.0.7:
 -   added "HowTo" page
 -   fixed bug when moving folders into "Unordered Tabs"
 -   added possibility to move folders into root directory by dragging it into "Unordered Tabs"
+-   added possibility to rename Tabs
+-   implemented Bookmark import (no full favicon support/not optimal performance results)
 
 IMPORTANT NOTE BEFORE UPGRADING
 Just like in every update we encourage you to export your current data before upgrading due to potential data loss in project structures. In this update the data will be overwritten for sure but can be easily reimported...

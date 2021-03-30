@@ -3,7 +3,9 @@ import * as tabHelper from "./tabHelper.js"
 import { elementData, folderData, itemData, tabStructData } from "./interfaces.js"
 import * as handler from "./handler.js"
 import * as firefoxHandler from "./firefoxHandler.js"
-import { createEmptyData, getDataStructFromFirefox, saveDataInFirefox, updateTabsOnStartUp } from "./dataHandler/importer.js"
+import { getDataStructFromFirefox, saveDataInFirefox } from "./dataHandler/getter.js"
+import { updateTabsOnStartUp } from "./dataHandler/updater.js"
+import { createEmptyData } from "./dataHandler/adder.js"
 // #endregion
 
 // #region init code
@@ -41,7 +43,7 @@ async function setup() {
     } else dataStorage = dataTmp
 
     if (dataStorage.version == undefined) {
-        dataStorage.version = "1.0.5"
+        dataStorage.version = firefoxHandler.getManifest().version
         dataStorage.displayHowTo = true
         await saveDataInFirefox(dataStorage)
     }

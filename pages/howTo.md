@@ -39,7 +39,7 @@ The order of the elements aren't appealing to you? Just click on this icon to ch
 
 ## Moving Items/Folders into Folders
 
-By dragging an Tab or an folder over another folder you can easily created nested folder structures.
+By dragging an Tab or an folder over another folder you can easily created nested folder structures. To move Folders into the root directory, just drag the folder into the "Unordered Tabs" folder.
 
 ## Settings
 

@@ -1,4 +1,4 @@
-import { elementData, folderData, folderIDType, itemData, itemIDType, tabIDType, tabStructData } from "../interfaces.js"
+import { elementData, FirefoxTab, folderData, folderIDType, itemData, itemIDType, tabIDType, tabStructData } from "../interfaces.js"
 import * as firefoxHandler from "../firefoxHandler.js"
 
 //#region getter
@@ -101,7 +101,7 @@ function getItemJSONObjectByURLRecursion(items: Array<elementData>, url: string)
     return undefined
 }
 
-export function getFirefoxTabByURL(tabs, url: string) {
+export function getFirefoxTabByURL(tabs: Array<FirefoxTab>, url: string): FirefoxTab {
     for (var key in tabs) {
         var tab = tabs[key]
         if (tab.url == url) return tab

@@ -1,5 +1,5 @@
 import { createEmptyData, createEmptyRoot } from "./dataHandler/adder.js"
-import { folderData, tabStructData, FirefoxManifest } from "./interfaces.js"
+import { folderData, tabStructData, FirefoxManifest, FirefoxBookmarksRoot } from "./interfaces.js"
 
 //@ts-ignore
 const firefoxBrowser: any = browser
@@ -73,4 +73,8 @@ export async function localStorageGetTabStructData(name: string): Promise<tabStr
 
 export function getManifest(): FirefoxManifest {
     return firefoxBrowser.runtime.getManifest()
+}
+
+export async function getBookmarks(): Promise<FirefoxBookmarksRoot> {
+    return (await firefoxBrowser.bookmarks.getTree())[0]
 }

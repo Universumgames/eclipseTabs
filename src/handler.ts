@@ -1,30 +1,22 @@
 import * as htmlAdder from "./addHTMLElements.js"
 import * as tabHelper from "./tabHelper.js"
 import * as helper from "./helper.js"
-import { ColorScheme, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "./interfaces.js"
+import { ColorScheme, elementData, FirefoxTab, folderData, itemData, KeyCode, Mode, tabStructData } from "./interfaces.js"
 import * as firefoxHandler from "./firefoxHandler.js"
 import {
-    addFolder,
-    collapseAll,
-    createEmptyData,
-    expandAll,
-    exportData,
     generateFolderID,
     getDataStructFromFirefox,
     getFolderJSONObjectByID,
     getItemJSONObjectByItemID,
-    moveFolder,
-    moveItem,
-    removeFolder,
-    removeItem,
-    renameFolder,
     saveDataInFirefox,
-    updateTabs,
-    updateTabsOnStartUp,
-} from "./dataHandler/importer.js"
+} from "./dataHandler/getter.js"
+import { collapseAll, expandAll, moveFolder, moveItem, removeFolder, removeItem, renameFolder, renameItem } from "./dataHandler/changer.js"
+import { addFolder, createEmptyData } from "./dataHandler/adder.js"
+import { updateTabs, updateTabsOnStartUp } from "./dataHandler/updater.js"
 
 export var addHTMLHandler: htmlAdder.addHTMLhandler = {
     folderRenameSubmit_handler: folderRenameSubmit_handler,
+    itemRenameSubmit_handler: itemRenameSubmit_handler,
     dragstart_handler: dragstart_handler,
     drop_handler: drop_handler,
     dragover_handler: dragover_handler,
@@ -74,6 +66,7 @@ const contextMenu_folder = document.getElementById("contextMenu_folder")
 const contextMenu_folder_rename = document.getElementById("contextMenu_folder_rename")
 const contextMenu_folder_delete = document.getElementById("contextMenu_folder_delete")
 const contextMenu_item = document.getElementById("contextMenu_item")
+const contextMenu_item_rename = document.getElementById("contextMenu_item_rename")
 const contextMenu_item_delete = document.getElementById("contextMenu_item_delete")
 
 const debugElements = document.getElementById("debugElements")
@@ -135,6 +128,7 @@ export async function setupHandler(setupFun: Function) {
 
     contextMenu_folder_rename.onclick = contextMenu_folder_rename_handler
     contextMenu_folder_delete.onclick = contextMenu_folder_delete_handler
+    contextMenu_item_rename.onclick = contextMenu_item_rename_handler
     contextMenu_item_delete.onclick = contextMenu_item_delete_handler
 
     bottomElementIcons.push(addFolderBtn.children[0] as HTMLElement)
@@ -368,6 +362,19 @@ async function folderRenameSubmit_handler(event) {
     }
 }
 
+async function itemRenameSubmit_handler(event) {
+    if (event.keyCode == KeyCode.enter) {
+        event.preventDefault()
+        var value = event.originalTarget.value
+        var parent = event.originalTarget.parentNode
+        if (value != "") await renameItem(parent.getAttribute("itemID"), value)
+        triggerListReload()
+    }
+    if (event.keyCode == KeyCode.escape) {
+        triggerListReload()
+    }
+}
+
 async function refreshTabList() {
     var data = await getDataStructFromFirefox()
     tabHelper.getTabs().then((tabs) => {
@@ -385,7 +392,7 @@ async function refreshTabListOnSiteUpdated(tabId, changeInfo, tabInfo) {
     if (changeInfo.status != undefined) refreshTabList()
 }
 
-export async function loadFolderList(tabs: any, data: tabStructData) {
+export async function loadFolderList(tabs: Array<FirefoxTab>, data: tabStructData) {
     updateTabsOnStartUp(data.rootFolder, tabs)
     // update tabs
     updateTabs(data, tabs)
@@ -512,6 +519,16 @@ async function contextMenu_folder_delete_handler(event: any) {
         folder = getFolderJSONObjectByID(contextMenuTarget.getAttribute("folderID"), data.rootFolder)
         await removeFolder(folder.folderID, folder.parentFolderID)
         triggerListReload()
+    }
+}
+
+async function contextMenu_item_rename_handler(event: any) {
+    var divContainer = contextMenuTarget
+    if (divContainer.getAttribute("isItem")) {
+        // divContainer.innerText = ""
+        divContainer.children[3].classList.toggle("disabled")
+        //@ts-ignore
+        divContainer.children[3].focus()
     }
 }
 
