@@ -4,6 +4,9 @@ export interface tabStructData {
     colorScheme: ColorScheme
     devMode: Boolean
     closeTabsInDeletingFolder: Boolean
+    version: String
+    displayHowTo: Boolean
+    hideOrSwitchTab: Boolean
 }
 
 export interface folderData extends elementData {
@@ -45,4 +48,21 @@ export type folderIDType = string
 export enum KeyCode {
     enter = 13,
     escape = 27,
+}
+
+export interface FirefoxManifest {
+    applications: any
+    author: String
+    background: any
+    browseraction: any
+    browser_specific_settings: any
+    description: String
+    developer: { name: String; url: String }
+    homepage_url: String
+    name: String
+    permissions: Array<String>
+    short_name: String
+    sidebar_action: any
+    version: String
+    manifest_version: Number
 }

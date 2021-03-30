@@ -6,6 +6,8 @@ The extension is designed to organize your hundreds of tabs into folders and sub
 This repository is the beta for the newest version of the addon. Final releases will be published on the Firefox Addon Store as well in form of tags in this repository.
 <br/>
 
+An [HowTo](/pages/howTo.md) is also avialable in [`/pages/howTo.md`](/pages/howTo.md).
+
 #### Disclaimer
 
 <small> The development is primarily focused on improving the extension for Firefox, because that's the browser I primarily use...</small>

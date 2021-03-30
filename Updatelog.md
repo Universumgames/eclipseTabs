@@ -1,3 +1,13 @@
+Update 1.0.7:
+
+-   added option to disable hide
+-   added "HowTo" page
+-   fixed bug when moving folders into "Unordered Tabs"
+-   added possibility to move folders into root directory by dragging it into "Unordered Tabs"
+
+IMPORTANT NOTE BEFORE UPGRADING
+Just like in every update we encourage you to export your current data before upgrading due to potential data loss in project structures. In this update the data will be overwritten for sure but can be easily reimported...
+
 Update 1.0.6 (1.0.5):
 
 -   fixed horrible bugs when deleting folders

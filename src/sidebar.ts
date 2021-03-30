@@ -40,6 +40,12 @@ async function setup() {
         console.log("Data cleared or extension is newly installed, created new storage structure: ", dataStorage)
     } else dataStorage = dataTmp
 
+    if (dataStorage.version == undefined) {
+        dataStorage.version = "1.0.5"
+        dataStorage.displayHowTo = true
+        await saveDataInFirefox(dataStorage)
+    }
+
     // load up pinned tabs
     tabHelper.getTabs().then((tabs) => {
         handler.loadFolderList(tabs, dataStorage)

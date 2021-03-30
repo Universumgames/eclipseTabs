@@ -70,3 +70,7 @@ h3 {
   fill: rgb(53, 53, 53);
   border-radius: 10%;
 }
+
+a:link, a:visited {
+  color: white;
+}

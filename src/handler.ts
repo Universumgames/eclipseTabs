@@ -146,6 +146,8 @@ export async function setupHandler(setupFun: Function) {
     setDevMode(data.devMode)
 
     setColorScheme(data)
+
+    await test_and_handle_HowTo(data)
 }
 
 async function dragstart_handler(event) {
@@ -190,12 +192,13 @@ async function drop_handler(event) {
     target.classList.remove("hover")
     if (dragging != undefined) {
         dragging.classList.remove("hover")
-
-        if (helper.isFolder(target)) {
+        if (helper.isFolder(target) || target.tagName == "body") {
+            var folderID = target.getAttribute("folderID")
+            if (target.tagName == "body") folderID = "-1"
             if ("folderID" in draggingJSON) {
-                await moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, target.getAttribute("folderID"))
+                await moveFolder(draggingJSON.folderID, draggingJSON.parentFolderID, folderID)
             } else if ("itemID" in draggingJSON) {
-                await moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, target.getAttribute("folderID"))
+                await moveItem(draggingJSON.itemID, draggingJSON.parentFolderID, folderID)
             }
 
             triggerListReload()
@@ -275,7 +278,6 @@ async function folderClick(e) {
 
         var childs = HTMLFolder.children
         var image = document.getElementById(dataObj.folderID + "_image")
-        console.log(image)
         if (newOpened) {
             image.classList.add("rotated")
             HTMLFolder.classList.add("closed")
@@ -285,7 +287,6 @@ async function folderClick(e) {
             HTMLFolder.classList.remove("closed")
             setChildrenVisible(true, childs)
         }
-        console.log(image)
         await saveDataInFirefox(data)
         triggerListReload()
     }
@@ -306,11 +307,13 @@ async function itemClick(e) {
     var jsonTab = getItemJSONObjectByItemID(itemID, data.rootFolder)
     if (!tab.pinned) {
         if (!helper.toBoolean(tabElement.getAttribute("hiddenTab"))) {
-            if ((await tabHelper.tabExists(tabID)) && (await tabHelper.hideTab(tabID))) {
-                tabElement.setAttribute("hiddenTab", true + "")
-                jsonTab.hidden = true
-                tabElement.classList.add("tabHidden")
-            }
+            if (data.hideOrSwitchTab == false) {
+                if ((await tabHelper.tabExists(tabID)) && (await tabHelper.hideTab(tabID))) {
+                    tabElement.setAttribute("hiddenTab", true + "")
+                    jsonTab.hidden = true
+                    tabElement.classList.add("tabHidden")
+                }
+            } else tabHelper.focusTab(tabID)
         } else {
             if (await tabHelper.tabExists(tabID)) {
                 if (!(await tabHelper.showTab(tabID))) {
@@ -563,5 +566,14 @@ function setDevMode(devMode: Boolean) {
     } else {
         debugElements.classList.add("disabled")
         listContainer.classList.remove("devMode")
+    }
+}
+
+async function test_and_handle_HowTo(data: tabStructData) {
+    if (data.displayHowTo || data.version != firefoxHandler.getManifest().version) {
+        data.displayHowTo = false
+        data.version = firefoxHandler.getManifest().version
+        tabHelper.createTab("../pages/howTo.html")
+        await saveDataInFirefox(data)
     }
 }

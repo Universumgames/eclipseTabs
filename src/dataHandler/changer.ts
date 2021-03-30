@@ -1,4 +1,5 @@
 import { folderData, itemData, tabStructData } from "../interfaces.js"
+import * as defs from "./definitions.js"
 import {
     getDataStructFromFirefox,
     getFolderJSONObjectByID,
@@ -39,15 +40,16 @@ export async function moveFolder(folderID: string, oldParentFolderID: string, ne
     if (folderID == oldParentFolderID || folderID == newParentFolderID || oldParentFolderID == newParentFolderID) return true
     var data = await getDataStructFromFirefox()
     var oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.rootFolder)
-    var newParentFolder = getFolderJSONObjectByID(newParentFolderID, data.rootFolder)
+    var newParentID = newParentFolderID == defs.unorderedFolderID ? "-1" : newParentFolderID
+    var newParentFolder = getFolderJSONObjectByID(newParentID, data.rootFolder)
     var folder = getFolderJSONObjectByID(folderID, data.rootFolder)
     var key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
     if (oldParentFolder != undefined && newParentFolder != undefined && folder != undefined && key != undefined) {
-        folder.parentFolderID = newParentFolderID
+        folder.parentFolderID = newParentID
         folder.index = generateIndexInFolder(newParentFolder)
         newParentFolder.elements.push(folder)
-        delete oldParentFolder.elements[key]
-        //oldParentFolder.elements.splice(key as unknown as number, 1)
+        //delete oldParentFolder.elements[key]
+        oldParentFolder.elements.splice((key as unknown) as number, 1)
         await saveDataInFirefox(data)
         return true
     }

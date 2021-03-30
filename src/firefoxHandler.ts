@@ -1,5 +1,5 @@
 import { createEmptyData, createEmptyRoot } from "./dataHandler/adder.js"
-import { folderData, tabStructData } from "./interfaces.js"
+import { folderData, tabStructData, FirefoxManifest } from "./interfaces.js"
 
 //@ts-ignore
 const firefoxBrowser: any = browser
@@ -63,7 +63,14 @@ export async function localStorageGetTabStructData(name: string): Promise<tabStr
             rootFolder: root,
             devMode: false,
             closeTabsInDeletingFolder: false,
+            version: "1.0.0",
+            displayHowTo: true,
+            hideOrSwitchTab: false,
         } as tabStructData
     }
     return undefined
+}
+
+export function getManifest(): FirefoxManifest {
+    return firefoxBrowser.runtime.getManifest()
 }

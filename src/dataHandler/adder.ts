@@ -1,3 +1,4 @@
+import { getManifest } from "../firefoxHandler.js"
 import { ColorScheme, folderData, itemData, Mode, tabStructData } from "../interfaces.js"
 import { getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter.js"
 
@@ -12,6 +13,9 @@ export function createEmptyData(): tabStructData {
         colorScheme: ColorScheme.dark,
         devMode: false,
         closeTabsInDeletingFolder: false,
+        version: getManifest().version,
+        displayHowTo: true,
+        hideOrSwitchTab: false,
     } as tabStructData
     return data
 }
