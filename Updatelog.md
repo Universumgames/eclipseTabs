@@ -1,3 +1,10 @@
+Update 1.0.8:
+
+-   added import option to not replace but combine data
+
+IMPORTANT NOTE BEFORE UPGRADING
+Just like in every update we encourage you to export your current data before upgrading due to potential data loss in project structures. In this update the data will be overwritten for sure but can be easily reimported...
+
 Update 1.0.7:
 
 -   added option to disable hide

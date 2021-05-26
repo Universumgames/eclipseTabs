@@ -43,7 +43,7 @@ async function setup() {
     } else dataStorage = dataTmp
 
     if (dataStorage.version == undefined) {
-        dataStorage.version = firefoxHandler.getManifest().version
+        dataStorage.version = "1.0.5"
         dataStorage.displayHowTo = true
         await saveDataInFirefox(dataStorage)
     }

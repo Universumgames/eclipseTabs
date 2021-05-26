@@ -1,4 +1,4 @@
-import { elementData, folderIDType, itemIDType, tabIDType, tabStructData } from "../interfaces.js"
+import { elementData, folderData, folderIDType, itemIDType, tabIDType, tabStructData } from "../interfaces.js"
 import { unorderedFolderID } from "./definitions.js"
 import { getItemJSONObjectByItemID, getItemJSONObjectByTabID } from "./getter.js"
 
@@ -12,14 +12,14 @@ export function tabExistsByTabID(tabID: tabIDType, elements: Array<elementData>)
     return item != undefined && item.parentFolderID != unorderedFolderID
 }
 
-export function folderExists(folderID: folderIDType, elements) {
+export function folderExists(folderID: folderIDType, elements: Array<elementData>) {
     var returnVal = undefined
-    for (var key in elements) {
-        var item = elements[key]
-        if (item.folder) {
-            if (item.folderID == folderID) {
-                return item
-            } else returnVal = folderExists(folderID, item.elements)
+    for (var el of elements) {
+        if ("folderID" in el) {
+            var fold = el as folderData
+            if (fold.folderID == folderID) {
+                return fold
+            } else returnVal = folderExists(folderID, fold.elements)
             if (returnVal != undefined) return returnVal
         }
     }

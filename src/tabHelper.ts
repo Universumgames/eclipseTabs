@@ -22,6 +22,24 @@ export async function showTab(id: string | Number): Promise<Boolean> {
     return false
 }
 
+export async function pinTab(id: string | Number): Promise<Boolean> {
+    if (id != undefined) {
+        //@ts-ignore
+        await browser.tabs.update(id, { pinned: true })
+        return true
+    }
+    return false
+}
+
+export async function unpinTab(id: string | Number): Promise<Boolean> {
+    if (id != undefined) {
+        //@ts-ignore
+        await browser.tabs.update(id, { pinned: false })
+        return true
+    }
+    return false
+}
+
 export function focusTab(id: string | Number): void {
     //@ts-ignore
     browser.tabs.update(+id, { active: true })
@@ -58,4 +76,12 @@ export async function getCurrentTab(): Promise<FirefoxTab> {
 export async function closeTab(id: string | Number) {
     //@ts-ignore
     return browser.tabs.remove(id as number)
+}
+
+export async function getTabByURL(url: string): Promise<FirefoxTab> {
+    var tabs = await getTabs()
+    for (var tab of tabs) {
+        if (tab.url == url) return tab
+    }
+    return undefined
 }

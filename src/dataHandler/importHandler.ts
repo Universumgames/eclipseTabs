@@ -6,18 +6,27 @@ import { importBookmarks, importData } from "./importer.js"
 
 document.addEventListener("DOMContentLoaded", () => setup())
 
-var jsonImportBtn: any
+var jsonReplaceBtn: any
+var jsonCombineBtn: any
 var bookmarkImportBtn: any
 
 function setup() {
-    jsonImportBtn = document.getElementById("inputJSONSubmit")
-    jsonImportBtn.onclick = onClickButton
+    jsonReplaceBtn = document.getElementById("inputJSONReplace")
+    jsonReplaceBtn.onclick = onClickReplace
+    jsonCombineBtn = document.getElementById("inputJSONCombine")
+    jsonCombineBtn.onclick = onClickCombine
 
     bookmarkImportBtn = document.getElementById("inputBookmarkImport")
     bookmarkImportBtn.onclick = onBookmarkClick
 }
 
-function onClickButton(event: any) {
+function onClickReplace(event: any) {
+    var json = document.getElementById("jsonInput") as any
+    var text: string = json.value
+    importData(text, true)
+}
+
+function onClickCombine(event: any) {
     var json = document.getElementById("jsonInput") as any
     var text: string = json.value
     importData(text)
