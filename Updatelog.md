@@ -1,3 +1,9 @@
+Update 1.0.9:
+
+-   improved UX
+-   cleaned up HTML
+-   updated Renaming
+
 Update 1.0.8:
 
 -   added import option to not replace but combine data
