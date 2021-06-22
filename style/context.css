@@ -1,14 +1,33 @@
 #contextMenu {
     position: fixed;
-    padding: 2%;
-    border-radius: 10%;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
     width: fit-content;
 }
 
-#contextMenu.lightmode {
+#contextMenu *.lightmode {
     background-color: #d1d1d1;
 }
 
-#contextMenu.darkmode {
+#contextMenu *.darkmode {
     background-color: #121111;
+}
+
+#contextTitle::after,
+#contextMenu_item:before {
+    content: "";
+    width: 100%;
+    height: 0.1rem;
+    display: block;
+    margin: 0.2rem 0 0.2rem 0;
+}
+
+.darkmode > #contextTitle::after,
+.darkmode #contextMenu_item::before {
+    background-color: #d8d8d8 !important;
+}
+
+.lightmode > #contextTitle::after,
+.lightmode #contextMenu_item::before {
+    background-color: #121111 !important;
 }

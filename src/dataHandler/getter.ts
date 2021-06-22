@@ -15,7 +15,7 @@ function getItemJSONObjectByItemIDRecursion(itemID: itemIDType, items: Array<ele
             continue
         }
         if ("itemID" in element) {
-            if ((element as itemData).itemID == itemID) return element
+            if ((element as itemData).itemID == itemID) return element as itemData
         } else if ("folderID" in element) {
             returnVal = getItemJSONObjectByItemIDRecursion(itemID, (element as folderData).elements)
             if (returnVal != undefined) return returnVal
@@ -34,7 +34,7 @@ function getItemJSONObjectByTabIDRecursion(tabID: tabIDType, items: Array<elemen
         var element = items[key]
         if (element != undefined) {
             if ("itemID" in element) {
-                if ((element as itemData).tabID == tabID) return element
+                if ((element as itemData).tabID == tabID) return element as itemData
             } else if ("folderID" in element) {
                 returnVal = getItemJSONObjectByTabIDRecursion(tabID, (element as folderData).elements)
                 if (returnVal != undefined) return returnVal
@@ -92,7 +92,7 @@ function getItemJSONObjectByURLRecursion(items: Array<elementData>, url: string)
     for (var key in items) {
         var element = items[key]
         if ("itemID" in element) {
-            if ((element as itemData).url == url) return element
+            if ((element as itemData).url == url) return element as itemData
         } else if ("folderID" in element) {
             returnVal = getItemJSONObjectByURLRecursion((element as folderData).elements, url)
             if (returnVal != undefined) return returnVal

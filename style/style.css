@@ -1,76 +1,81 @@
 * {
-  font-family: sans-serif;
-  text-decoration: none;
-  font-weight: normal;
+    font-family: sans-serif;
+    text-decoration: none;
+    font-weight: normal;
 }
 
 body {
-  color: white;
-  height: 100%;
+    color: white;
+    height: 100%;
 }
 
 .closed {
-  color: lightgrey;
+    color: lightgrey;
 }
 
 h3 {
-  color: darkgrey;
-  margin: auto;
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  transform: translate(0%, -50%);
+    color: darkgrey;
+    margin: auto;
+    text-align: center;
+    position: absolute;
+    top: 50%;
+    transform: translate(0%, -50%);
 }
 
 .overflow {
-  text-overflow: clip;
-  overflow: hidden;
-  white-space: nowrap;
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .disabled {
-  display: none;
+    display: none;
 }
 
 #addFolderNameInput {
-  margin: 5%;
+    margin: 5%;
 }
 
 .noEvents {
-  pointer-events: none;
+    pointer-events: none;
+}
+
+.noPointerEvents {
+    pointer-events: none;
 }
 
 .hover {
-  opacity: .5;
+    opacity: 0.5;
 }
 
 .darkmode {
-  background-color: #252525;
-  color: #f6f6f6;
-  fill: #f6f6f6;
-  stroke: #f6f6f6;
+    background-color: #252525;
+    color: #f6f6f6;
+    fill: #f6f6f6;
+    stroke: #f6f6f6;
 }
 
 .lightmode {
-  background-color: #f6f6f6;
-  color: black;
-  fill: black;
-  stroke: black;
+    background-color: #f6f6f6;
+    color: black;
+    fill: black;
+    stroke: black;
 }
 
 .inbetween {
-  text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: nowrap;
-  color: grey;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    color: grey;
 }
 
 .selected {
-  background-color: #121111;
-  fill: rgb(53, 53, 53);
-  border-radius: 10%;
+    background-color: #121111;
+    fill: rgb(53, 53, 53);
+    border-radius: 10%;
 }
 
-a:link, a:visited {
-  color: white;
+a:link,
+a:visited {
+    color: white;
 }

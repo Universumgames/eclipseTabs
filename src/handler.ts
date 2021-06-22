@@ -416,7 +416,7 @@ function displayElements(data: tabStructData, currentData: folderData, htmlConta
         var item = currentData.elements[key]
         if (item != undefined) {
             if ("itemID" in item) {
-                htmlAdder.addTab(data, htmlContainer, item, layer, addHTMLHandler)
+                htmlAdder.addTab(data, htmlContainer, item as itemData, layer, addHTMLHandler)
             } else if ("folderID" in item) {
                 var folder = item as folderData
                 var htmlFolder = htmlAdder.addFolder(data, htmlContainer, folder, layer, addHTMLHandler)
@@ -509,6 +509,8 @@ async function contextMenu_folder_rename_handler(event: any) {
         divContainer.children[3].classList.toggle("disabled")
         //@ts-ignore
         divContainer.children[3].focus()
+        //@ts-ignore
+        divContainer.children[3].value = divContainer.children[1].textContent
     }
 }
 
@@ -529,6 +531,8 @@ async function contextMenu_item_rename_handler(event: any) {
         divContainer.children[3].classList.toggle("disabled")
         //@ts-ignore
         divContainer.children[3].focus()
+        //@ts-ignore
+        divContainer.children[3].value = contextMenuTarget.attributes.getNamedItem("title").value
     }
 }
 

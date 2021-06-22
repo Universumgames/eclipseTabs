@@ -5,7 +5,7 @@
 }
 
 .bottomElements {
-    margin: 2%;
+    margin: 0.3rem;
 }
 
 .bottomElement {
@@ -23,6 +23,23 @@
 }
 
 .bottomElementPic {
-    width: 25px;
-    height: 25px;
+    width: 2rem;
+    height: 2rem;
+}
+
+#bottom::before {
+    content: "";
+    width: 95vw;
+    height: 0.2rem;
+    display: block;
+    margin-left: 1ch;
+    margin-right: 1ch;
+}
+
+.lightmode > #bottom::before {
+    background-color: #121111;
+}
+
+.darkmode > #bottom::before {
+    background-color: #d8d8d8;
 }
