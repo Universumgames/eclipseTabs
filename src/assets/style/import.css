@@ -1,0 +1,16 @@
+#importContainer {
+    margin: 3rem;
+}
+
+#importContainer button {
+    margin-right: 0.5rem;
+}
+
+#importContainer #jsonInput {
+    width: 100%;
+    margin: -3px;
+    border: 2px inset #eee;
+    max-height: 90vh;
+    min-height: 50vh;
+    height: 60%;
+}

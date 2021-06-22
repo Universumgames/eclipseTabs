@@ -1,0 +1,26 @@
+#howtoContainer {
+    display: flow-root;
+}
+
+#howtoContainer #browserSidebarIco {
+    width: 3rem;
+    display: block;
+}
+
+#howtoContainer > p {
+    max-width: 50ch;
+}
+
+#howtoContainer > * {
+    margin-left: 3rem;
+}
+
+#howtoContainer #eclipseMenuBar {
+    height: 3rem;
+    display: block;
+}
+
+#howtoContainer a:hover,
+#howtoContainer a:focus {
+    color: darkgreen;
+}

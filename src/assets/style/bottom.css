@@ -1,0 +1,44 @@
+.bottom {
+    bottom: 0;
+    position: fixed;
+}
+
+.bottomElements {
+    margin: 0.3rem;
+}
+
+.bottomElement {
+    display: inline-block;
+}
+
+.bottomElement.darkmode {
+    fill: #d8d8d8;
+    stroke: #d8d8d8;
+}
+
+.bottomElement.lightmode {
+    fill: #000000;
+    stroke: #000000;
+}
+
+.bottomElementPic {
+    width: 2rem;
+    height: 2rem;
+}
+
+#bottom::before {
+    content: "";
+    width: 95vw;
+    height: 0.2rem;
+    display: block;
+    margin-left: 1ch;
+    margin-right: 1ch;
+}
+
+.lightmode > #bottom::before {
+    background-color: #121111;
+}
+
+.darkmode > #bottom::before {
+    background-color: #d8d8d8;
+}
