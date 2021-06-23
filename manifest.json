@@ -14,9 +14,9 @@
     "homepage_url": "https://universegame.de",
     "description": "Easy management of your tabs and own bookmark system",
     "icons": {
-        "48": "dist/eclipse_48.png"
+        "48": "dist/icons/eclipse_48.png"
     },
-    "permissions": ["storage", "<all_urls>", "tabs", "tabHide", "contextMenus", "bookmarks"],
+    "permissions": ["storage", "tabs", "tabHide", "contextMenus", "bookmarks"],
     "sidebar_action": {
         "default_title": "eclipseTab",
         "default_panel": "dist/index.html#/",

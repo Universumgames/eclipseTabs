@@ -1,5 +1,7 @@
 <template>
-    <pre id="jsonContent"></pre>
+    <div id="export">
+        <pre id="jsonContent"></pre>
+    </div>
 </template>
 
 <script lang="ts">
@@ -21,3 +23,5 @@ export default class Export extends Vue {
     }
 }
 </script>
+
+<style src="@/assets/style/export.css"></style>

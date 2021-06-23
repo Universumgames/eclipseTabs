@@ -40,15 +40,23 @@
 </template>
 
 <script lang="ts">
-import { Vue } from "vue-class-component"
+import { Options, Vue } from "vue-class-component"
 import { getDataStructFromFirefox, saveDataInFirefox } from "@/scripts/dataHandler/getter"
 import { ColorScheme, tabStructData } from "@/scripts/interfaces"
+import { reloadExtension } from "@/scripts/helper"
 
+@Options({
+    props: {
+        allreload: Function
+    }
+})
 export default class Settings extends Vue {
     devModeSW!: HTMLInputElement
     darkModeSW!: HTMLInputElement
     closeTabsDeletingFolderSW!: HTMLInputElement
     hideOrSwitchSW!: HTMLInputElement
+
+    allreload!: Function
 
     mounted() {
         this.devModeSW = this.$refs.developerMode_checkbox as HTMLInputElement
@@ -67,8 +75,8 @@ export default class Settings extends Vue {
         data.closeTabsInDeletingFolder = this.closeTabsDeletingFolderSW.checked
         data.colorScheme = this.darkModeSW.checked ? ColorScheme.light : ColorScheme.dark
         data.hideOrSwitchTab = this.hideOrSwitchSW.checked
-        console.log(data.colorScheme)
         saveDataInFirefox(data)
+        reloadExtension()
     }
 
     restoreOptions() {

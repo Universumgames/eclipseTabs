@@ -14,6 +14,7 @@
 }
 
 #contextTitle::after,
+#contextMenu_folder:before,
 #contextMenu_item:before {
     content: "";
     width: 100%;
@@ -23,11 +24,13 @@
 }
 
 .darkmode > #contextTitle::after,
-.darkmode #contextMenu_item::before {
+.darkmode #contextMenu_item::before,
+.darkmode #contextMenu_folder::before {
     background-color: #d8d8d8 !important;
 }
 
 .lightmode > #contextTitle::after,
-.lightmode #contextMenu_item::before {
+.lightmode #contextMenu_item::before,
+.lightmode #contextMenu_folder::before {
     background-color: #121111 !important;
 }

@@ -1,58 +1,59 @@
 .disabled {
-  display: none;
+    display: none;
 }
 
 #list {
-  overflow: auto;
-  max-height: calc(100vh - 4rem);
-  -ms-overflow-style: none;
-  /* IE and Edge */
-  scrollbar-width: none;
-  /* Firefox */
+    overflow: auto;
+    max-height: calc(100vh - 4rem);
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+    padding-left: 5px;
+    padding-top: 5px;
 }
 
-#list.devMode{
-  max-height: calc(100vh - 10rem);
+#list.devMode {
+    max-height: calc(100vh - 10rem);
 }
 
 #list::-webkit-scrollbar {
-  display: none;
-}
-
-.list {
-  padding-left: 5px;
-  padding-top: 5px;
+    display: none;
 }
 
 .listItem {
-  padding: 2px;
+    padding: 2px;
 }
 
 .favicon {
-  height: 15px;
-  width: 15px;
-  margin-right: 5px;
+    height: 15px;
+    width: 15px;
+    margin-right: 5px;
 }
 
 .arrow {
-  height: 15px;
-  width: 15px;
-  margin-right: 5px;
-  position: relative;
-  top: 3px;
-  left: 2px;
+    height: 15px;
+    width: 15px;
+    margin-right: 5px;
+    position: relative;
+    top: 3px;
+    left: 2px;
 }
 
 .rotated {
-  transform: rotate(-90deg);
+    transform: rotate(-90deg);
 }
 
 .overflow {
-  text-overflow: clip;
-  overflow: hidden;
-  white-space: nowrap;
+    text-overflow: clip;
+    overflow: hidden;
+    white-space: nowrap;
 }
 
 .tabHidden {
-  color: darkgray
+    color: darkgray;
+}
+
+.name {
+    display: inline;
 }

@@ -61,7 +61,7 @@ async function updateUnorderedTabs(tabStruct: tabStructData, tabs: any): Promise
     }
 }
 
-export async function updateTabsOnStartUp(data: folderData, tabs: any): Promise<void> {
+export async function updateTabsOnStartUp(data: folderData, tabs: any) {
     for (const key in data.elements) {
         const element = data.elements[key]
         if (element != undefined) {

@@ -8,9 +8,9 @@ import {
     getKeyByIDAndType,
     getNumberOfItemsAlreadyExisting,
     saveDataInFirefox
-} from "./getter.js"
-import * as tabHelper from "../tabHelper.js"
-import { generateIndexInFolder } from "./adder.js"
+} from "./getter"
+import * as tabHelper from "../tabHelper"
+import { generateIndexInFolder } from "./adder"
 
 export async function renameFolder(folderID: string, newName: string): Promise<void> {
     const data = await getDataStructFromFirefox()

@@ -1,4 +1,18 @@
 #settingsContainer {
     color: black;
     margin: 1rem;
+    line-height: 2.4;
+    display: flow-root;
+}
+
+.darkmode #settingsContainer {
+    color: white;
+}
+
+.lightmode #settingsContainer {
+    color: black;
+}
+
+#settingsContainer .switch {
+    margin-left: 1rem;
 }
