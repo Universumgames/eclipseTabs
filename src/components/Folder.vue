@@ -52,7 +52,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
 import Item from "@/components/Item.vue"
-import { folderData, Mode, tabStructData } from "@/scripts/interfaces"
+import { folderData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as defs from "@/scripts/dataHandler/definitions"
 
 @Options({
@@ -97,7 +97,17 @@ export default class Folder extends Vue {
         this.container.onclick = this.folderClick
     }
 
-    renameSubmit() {}
+    renameSubmit(event: any) {
+        if (event.keyCode == KeyCode.enter) {
+            event.preventDefault()
+            var value = event.originalTarget.value
+            if (value != "") this.folderData.name = value
+            this.renamingOpen = false
+        }
+        if (event.keyCode == KeyCode.escape) {
+            this.renamingOpen = false
+        }
+    }
 
     get isRenameable() {
         return this.folderData.folderID != defs.pinnedFolderID && this.folderData.folderID != defs.unorderedFolderID
@@ -107,8 +117,8 @@ export default class Folder extends Vue {
         return this.eclipseData.mode == Mode.Move
     }
 
-    folderClick() {
-        this.folderData.open = !this.folderData.open
+    folderClick(e: any) {
+        if (e.explicitOriginalTarget == this.container) this.folderData.open = !this.folderData.open
     }
 
     dragstart_handler() {}
