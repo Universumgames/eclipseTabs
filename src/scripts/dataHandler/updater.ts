@@ -1,7 +1,7 @@
 import { elementData, FirefoxTab, folderData, itemData, tabStructData } from "../interfaces"
 import { recursiveSelectionSort } from "./sorting"
 import * as defs from "./definitions"
-import { getFirefoxTabByURL, getFolderJSONObjectByID, getItemJSONObjectByUrl } from "./getter"
+import { getFirefoxTabByURL, getFolderJSONObjectByID, getItemJSONObjectByUrl, saveDataInFirefox } from "./getter"
 import { addTabSync, createItemIDByTab } from "./adder"
 import { tabExistsByTabID } from "./checker"
 import { getCurrentTab } from "../tabHelper"
@@ -92,7 +92,6 @@ export async function updateTabs(tabData: tabStructData, tabs: Array<FirefoxTab>
     updatePinnedTabs(tabData, tabs)
     updateUnorderedTabs(tabData, tabs)
     recursiveSelectionSort(tabData.rootFolder)
-
     /*var cur = await getCurrentTab()
     var item = getItemJSONObjectByUrl(tabData.rootFolder.elements, cur.url)
     if (item.favIconURL == undefined || item.favIconURL == "" || item.favIconURL.startsWith("http")) item.favIconURL = cur.favIconUrl*/

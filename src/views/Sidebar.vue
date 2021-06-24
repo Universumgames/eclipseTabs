@@ -1,7 +1,7 @@
 <template>
     <div>
         <!--List container-->
-        <div id="list">
+        <div id="list" ref="list">
             <Folder
                 v-for="folder in this.shortenList"
                 :key="folder.folderID"
@@ -9,17 +9,24 @@
                 :folderData="folder"
                 :tier="0"
                 :allreload="this.allreload"
+                :parentFolder="this.eclipseData.rootFolder"
+                :htmlTarget="this.htmlTarget"
+                :targetElement="this.targetElement"
+                v-on:save="save"
+                v-on:targetElementChange="this.targetElementChange"
             />
         </div>
 
         <!--add folder name input-->
         <div id="addFolderNameInputContainer" class="disabled">
-            <input type="text" id="addFolderNameInput" placeholder="foldername" />
+            <input type="text" ref="addFolderNameInput" placeholder="foldername" @keyup="this.addFolderSubmit" />
         </div>
 
         <!--Bottom Menu-->
         <BottomMenu
             :eclipseData="this.eclipseData"
+            :targetElement="this.targetElement"
+            :targetElementParent="this.targetElementParent"
             :allreload="this.allreload"
             v-on:folderClick="this.addFolderClick"
             v-on:binDrop="this.binDrop"
@@ -43,11 +50,11 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
-import { elementData, folderData, itemData, Mode, tabStructData } from "@/scripts/interfaces"
-import { getFolderJSONObjectByID, getItemJSONObjectByItemID, saveDataInFirefox } from "@/scripts/dataHandler/getter"
-import { createEmptyData } from "@/scripts/dataHandler/adder"
+import { elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
+import { generateFolderID, getFolderJSONObjectByID, getItemJSONObjectByItemID, saveDataInFirefox } from "@/scripts/dataHandler/getter"
+import { addFolderDirect, createEmptyData } from "@/scripts/dataHandler/adder"
 import { isFolder, isItem } from "@/scripts/helper"
-import { collapseAll, expandAll, removeFolder, removeItem } from "@/scripts/dataHandler/changer"
+import { collapseAll, expandAll, removeElement, removeFolder, removeItem } from "@/scripts/dataHandler/changer"
 
 import BottomMenu from "@/components/Bottom.vue"
 import ContextMenu from "@/components/ContextMenu.vue"
@@ -61,22 +68,34 @@ import Folder from "@/components/Folder.vue"
     }
 })
 export default class Sidebar extends Vue {
-    eclipseData!: tabStructData
-    allreload!: Function
+    eclipseData: tabStructData = createEmptyData()
+    allreload: Function = () => {}
 
-    contextMenuTarget!: HTMLElement
+    htmlTarget!: HTMLElement
+    targetElement: elementData = this.eclipseData.rootFolder
+    targetElementParent: folderData = this.eclipseData.rootFolder
+
+    folderAddInput!: HTMLInputElement
 
     mounted() {
         console.log(this.eclipseData)
+        this.folderAddInput = this.$refs.addFolderNameInput as HTMLInputElement
+
+        this.htmlTarget = this.$refs.list as HTMLElement
+        this.targetElement = this.eclipseData.rootFolder
+        this.targetElementParent = this.eclipseData.rootFolder
     }
 
     //#region bottom menu events
-    addFolderClick(event: any) {
-        console.log(event)
+    addFolderClick() {
+        this.folderAddInput.parentElement!.classList.toggle("disabled")
     }
 
-    binDrop(event: any) {
-        console.log(event)
+    binDrop() {
+        removeElement(this.targetElement as folderData | itemData, this.targetElementParent, this.eclipseData)
+        this.save()
+        console.log(this.targetElement)
+        console.log(this.targetElementParent)
     }
 
     moveClick() {
@@ -109,15 +128,15 @@ export default class Sidebar extends Vue {
     }
 
     contextMenuTargetChange(contextMenuTarget: HTMLElement) {
-        this.contextMenuTarget = contextMenuTarget
+        this.htmlTarget = contextMenuTarget
         console.log(contextMenuTarget)
     }
 
     contextFolderRenameStart() {
-        var divContainer = this.contextMenuTarget
-        if (divContainer.getAttribute("isFolder")) {
+        var divContainer = this.htmlTarget
+        if (divContainer!.getAttribute("isFolder")) {
             // divContainer.innerText = ""
-            divContainer.children[3].classList.toggle("disabled")
+            divContainer!.children[3].classList.toggle("disabled")
             //@ts-ignore
             divContainer.children[3].focus()
             //@ts-ignore
@@ -127,18 +146,18 @@ export default class Sidebar extends Vue {
 
     async contextFolderDelete() {
         var folder: folderData
-        if (isFolder(this.contextMenuTarget)) {
-            folder = getFolderJSONObjectByID(this.contextMenuTarget.getAttribute("folderID")!, this.eclipseData.rootFolder)!
+        if (isFolder(this.htmlTarget!)) {
+            folder = getFolderJSONObjectByID(this.htmlTarget!.getAttribute("folderID")!, this.eclipseData.rootFolder)!
             await removeFolder(folder.folderID, folder.parentFolderID)
             this.allreload()
         }
     }
 
     contextItemRenameStart() {
-        var divContainer = this.contextMenuTarget
-        if (divContainer.getAttribute("isItem")) {
+        var divContainer = this.htmlTarget
+        if (divContainer!.getAttribute("isItem")) {
             // divContainer.innerText = ""
-            divContainer.children[3].classList.toggle("disabled")
+            divContainer!.children[3].classList.toggle("disabled")
             //@ts-ignore
             divContainer.children[3].focus()
             //@ts-ignore
@@ -148,8 +167,8 @@ export default class Sidebar extends Vue {
 
     async contextItemDelete() {
         var item: itemData
-        if (isItem(this.contextMenuTarget)) {
-            item = getItemJSONObjectByItemID(this.contextMenuTarget.getAttribute("itemID")!, this.eclipseData.rootFolder)!
+        if (isItem(this.htmlTarget!)) {
+            item = getItemJSONObjectByItemID(this.htmlTarget!.getAttribute("itemID")!, this.eclipseData.rootFolder)!
             await removeItem(item.itemID, item.parentFolderID)
             this.allreload()
         } else console.warn("Method item delete handler was called on a non item element")
@@ -164,6 +183,26 @@ export default class Sidebar extends Vue {
             arr.push(element)
         }
         return arr
+    }
+
+    save() {
+        this.$emit("save")
+    }
+
+    targetElementChange(element: elementData, parent: folderData) {
+        this.targetElement = element
+        this.targetElementParent = parent
+    }
+
+    async addFolderSubmit(event: any) {
+        if (event.keyCode == KeyCode.enter) {
+            event.preventDefault()
+            var value = this.folderAddInput.value
+            this.folderAddInput.value = ""
+            this.folderAddInput.parentElement!.classList.toggle("disabled")
+            if (value != "") addFolderDirect(this.eclipseData.rootFolder, (await generateFolderID()).toString(), value)
+            this.save()
+        }
     }
 }
 </script>

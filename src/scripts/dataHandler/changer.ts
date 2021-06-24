@@ -1,3 +1,4 @@
+import { elementData } from "./../interfaces"
 import { folderData, itemData, tabStructData } from "../interfaces"
 import * as defs from "./definitions"
 import {
@@ -127,6 +128,35 @@ export async function removeItem(itemID: string, oldParentFolderID: string): Pro
         return true
     }
     return false
+}
+
+export async function removeElement(element: itemData | folderData, parentFolder: folderData, data: tabStructData): Promise<boolean> {
+    if (data == undefined) return false
+    const key = getKeyByIDAndType(
+        parentFolder.elements,
+        "itemID" in element ? false : true,
+        "itemID" in element ? (element as itemData).itemID : (element as folderData).folderID
+    )
+
+    if (data.closeTabsInDeletingFolder == true && "folderID" in element) {
+        const folder = element as folderData
+        if (folder != undefined && parentFolder != undefined && folder.elements != undefined) {
+            for (const key in folder.elements) {
+                const ele = folder.elements[key]
+                if ("itemID" in ele) {
+                    if (data.closeTabsInDeletingFolder && (ele as itemData).tabID != "-1" && (await tabHelper.tabExists((ele as itemData).tabID)))
+                        tabHelper.closeTab((ele as itemData).tabID)
+                } else if ("folderID" in ele) {
+                    removeElement(ele as folderData | itemData, folder, data)
+                }
+            }
+        }
+    } else if ("itemID" in element) tabHelper.closeTab(element.tabID)
+
+    if (parentFolder != undefined && element != undefined && key != undefined) {
+        delete parentFolder.elements[key as any]
+        return true
+    } else return false
 }
 
 export async function expandAll() {

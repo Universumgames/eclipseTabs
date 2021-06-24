@@ -1,6 +1,6 @@
 import { getManifest } from "../firefoxHandler"
 import { ColorScheme, FirefoxTab, folderData, itemData, Mode, tabStructData } from "../interfaces"
-import { getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter"
+import { generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter"
 
 export function createEmptyRoot(): folderData {
     return { folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, elements: [] } as folderData
@@ -33,6 +33,19 @@ export async function addFolder(parentID: string, newFolderID: string, name: str
     }
     parentFolder.elements.push(folder)
     await saveDataInFirefox(data)
+    return folder
+}
+
+export async function addFolderDirect(parentFolder: folderData, newFolderID: string, name: string): Promise<folderData> {
+    const folder: folderData = {
+        open: true,
+        name: name,
+        elements: [],
+        folderID: newFolderID,
+        parentFolderID: parentFolder.folderID,
+        index: generateIndexInFolder(parentFolder)
+    }
+    parentFolder.elements.push(folder)
     return folder
 }
 

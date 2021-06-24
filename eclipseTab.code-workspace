@@ -5,6 +5,12 @@
 		}
 	],
 	"settings": {
-		"git.ignoreLimitWarning": true
+		"git.ignoreLimitWarning": true,
+		"cSpell.words": [
+			"darkmode",
+			"inbetween",
+			"lightmode",
+			"renameable"
+		]
 	}
 }

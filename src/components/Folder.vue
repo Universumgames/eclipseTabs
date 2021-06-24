@@ -10,7 +10,7 @@
             ref="icon"
             preserveAspectRatio="none"
         >
-            <path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" />
+            <path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-line:join:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" />
         </svg>
         <!--Text node-->
         <div class="noEvents name">{{ this.folderData.name }}</div>
@@ -23,6 +23,11 @@
                     :itemData="element"
                     :tier="this.tier + 1"
                     :allreload="this.allreload"
+                    :parentFolder="this.folderData"
+                    :htmlTarget="this.htmlTarget"
+                    :targetElement="this.targetElement"
+                    v-on:save="this.save"
+                    v-on:targetElementChange="this.targetElementChange"
                 ></Item>
                 <Folder
                     v-if="'folderID' in element"
@@ -30,6 +35,11 @@
                     :folderData="element"
                     :tier="this.tier + 1"
                     :allreload="this.allreload"
+                    :parentFolder="this.folderData"
+                    :htmlTarget="this.htmlTarget"
+                    :targetElement="this.targetElement"
+                    v-on:save="save"
+                    v-on:targetElementChange="this.targetElementChange"
                 ></Folder>
             </div>
         </div>
@@ -39,7 +49,7 @@
             ref="renaming"
             type="text"
             placeholder="New Name"
-            class="dsiabled"
+            class="disabled"
             @keyup="this.renameSubmit"
         />
         <!--Inbetween-->
@@ -52,7 +62,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
 import Item from "@/components/Item.vue"
-import { folderData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
+import { elementData, folderData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as defs from "@/scripts/dataHandler/definitions"
 
 @Options({
@@ -60,13 +70,19 @@ import * as defs from "@/scripts/dataHandler/definitions"
     props: {
         eclipseData: Object,
         folderData: Object,
+        parentFolder: Object,
+        htmlTarget: Object,
+        targetElement: Object,
         tier: Number,
         allreload: Function
     }
 })
 export default class Folder extends Vue {
     folderData!: folderData
+    parentFolder!: folderData
     eclipseData!: tabStructData
+    htmlTarget: HTMLElement | undefined = undefined
+    targetElement: elementData | undefined = undefined
     tier: number = 0
     allreload!: Function
 
@@ -117,18 +133,63 @@ export default class Folder extends Vue {
         return this.eclipseData.mode == Mode.Move
     }
 
-    folderClick(e: any) {
-        if (e.explicitOriginalTarget == this.container) this.folderData.open = !this.folderData.open
+    sendTargetElementChange() {
+        this.$emit("targetElementChange", this.folderData, this.parentFolder)
     }
 
-    dragstart_handler() {}
-    drop_handler() {}
-    dragover_handler() {}
-    dropend_handler() {}
-    dragend_handler() {}
-    dragenter_handler() {}
-    dragleave_handler() {}
+    targetElementChange(element: elementData, parent: folderData) {
+        this.$emit("targetElementChange", element, parent)
+    }
 
-    inbetweenDrop() {}
+    folderClick(e: any) {
+        if (e.explicitOriginalTarget == this.container) {
+            this.folderData.open = !this.folderData.open
+            this.save()
+        }
+    }
+
+    save() {
+        this.$emit("save")
+    }
+
+    dragstart_handler(event: any) {
+        if (event.explicitOriginalTarget == this.container) {
+            this.container.classList.add("hover")
+            this.sendTargetElementChange()
+            this.$emit("dragstart", event)
+        }
+    }
+
+    drop_handler() {
+        // TODO missing drop handler
+    }
+
+    dragover_handler() {
+        //empty
+    }
+
+    dropend_handler() {
+        //empty
+    }
+
+    dragend_handler() {
+        this.container.classList.remove("hover")
+    }
+
+    dragenter_handler() {
+        if (this.targetElement != this.folderData) {
+            this.container.classList.add("hover")
+        }
+    }
+
+    dragleave_handler() {
+        if (this.targetElement != this.folderData) {
+            this.container.classList.remove("hover")
+        }
+    }
+
+    inbetweenDrop() {
+        // TODO missing implementation for dropping in between
+    }
 }
 </script>

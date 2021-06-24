@@ -1,18 +1,13 @@
 <template>
-    <!--<div id="nav" style="position: fixed">
-        <router-link to="/">Sidebar</router-link> | <router-link to="/settings">Settings</router-link> | <router-link to="/howto">HowTo</router-link>|
-        <router-link to="/export">Export</router-link> |
-        <router-link to="/import">Import</router-link>
-    </div>-->
-    <router-view :eclipseData="this.eclipseData" :allreload="this.allReload" />
+    <router-view :eclipseData="this.eclipseData" :allreload="this.allReload" v-on:save="this.save" />
 </template>
 
 <script lang="ts">
 import { Vue } from "vue-class-component"
 import { createEmptyData } from "./scripts/dataHandler/adder"
-import { getDataStructFromFirefox } from "./scripts/dataHandler/getter"
+import { getDataStructFromFirefox, saveDataInFirefox } from "./scripts/dataHandler/getter"
 import { updateTabs, updateTabsOnStartUp } from "./scripts/dataHandler/updater"
-import { registerListener } from "./scripts/firefoxHandler"
+import { getManifest, registerListener } from "./scripts/firefoxHandler"
 import { ColorScheme, tabStructData } from "./scripts/interfaces"
 import * as tabHelper from "./scripts/tabHelper"
 
@@ -39,19 +34,44 @@ export default class App extends Vue {
 
     async allReload() {
         this.eclipseData = (await getDataStructFromFirefox())!
+        if (this.eclipseData === undefined) {
+            this.save()
+            console.log("Data cleared or extension is newly installed, created new storage structure: ", this.eclipseData)
+        }
+
+        if (this.eclipseData.version == undefined) {
+            this.eclipseData.version = "1.0.5"
+            this.displayHowTo()
+            this.save()
+        } else if (this.eclipseData.version != getManifest().version) {
+            this.eclipseData.version = getManifest().version
+            this.displayHowTo()
+            this.save()
+        }
+
         this.setColorScheme()
         const that = this
         tabHelper.getTabs().then(async function(tabs: any) {
             updateTabsOnStartUp(that.eclipseData.rootFolder, tabs)
             updateTabs(that.eclipseData, tabs)
             that.$forceUpdate()
+
+            that.save()
         })
         console.log("reloaded")
     }
 
     updateList() {
-        this.$forceUpdate()
+        this.allReload()
         console.log("update")
+    }
+
+    save() {
+        saveDataInFirefox(JSON.parse(JSON.stringify(this.eclipseData)))
+    }
+
+    displayHowTo() {
+        tabHelper.createTab("./index.html#/howto")
     }
 }
 </script>

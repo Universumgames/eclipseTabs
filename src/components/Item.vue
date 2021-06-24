@@ -7,7 +7,7 @@
         @dropend="this.dropend_handler"
         @dragend="this.dragend_handler"
     >
-        <img :src="this.itemData.favIconURL" class="favicon" />
+        <img :src="this.itemData.favIconURL" class="favicon noEvents" />
         <div class="noEvents name">{{ this.itemData.title }}</div>
         <br />
         <input type="text" :class="this.rename ? '' : 'disabled'" placeholder="New Name" @keyup="this.renameSubmit" ref="renameInput" />
@@ -18,8 +18,7 @@
 </template>
 
 <script lang="ts">
-import { saveDataInFirefox } from "@/scripts/dataHandler/getter"
-import { itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
+import { elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as tabHelper from "@/scripts/tabHelper"
 import { Options, Vue } from "vue-class-component"
 
@@ -28,13 +27,19 @@ import { Options, Vue } from "vue-class-component"
     props: {
         eclipseData: Object,
         itemData: Object,
+        parentFolder: Object,
+        htmlTarget: Object,
+        targetElement: Object,
         tier: Number,
         allreload: Function
     }
 })
 export default class Item extends Vue {
     itemData!: itemData
+    parentFolder!: folderData
     eclipseData!: tabStructData
+    htmlTarget: HTMLElement | undefined = undefined
+    targetElement: elementData | undefined = undefined
     tier: number = 0
     allreload!: Function
 
@@ -49,6 +54,12 @@ export default class Item extends Vue {
         this.container.style.marginLeft = this.tier * 4 + "px"
         this.inbetween = this.$refs.inbetween as HTMLElement
         this.renameInput = this.$refs.renameInput as HTMLInputElement
+
+        this.container.draggable = true
+    }
+
+    save() {
+        this.$emit("save")
     }
 
     get modeMove() {
@@ -94,7 +105,7 @@ export default class Item extends Vue {
         } else {
             tabHelper.focusTab(tabID)
         }
-        await saveDataInFirefox(this.eclipseData)
+        this.save()
     }
 
     async renameSubmit(event: any) {
@@ -109,9 +120,22 @@ export default class Item extends Vue {
         }
     }
 
-    dragstart_handler() {}
-    drop_handler() {}
-    dragend_handler() {}
+    sendTargetElementChange() {
+        this.$emit("targetElementChange", this.itemData, this.parentFolder)
+    }
+
+    dragstart_handler(event: any) {
+        this.container.classList.add("hover")
+        this.sendTargetElementChange()
+        this.$emit("dragstart", event)
+    }
+
+    dropend_handler() {}
+
+    dragend_handler() {
+        this.container.classList.remove("hover")
+        //this.$emit("dragend", event)
+    }
 
     inbetweenDrop() {}
 }
