@@ -14,6 +14,7 @@
                 :targetElement="this.targetElement"
                 v-on:save="save"
                 v-on:targetElementChange="this.targetElementChange"
+                v-on:move="this.elementMove"
             />
         </div>
 
@@ -54,7 +55,7 @@ import { elementData, folderData, itemData, KeyCode, Mode, tabStructData } from 
 import { generateFolderID, getFolderJSONObjectByID, getItemJSONObjectByItemID, saveDataInFirefox } from "@/scripts/dataHandler/getter"
 import { addFolderDirect, createEmptyData } from "@/scripts/dataHandler/adder"
 import { isFolder, isItem } from "@/scripts/helper"
-import { collapseAllDirect, expandAllDirect, removeElement, removeFolder, removeItem } from "@/scripts/dataHandler/changer"
+import { collapseAllDirect, expandAllDirect, moveElement, removeElement, removeFolder, removeItem } from "@/scripts/dataHandler/changer"
 
 import BottomMenu from "@/components/Bottom.vue"
 import ContextMenu from "@/components/ContextMenu.vue"
@@ -79,6 +80,8 @@ export default class Sidebar extends Vue {
 
     mounted() {
         console.log(this.eclipseData)
+
+        document.body.addEventListener("drop", this.bodyDrop)
         this.folderAddInput = this.$refs.addFolderNameInput as HTMLInputElement
 
         this.htmlTarget = this.$refs.list as HTMLElement
@@ -181,7 +184,7 @@ export default class Sidebar extends Vue {
         let arr = new Array<elementData>()
         for (let key in this.eclipseData.rootFolder.elements) {
             const element = this.eclipseData.rootFolder.elements[key]
-            arr.push(element)
+            if (element != undefined && element != null) arr.push(element)
         }
         return arr
     }
@@ -204,6 +207,18 @@ export default class Sidebar extends Vue {
             if (value != "") addFolderDirect(this.eclipseData.rootFolder, (await generateFolderID()).toString(), value)
             this.save()
         }
+    }
+
+    elementMove(targetFolder: folderData) {
+        if (this.targetElement != undefined) {
+            if (!moveElement(this.targetElement, this.targetElementParent, targetFolder))
+                console.warn("Unable to move element ", this.targetElement, this.targetElementParent, targetFolder)
+            this.save()
+        } else console.warn("TargetElement is undefined, unable to move element to folder ", targetFolder)
+    }
+
+    bodyDrop() {
+        if (this.targetElement != undefined) moveElement(this.targetElement, this.targetElementParent, this.eclipseData.rootFolder)
     }
 }
 </script>

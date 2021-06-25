@@ -3,6 +3,7 @@
 </template>
 
 <script lang="ts">
+import { reactive } from "vue"
 import { Vue } from "vue-class-component"
 import { createEmptyData } from "./scripts/dataHandler/adder"
 import { getDataStructFromFirefox, saveDataInFirefox } from "./scripts/dataHandler/getter"
@@ -12,7 +13,11 @@ import { ColorScheme, tabStructData } from "./scripts/interfaces"
 import * as tabHelper from "./scripts/tabHelper"
 
 export default class App extends Vue {
-    eclipseData: tabStructData = createEmptyData()
+    eclipseData = reactive<tabStructData>(createEmptyData())
+
+    created() {
+        this.startup()
+    }
 
     async mounted() {
         startupHandler({ startup: this.startup })
@@ -46,7 +51,6 @@ export default class App extends Vue {
 
     async allReload() {
         this.eclipseData = (await getDataStructFromFirefox())!
-        console.log(this.eclipseData)
         if (this.eclipseData === undefined) {
             this.save()
             console.log("Data cleared or extension is newly installed, created new storage structure: ", this.eclipseData)
@@ -66,7 +70,6 @@ export default class App extends Vue {
         const that = this
         tabHelper.getTabs().then(async function(tabs: any) {
             updateTabs(that.eclipseData, tabs)
-            console.log(that.eclipseData)
             that.$forceUpdate()
 
             that.save()
@@ -76,11 +79,10 @@ export default class App extends Vue {
 
     updateList() {
         this.allReload()
-        console.log("update")
     }
 
-    save() {
-        saveDataInFirefox(JSON.parse(JSON.stringify(this.eclipseData)))
+    async save() {
+        await saveDataInFirefox(JSON.parse(JSON.stringify(this.eclipseData)))
     }
 
     displayHowTo() {

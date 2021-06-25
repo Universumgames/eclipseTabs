@@ -51,11 +51,12 @@ export default class Item extends Vue {
 
     mounted() {
         this.container = this.$refs.container as HTMLElement
-        this.container.style.marginLeft = this.tier * 4 + "px"
+        if (this.tier != 0) this.container.style.marginLeft = 1.5 + "rem"
         this.inbetween = this.$refs.inbetween as HTMLElement
         this.renameInput = this.$refs.renameInput as HTMLInputElement
 
         this.container.draggable = true
+        this.container.setAttribute("itemID", this.itemData.itemID)
     }
 
     save() {
@@ -81,29 +82,28 @@ export default class Item extends Vue {
               }
         // var currentTab = tabHelper.getCurrentTab();
         if (!tab.pinned) {
+            const tabExists = await tabHelper.tabExists(tabID)
             if (!this.itemData.hidden) {
                 if (this.eclipseData.hideOrSwitchTab == false) {
-                    if ((await tabHelper.tabExists(tabID)) && (await tabHelper.hideTab(tabID))) {
-                        tabElement.setAttribute("hiddenTab", true + "")
+                    if (tabExists && (await tabHelper.hideTab(tabID))) {
                         this.itemData.hidden = true
                         tabElement.classList.add("tabHidden")
                     }
                 } else tabHelper.focusTab(tabID)
             } else {
-                if (await tabHelper.tabExists(tabID)) {
+                if (tabExists) {
                     if (!(await tabHelper.showTab(tabID))) {
-                        tabHelper.createTab(this.itemData.url)
+                        await tabHelper.createTab(this.itemData.url)
                     }
-                    tabHelper.focusTab(tabID)
-                    tabElement.setAttribute("hiddenTab", false + "")
-                    this.itemData.hidden = false
-                    tabElement.classList.remove("tabHidden")
+                    await tabHelper.focusTab(tabID)
                 } else {
                     await tabHelper.createTab(this.itemData.url)
                 }
+                this.itemData.hidden = false
+                tabElement.classList.remove("tabHidden")
             }
         } else {
-            tabHelper.focusTab(tabID)
+            await tabHelper.focusTab(tabID)
         }
         this.save()
     }

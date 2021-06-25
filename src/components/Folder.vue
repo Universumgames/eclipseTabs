@@ -1,21 +1,23 @@
 <template>
     <div :folderID="folderData.folderID" :index="folderData.index" ref="container">
-        <!--Dropdown icon-->
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            version="1.1"
-            viewBox="-2 -2 15 15"
-            :class="'arrow noEvents ' + (this.folderData.open ? '' : 'rotated')"
-            :id="this.folderData.folderID + '_image'"
-            ref="icon"
-            preserveAspectRatio="none"
-        >
-            <path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-line:join:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" />
-        </svg>
-        <!--Text node-->
-        <div class="noEvents name">{{ this.folderData.name }}</div>
+        <div ref="dropContainer">
+            <!--Dropdown icon-->
+            <svg
+                xmlns="http://www.w3.org/2000/svg"
+                version="1.1"
+                viewBox="-2 -2 15 15"
+                :class="'arrow noEvents ' + (this.folderData.open ? '' : 'rotated')"
+                :id="this.folderData.folderID + '_image'"
+                ref="icon"
+                preserveAspectRatio="none"
+            >
+                <path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-line:join:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" />
+            </svg>
+            <!--Text node-->
+            <div class="noEvents name">{{ this.folderData.name }}</div>
+        </div>
         <!--Child container-->
-        <div v-show="this.folderData.open">
+        <div v-show="this.folderData.open" v-if="this.folderData.elements.length > 0">
             <div v-for="element in this.folderData.elements" :key="element.index">
                 <Item
                     v-if="'itemID' in element"
@@ -27,7 +29,7 @@
                     :htmlTarget="this.htmlTarget"
                     :targetElement="this.targetElement"
                     v-on:save="this.save"
-                    v-on:targetElementChange="this.targetElementChange"
+                    v-on:targetElementChange="this.targetElementChangePassOn"
                 ></Item>
                 <Folder
                     v-if="'folderID' in element"
@@ -39,7 +41,8 @@
                     :htmlTarget="this.htmlTarget"
                     :targetElement="this.targetElement"
                     v-on:save="save"
-                    v-on:targetElementChange="this.targetElementChange"
+                    v-on:targetElementChange="this.targetElementChangePassOn"
+                    v-on:move="this.movePassOn"
                 ></Folder>
             </div>
         </div>
@@ -64,8 +67,6 @@ import { Options, Vue } from "vue-class-component"
 import Item from "@/components/Item.vue"
 import { elementData, folderData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as defs from "@/scripts/dataHandler/definitions"
-import { moveElement } from "@/scripts/dataHandler/changer"
-import { getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
 
 @Options({
     components: { Item },
@@ -92,6 +93,7 @@ export default class Folder extends Vue {
     renaming!: HTMLElement
     container!: HTMLElement
     inbetween!: HTMLElement
+    dropContainer!: HTMLElement
 
     renamingOpen: Boolean = false
 
@@ -99,20 +101,23 @@ export default class Folder extends Vue {
         this.icon = this.$refs.icon as HTMLElement
         this.renaming = this.$refs.renaming as HTMLElement
         this.container = this.$refs.container as HTMLElement
-        this.container.style.marginLeft = this.tier * 4 + "px"
+        if (this.tier != 0) this.container.style.marginLeft = 1.5 + "rem"
         this.inbetween = this.$refs.inbetween as HTMLElement
+        this.dropContainer = this.$refs.dropContainer as HTMLElement
 
         //register drag events
-        if (this.isRenameable) this.container.draggable = true
-        this.container.addEventListener("dragstart", this.dragstart_handler)
-        this.container.addEventListener("drop", this.drop_handler)
-        this.container.addEventListener("dragover", this.dragover_handler)
-        this.container.addEventListener("dropend", this.dropend_handler)
-        this.container.addEventListener("dragend", this.dragend_handler)
-        this.container.addEventListener("dragenter", this.dragenter_handler)
-        this.container.addEventListener("dragleave", this.dragleave_handler)
+        if (this.isRenameable) this.dropContainer.draggable = true
+        this.dropContainer.addEventListener("dragstart", this.dragstart_handler)
+        this.dropContainer.addEventListener("drop", this.drop_handler)
+        this.dropContainer.addEventListener("dragover", this.dragover_handler)
+        this.dropContainer.addEventListener("dropend", this.dropend_handler)
+        this.dropContainer.addEventListener("dragend", this.dragend_handler)
+        this.dropContainer.addEventListener("dragenter", this.dragenter_handler)
+        this.dropContainer.addEventListener("dragleave", this.dragleave_handler)
         //on click
-        this.container.onclick = this.folderClick
+        this.dropContainer.onclick = this.folderClick
+
+        this.dropContainer.setAttribute("folderID", this.folderData.folderID)
     }
 
     renameSubmit(event: any) {
@@ -139,12 +144,12 @@ export default class Folder extends Vue {
         this.$emit("targetElementChange", this.folderData, this.parentFolder)
     }
 
-    targetElementChange(element: elementData, parent: folderData) {
+    targetElementChangePassOn(element: elementData, parent: folderData) {
         this.$emit("targetElementChange", element, parent)
     }
 
     folderClick(e: any) {
-        if (e.explicitOriginalTarget == this.container) {
+        if (e.explicitOriginalTarget == this.dropContainer) {
             this.folderData.open = !this.folderData.open
             this.save()
         }
@@ -155,20 +160,24 @@ export default class Folder extends Vue {
     }
 
     dragstart_handler(event: any) {
-        if (event.explicitOriginalTarget == this.container) {
+        if (event.explicitOriginalTarget == this.dropContainer) {
             this.container.classList.add("hover")
             this.sendTargetElementChange()
             this.$emit("dragstart", event)
         }
     }
 
-    drop_handler() {
-        // TODO missing drop handler
-        moveElement(this.targetElement!, getFolderJSONObjectByID(this.targetElement!.parentFolderID, this.eclipseData.rootFolder)!, this.folderData)
+    drop_handler(event: any) {
+        this.container.classList.remove("hover")
+        if (event.explicitOriginalTarget == this.dropContainer) this.$emit("move", this.folderData)
     }
 
-    dragover_handler() {
-        //empty
+    movePassOn(targetFolder: folderData) {
+        this.$emit("move", targetFolder)
+    }
+
+    dragover_handler(e: any) {
+        e.preventDefault()
     }
 
     dropend_handler() {

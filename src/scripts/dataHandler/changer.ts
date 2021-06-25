@@ -13,6 +13,8 @@ import {
 import * as tabHelper from "../tabHelper"
 import { generateIndexInFolder } from "./adder"
 
+/** @deprecated should not be used anymore
+ * */
 export async function renameFolder(folderID: string, newName: string): Promise<void> {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return
@@ -21,6 +23,8 @@ export async function renameFolder(folderID: string, newName: string): Promise<v
     await saveDataInFirefox(data)
 }
 
+/** @deprecated
+ */
 export async function renameItem(itemId: string, newName: string): Promise<void> {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return
@@ -34,6 +38,8 @@ export async function renameItem(itemId: string, newName: string): Promise<void>
     await saveDataInFirefox(data)
 }
 
+/** @deprecated
+ */
 export async function moveItem(itemID: string, oldParentFolderID: string, newParentFolderID: string): Promise<Boolean> {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return false
@@ -56,6 +62,8 @@ export async function moveItem(itemID: string, oldParentFolderID: string, newPar
     return false
 }
 
+/** @deprecated
+ */
 export async function moveFolder(folderID: string, oldParentFolderID: string, newParentFolderID: string): Promise<Boolean> {
     if (folderID == oldParentFolderID || folderID == newParentFolderID || oldParentFolderID == newParentFolderID) return true
     const data = await getDataStructFromFirefox()
@@ -81,8 +89,7 @@ export async function moveFolder(folderID: string, oldParentFolderID: string, ne
 }
 
 export function moveElement(element: elementData, oldParent: folderData, newParent: folderData): boolean {
-    //TODO missing implementation of move element
-    if (oldParent == undefined || element == undefined) return false
+    if (oldParent == undefined || element == undefined || newParent == undefined) return false
 
     const key = getKeyByIDAndType(
         oldParent.elements,
@@ -94,12 +101,14 @@ export function moveElement(element: elementData, oldParent: folderData, newPare
         element.index = generateIndexInFolder(newParent)
         newParent.elements[element.index] = Object.assign({}, element)
         delete oldParent.elements[key as any]
-        //oldParentFolder.elements.splice(key as unknown as number, 1)
+        oldParent.elements.length--
         return true
     }
     return false
 }
 
+/** @deprecated
+ */
 export async function removeFolder(folderID: string, oldParentFolderID: string): Promise<Boolean> {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return false
@@ -133,6 +142,8 @@ export async function removeFolder(folderID: string, oldParentFolderID: string):
     return false
 }
 
+/** @deprecated
+ */
 export async function removeItem(itemID: string, oldParentFolderID: string): Promise<Boolean> {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return false
@@ -151,7 +162,7 @@ export async function removeItem(itemID: string, oldParentFolderID: string): Pro
 }
 
 export async function removeElement(element: itemData | folderData, parentFolder: folderData, data: tabStructData): Promise<boolean> {
-    if (data == undefined) return false
+    if (data == undefined || element == undefined || parentFolder == undefined) return false
     const key = getKeyByIDAndType(
         parentFolder.elements,
         "itemID" in element ? false : true,
@@ -179,6 +190,8 @@ export async function removeElement(element: itemData | folderData, parentFolder
     } else return false
 }
 
+/** @deprecated
+ */
 export async function expandAll() {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return
@@ -200,6 +213,8 @@ function expandRecursion(data: folderData) {
     })
 }
 
+/** @deprecated
+ */
 export async function collapseAll() {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return

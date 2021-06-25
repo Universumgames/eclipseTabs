@@ -109,7 +109,6 @@ export default class BottomMenu extends Vue {
         this.bin.addEventListener("drop", (event: any) => {
             this.binDrop(event)
         })
-        console.log(this.bin)
     }
 
     get colorMode() {

@@ -1,6 +1,7 @@
 import { getManifest } from "../firefoxHandler"
 import { ColorScheme, FirefoxTab, folderData, itemData, Mode, tabStructData } from "../interfaces"
 import { generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter"
+import { recursiveSelectionSort } from "./sorting"
 
 export function createEmptyRoot(): folderData {
     return { folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, elements: [] } as folderData
@@ -46,6 +47,7 @@ export async function addFolderDirect(parentFolder: folderData, newFolderID: str
         index: generateIndexInFolder(parentFolder)
     }
     parentFolder.elements.push(folder)
+    recursiveSelectionSort(parentFolder)
     return folder
 }
 

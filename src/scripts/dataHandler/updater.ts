@@ -20,7 +20,7 @@ async function updatePinnedTabs(tabStruct: tabStructData, tabs: any): Promise<vo
         }
         tabStruct.rootFolder.elements[defs.pinnedIndex] = pinnedFolder
         console.warn(
-            "Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initizialising new Pinned Folder. New Struct: ",
+            "Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initialising new Pinned Folder. New Struct: ",
             tabStruct
         )
     }
@@ -47,7 +47,7 @@ async function updateUnorderedTabs(tabStruct: tabStructData, tabs: any): Promise
         }
         tabStruct.rootFolder.elements.push(unorderedFolder)
         console.warn(
-            "Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initizialising new unordered Folder. New Struct: ",
+            "Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initialising new unordered Folder. New Struct: ",
             tabStruct
         )
     }
@@ -81,20 +81,12 @@ export async function updateTabsOnStartUp(data: folderData, tabs: any) {
             }
         }
     }
-    /*for(tabKey in tabs){
-      var firefoxTab = tabs[tabKey]
-      var item = getItemJSONObjectByUrl(firefoxTab.url, data.elements)
-      item.tabID = firefoxTab.id
-    }*/
 }
 
 export async function updateTabs(tabData: tabStructData, tabs: Array<FirefoxTab>): Promise<void> {
     updatePinnedTabs(tabData, tabs)
     updateUnorderedTabs(tabData, tabs)
     recursiveSelectionSort(tabData.rootFolder)
-    /*var cur = await getCurrentTab()
-    var item = getItemJSONObjectByUrl(tabData.rootFolder.elements, cur.url)
-    if (item.favIconURL == undefined || item.favIconURL == "" || item.favIconURL.startsWith("http")) item.favIconURL = cur.favIconUrl*/
 }
 
 //#endregion
