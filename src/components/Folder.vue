@@ -64,6 +64,8 @@ import { Options, Vue } from "vue-class-component"
 import Item from "@/components/Item.vue"
 import { elementData, folderData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as defs from "@/scripts/dataHandler/definitions"
+import { moveElement } from "@/scripts/dataHandler/changer"
+import { getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
 
 @Options({
     components: { Item },
@@ -162,6 +164,7 @@ export default class Folder extends Vue {
 
     drop_handler() {
         // TODO missing drop handler
+        moveElement(this.targetElement!, getFolderJSONObjectByID(this.targetElement!.parentFolderID, this.eclipseData.rootFolder)!, this.folderData)
     }
 
     dragover_handler() {

@@ -54,7 +54,7 @@ import { elementData, folderData, itemData, KeyCode, Mode, tabStructData } from 
 import { generateFolderID, getFolderJSONObjectByID, getItemJSONObjectByItemID, saveDataInFirefox } from "@/scripts/dataHandler/getter"
 import { addFolderDirect, createEmptyData } from "@/scripts/dataHandler/adder"
 import { isFolder, isItem } from "@/scripts/helper"
-import { collapseAll, expandAll, removeElement, removeFolder, removeItem } from "@/scripts/dataHandler/changer"
+import { collapseAllDirect, expandAllDirect, removeElement, removeFolder, removeItem } from "@/scripts/dataHandler/changer"
 
 import BottomMenu from "@/components/Bottom.vue"
 import ContextMenu from "@/components/ContextMenu.vue"
@@ -120,16 +120,17 @@ export default class Sidebar extends Vue {
 
     //#region context menu events
     async collapseAllClick() {
-        await collapseAll()
+        collapseAllDirect(this.eclipseData)
+        this.save()
     }
 
     async expandAll() {
-        await expandAll()
+        expandAllDirect(this.eclipseData)
+        this.save()
     }
 
     contextMenuTargetChange(contextMenuTarget: HTMLElement) {
         this.htmlTarget = contextMenuTarget
-        console.log(contextMenuTarget)
     }
 
     contextFolderRenameStart() {

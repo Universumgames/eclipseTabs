@@ -80,6 +80,26 @@ export async function moveFolder(folderID: string, oldParentFolderID: string, ne
     return false
 }
 
+export function moveElement(element: elementData, oldParent: folderData, newParent: folderData): boolean {
+    //TODO missing implementation of move element
+    if (oldParent == undefined || element == undefined) return false
+
+    const key = getKeyByIDAndType(
+        oldParent.elements,
+        "itemID" in element ? false : true,
+        "itemID" in element ? (element as itemData).itemID : (element as folderData).folderID
+    )
+    if (oldParent != undefined && newParent != undefined && element != undefined && key != undefined) {
+        element.parentFolderID = newParent.folderID
+        element.index = generateIndexInFolder(newParent)
+        newParent.elements[element.index] = Object.assign({}, element)
+        delete oldParent.elements[key as any]
+        //oldParentFolder.elements.splice(key as unknown as number, 1)
+        return true
+    }
+    return false
+}
+
 export async function removeFolder(folderID: string, oldParentFolderID: string): Promise<Boolean> {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return false
@@ -166,6 +186,10 @@ export async function expandAll() {
     await saveDataInFirefox(data)
 }
 
+export function expandAllDirect(eclipseData: tabStructData) {
+    expandRecursion(eclipseData.rootFolder)
+}
+
 function expandRecursion(data: folderData) {
     data.elements.forEach(element => {
         if ("folderID" in element) {
@@ -181,6 +205,10 @@ export async function collapseAll() {
     if (data == undefined) return
     collapseAllRecursion(data.rootFolder)
     await saveDataInFirefox(data)
+}
+
+export function collapseAllDirect(eclipseData: tabStructData) {
+    collapseAllRecursion(eclipseData.rootFolder)
 }
 
 function collapseAllRecursion(data: folderData) {

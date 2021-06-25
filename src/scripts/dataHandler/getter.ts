@@ -56,10 +56,11 @@ function getFolderJSONObjectByIDRecursion(id: folderIDType, folder: Array<elemen
         const element = folder[key]
         if (element != undefined) {
             if ("folderID" in element) {
-                if ((element as folderData).folderID == id) {
+                const fold = element as folderData
+                if (fold.folderID == id) {
                     return element as folderData
                 } else {
-                    returnVal = getFolderJSONObjectByIDRecursion(id, (element as folderData).elements)
+                    returnVal = getFolderJSONObjectByIDRecursion(id, fold.elements)
                     if (returnVal != undefined) return returnVal
                 }
             }

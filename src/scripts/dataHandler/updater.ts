@@ -8,13 +8,13 @@ import { getCurrentTab } from "../tabHelper"
 
 //#region update tabs
 async function updatePinnedTabs(tabStruct: tabStructData, tabs: any): Promise<void> {
-    let pinnedFolder: folderData = getFolderJSONObjectByID(defs.pinnedFolderID, tabStruct.rootFolder)!
+    let pinnedFolder: folderData | undefined = getFolderJSONObjectByID(defs.pinnedFolderID, tabStruct.rootFolder)
     if (pinnedFolder == undefined) {
         pinnedFolder = {
-            name: "Pinned Tabs",
+            name: "Pinned",
             open: true,
             folderID: defs.pinnedFolderID,
-            parentFolderID: "-1",
+            parentFolderID: defs.rootFolderID,
             elements: [],
             index: defs.pinnedIndex
         }
@@ -35,17 +35,17 @@ async function updatePinnedTabs(tabStruct: tabStructData, tabs: any): Promise<vo
 }
 
 async function updateUnorderedTabs(tabStruct: tabStructData, tabs: any): Promise<void> {
-    let unorderedFolder: folderData = getFolderJSONObjectByID(defs.unorderedFolderID, tabStruct.rootFolder)!
+    let unorderedFolder: folderData | undefined = getFolderJSONObjectByID(defs.unorderedFolderID, tabStruct.rootFolder)
     if (unorderedFolder == undefined) {
         unorderedFolder = {
-            name: "Unordered Tabs",
+            name: "Other",
             open: true,
             folderID: defs.unorderedFolderID,
-            parentFolderID: "-1",
+            parentFolderID: defs.rootFolderID,
             elements: [],
             index: defs.unorderedIndex
         }
-        tabStruct.rootFolder.elements[defs.unorderedIndex] = unorderedFolder
+        tabStruct.rootFolder.elements.push(unorderedFolder)
         console.warn(
             "Storage was cleared, imported or you transitioned to a newer version, datastructure is not like it should be, initizialising new unordered Folder. New Struct: ",
             tabStruct
