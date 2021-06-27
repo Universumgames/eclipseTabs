@@ -1,6 +1,6 @@
 <template>
-    <div :folderID="folderData.folderID" :index="folderData.index" ref="container">
-        <div ref="dropContainer">
+    <div ref="container">
+        <div ref="dropContainer" :folderID="folderData.folderID" :index="folderData.index">
             <!--Dropdown icon-->
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -28,8 +28,10 @@
                     :parentFolder="this.folderData"
                     :htmlTarget="this.htmlTarget"
                     :targetElement="this.targetElement"
+                    :contextData="this.contextData"
                     v-on:save="this.save"
                     v-on:targetElementChange="this.targetElementChangePassOn"
+                    v-on:renameEnd="this.renameEnd"
                 ></Item>
                 <Folder
                     v-if="'folderID' in element"
@@ -40,19 +42,21 @@
                     :parentFolder="this.folderData"
                     :htmlTarget="this.htmlTarget"
                     :targetElement="this.targetElement"
+                    :contextData="this.contextData"
                     v-on:save="save"
                     v-on:targetElementChange="this.targetElementChangePassOn"
                     v-on:move="this.movePassOn"
+                    v-on:renameEnd="this.renameEnd"
                 ></Folder>
             </div>
         </div>
         <!--renaming functionality-->
         <input
-            v-show="this.isRenameable && this.renamingOpen"
-            ref="renaming"
+            v-show="this.isRenameable"
+            ref="renameInput"
             type="text"
             placeholder="New Name"
-            class="disabled"
+            :class="this.rename ? '' : 'disabled'"
             @keyup="this.renameSubmit"
         />
         <!--Inbetween-->
@@ -65,7 +69,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
 import Item from "@/components/Item.vue"
-import { elementData, folderData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
+import { ContextAction, ContextMenuData, elementData, folderData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as defs from "@/scripts/dataHandler/definitions"
 
 @Options({
@@ -76,6 +80,7 @@ import * as defs from "@/scripts/dataHandler/definitions"
         parentFolder: Object,
         htmlTarget: Object,
         targetElement: Object,
+        contextData: Object,
         tier: Number,
         allreload: Function
     }
@@ -86,20 +91,21 @@ export default class Folder extends Vue {
     eclipseData!: tabStructData
     htmlTarget: HTMLElement | undefined = undefined
     targetElement: elementData | undefined = undefined
+    contextData!: ContextMenuData
     tier: number = 0
     allreload!: Function
 
     icon!: HTMLElement
-    renaming!: HTMLElement
+    renameInput!: HTMLElement
     container!: HTMLElement
     inbetween!: HTMLElement
     dropContainer!: HTMLElement
 
-    renamingOpen: Boolean = false
+    oldRename: boolean = false
 
     mounted() {
         this.icon = this.$refs.icon as HTMLElement
-        this.renaming = this.$refs.renaming as HTMLElement
+        this.renameInput = this.$refs.renameInput as HTMLElement
         this.container = this.$refs.container as HTMLElement
         if (this.tier != 0) this.container.style.marginLeft = 1.5 + "rem"
         this.inbetween = this.$refs.inbetween as HTMLElement
@@ -120,20 +126,44 @@ export default class Folder extends Vue {
         this.dropContainer.setAttribute("folderID", this.folderData.folderID)
     }
 
+    updated() {
+        if (!this.oldRename && this.rename) {
+            this.renameInput.focus()
+        }
+        this.oldRename = this.rename
+    }
+
     renameSubmit(event: any) {
         if (event.keyCode == KeyCode.enter) {
             event.preventDefault()
             var value = event.originalTarget.value
             if (value != "") this.folderData.name = value
-            this.renamingOpen = false
+            this.renameEnd()
+            this.save()
         }
         if (event.keyCode == KeyCode.escape) {
-            this.renamingOpen = false
+            this.renameEnd()
         }
     }
 
     get isRenameable() {
         return this.folderData.folderID != defs.pinnedFolderID && this.folderData.folderID != defs.unorderedFolderID
+    }
+
+    get rename() {
+        return (
+            this.contextData.targetElementID == this.folderData.folderID &&
+            this.contextData.targetIsFolder == true &&
+            this.contextData.actionPerformed == ContextAction.rename
+        )
+    }
+
+    get delete() {
+        return (
+            this.contextData.targetElementID == this.folderData.folderID &&
+            this.contextData.targetIsFolder == true &&
+            this.contextData.actionPerformed == ContextAction.delete
+        )
     }
 
     get modeMove() {
@@ -157,6 +187,10 @@ export default class Folder extends Vue {
 
     save() {
         this.$emit("save")
+    }
+
+    renameEnd() {
+        this.$emit("renameEnd")
     }
 
     dragstart_handler(event: any) {

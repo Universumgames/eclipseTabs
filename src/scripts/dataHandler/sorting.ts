@@ -1,6 +1,7 @@
 import { elementData, folderData, tabStructData } from "../interfaces"
 import { generateIndexInFolder } from "./adder"
 
+//TODO needs a faster alternative to selection sort (like radix-sort)
 export async function recursiveSelectionSort(element: folderData): Promise<void> {
     let sortedIndex: number = 0
     let indexSmallest: number = 0

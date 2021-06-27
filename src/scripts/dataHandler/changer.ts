@@ -115,8 +115,8 @@ export async function removeFolder(folderID: string, oldParentFolderID: string):
     const oldParentFolder = getFolderJSONObjectByID(oldParentFolderID, data.rootFolder)
     const folder = getFolderJSONObjectByID(folderID, data.rootFolder)
 
-    console.log("Parent folder: ", oldParentFolder)
-    console.log("Folder deleted: ", folder)
+    // console.log("Parent folder: ", oldParentFolder)
+    // console.log("Folder deleted: ", folder)
 
     if (data.closeTabsInDeletingFolder == true && folder != undefined && oldParentFolder != undefined && folder.elements != undefined) {
         for (const key in folder.elements) {
@@ -175,8 +175,9 @@ export async function removeElement(element: itemData | folderData, parentFolder
             for (const key in folder.elements) {
                 const ele = folder.elements[key]
                 if ("itemID" in ele) {
-                    if (data.closeTabsInDeletingFolder && (ele as itemData).tabID != "-1" && (await tabHelper.tabExists((ele as itemData).tabID)))
-                        tabHelper.closeTab((ele as itemData).tabID)
+                    const tab = ele as itemData
+                    if (data.closeTabsInDeletingFolder && tab.tabID != "-1" && (await tabHelper.tabExists(tab.tabID))) tabHelper.closeTab(tab.tabID)
+                    tab.tabID = "-1"
                 } else if ("folderID" in ele) {
                     removeElement(ele as folderData | itemData, folder, data)
                 }
@@ -185,7 +186,9 @@ export async function removeElement(element: itemData | folderData, parentFolder
     } else if ("itemID" in element) tabHelper.closeTab(element.tabID)
 
     if (parentFolder != undefined && element != undefined && key != undefined) {
-        delete parentFolder.elements[key as any]
+        parentFolder.elements.splice(parentFolder.elements.indexOf(element), 1)
+        // delete parentFolder.elements[key as any]
+        // parentFolder.elements.length--
         return true
     } else return false
 }

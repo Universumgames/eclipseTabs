@@ -4,7 +4,7 @@ import { FirefoxTab } from "./interfaces"
 export async function hideTab(id: string | Number): Promise<Boolean> {
     if (id != undefined) {
         if ((await getCurrentTab()).id == id) return false
-        console.log(`hide ${id}`)
+        // console.log(`hide ${id}`)
         //@ts-ignore
         await browser.tabs.hide(+id)
         return true
@@ -14,7 +14,7 @@ export async function hideTab(id: string | Number): Promise<Boolean> {
 
 export async function showTab(id: string | Number): Promise<Boolean> {
     if (id != undefined) {
-        console.log(`show ${id}`)
+        // console.log(`show ${id}`)
         //@ts-ignore
         await browser.tabs.show(+id)
         return true

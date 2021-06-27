@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
-import { ColorScheme, tabStructData } from "@/scripts/interfaces"
+import { ColorScheme, ContextAction, ContextMenuData, tabStructData } from "@/scripts/interfaces"
 
 @Options({
     components: {},
@@ -31,10 +31,9 @@ import { ColorScheme, tabStructData } from "@/scripts/interfaces"
         collapseAll: Object,
         expandAll: Object,
         contextMenuTargetChange: Object,
-        contextFolderRenameStart: Object,
         contextFolderDelete: Object,
-        contextItemRenameStart: Object,
-        contextItemDelete: Object
+        contextItemDelete: Object,
+        contextDataChange: Object
     }
 })
 export default class ContextMenu extends Vue {
@@ -43,6 +42,12 @@ export default class ContextMenu extends Vue {
     contextMenu!: HTMLElement
     contextMenu_item!: HTMLElement
     contextMenu_folder!: HTMLElement
+
+    menuData!: ContextMenu
+
+    target!: HTMLElement
+    targetID: string | undefined | null
+    targetIsFolder: boolean = false
 
     mounted() {
         this.contextMenu = this.$refs.contextMenu as HTMLElement
@@ -60,13 +65,25 @@ export default class ContextMenu extends Vue {
     async contextMenu_handler(event: any) {
         event.preventDefault()
         var target = event.explicitOriginalTarget as HTMLElement
-        console.log(target)
-        this.contextMenu.classList.remove("disabled")
+        //console.log(target)
         this.contextMenu.style.left = event.clientX + "px"
         this.contextMenu.style.top = event.clientY + "px"
-        if (target.getAttribute("folderID") != undefined) this.contextMenu_folder.classList.remove("disabled")
 
-        if (target.getAttribute("itemID") != undefined) this.contextMenu_item.classList.remove("disabled")
+        this.contextMenu.classList.remove("disabled")
+        this.contextMenu_folder.classList.add("disabled")
+        this.contextMenu_item.classList.add("disabled")
+
+        if (target.getAttribute("folderID") != undefined) {
+            this.contextMenu_folder.classList.remove("disabled")
+            this.targetID = target.getAttribute("folderID")
+            this.targetIsFolder = true
+        } else if (target.getAttribute("itemID") != undefined) {
+            this.contextMenu_item.classList.remove("disabled")
+            this.targetID = target.getAttribute("itemID")
+            this.targetIsFolder = false
+        }
+
+        this.target = target
 
         this.$emit("contextMenuTargetChange", target)
     }
@@ -86,19 +103,25 @@ export default class ContextMenu extends Vue {
     }
 
     async contextMenu_folder_rename_handler() {
-        this.$emit("contextFolderRenameStart")
+        this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.rename })
     }
 
     async contextMenu_folder_delete_handler() {
+        this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.delete })
         this.$emit("contextFolderDelete")
     }
 
     async contextMenu_item_rename_handler() {
-        this.$emit("contextItemRenameStart")
+        this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.rename })
     }
 
     async contextMenu_item_delete_handler() {
+        this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.delete })
         this.$emit("contextItemDelete")
+    }
+
+    menuDataChangeEmit(data: ContextMenuData) {
+        this.$emit("contextDataChange", data)
     }
 }
 </script>

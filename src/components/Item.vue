@@ -7,9 +7,10 @@
         @dropend="this.dropend_handler"
         @dragend="this.dragend_handler"
     >
-        <img :src="this.itemData.favIconURL" class="favicon noEvents" />
-        <div class="noEvents name">{{ this.itemData.title }}</div>
-        <br />
+        <div ref="dropContainer" :itemID="this.itemData.itemID" :index="this.itemData.index">
+            <img :src="this.itemData.favIconURL" class="favicon noEvents" />
+            <div class="noEvents name">{{ this.itemData.title }}</div>
+        </div>
         <input type="text" :class="this.rename ? '' : 'disabled'" placeholder="New Name" @keyup="this.renameSubmit" ref="renameInput" />
         <div v-if="this.modeMove" @drop="this.inbetweenDrop" ref="inbetween">
             <small class="noEvents">Insert Below {{ this.itemData.title }}</small>
@@ -18,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
+import { ContextMenuData, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as tabHelper from "@/scripts/tabHelper"
 import { Options, Vue } from "vue-class-component"
 
@@ -30,6 +31,7 @@ import { Options, Vue } from "vue-class-component"
         parentFolder: Object,
         htmlTarget: Object,
         targetElement: Object,
+        contextData: Object,
         tier: Number,
         allreload: Function
     }
@@ -40,23 +42,41 @@ export default class Item extends Vue {
     eclipseData!: tabStructData
     htmlTarget: HTMLElement | undefined = undefined
     targetElement: elementData | undefined = undefined
+    contextData!: ContextMenuData
     tier: number = 0
     allreload!: Function
 
-    rename: boolean = false
-
     container!: HTMLElement
+    dropContainer!: HTMLElement
     inbetween!: HTMLElement
     renameInput!: HTMLInputElement
+
+    oldRename: boolean = false
 
     mounted() {
         this.container = this.$refs.container as HTMLElement
         if (this.tier != 0) this.container.style.marginLeft = 1.5 + "rem"
         this.inbetween = this.$refs.inbetween as HTMLElement
         this.renameInput = this.$refs.renameInput as HTMLInputElement
+        this.dropContainer = this.$refs.dropContainer as HTMLElement
 
-        this.container.draggable = true
-        this.container.setAttribute("itemID", this.itemData.itemID)
+        this.dropContainer.draggable = true
+        this.dropContainer.setAttribute("itemID", this.itemData.itemID)
+    }
+
+    get rename() {
+        return (
+            this.contextData.targetElementID == this.itemData.itemID &&
+            this.contextData.targetIsFolder == false &&
+            this.contextData.actionPerformed == 0
+        )
+    }
+
+    updated() {
+        if (!this.oldRename && this.rename) {
+            this.renameInput.focus()
+        }
+        this.oldRename = this.rename
     }
 
     save() {
@@ -72,6 +92,7 @@ export default class Item extends Vue {
     }
 
     async click(e: any) {
+        if (e.explicitOriginalTarget != this.dropContainer) return
         var tabElement = e.originalTarget as HTMLHtmlElement
         var tabID = this.itemData.tabID
         var tabs = await tabHelper.getTabByTabID(tabID)
@@ -97,7 +118,8 @@ export default class Item extends Vue {
                     }
                     await tabHelper.focusTab(tabID)
                 } else {
-                    await tabHelper.createTab(this.itemData.url)
+                    const fireTab = await tabHelper.createTab(this.itemData.url)
+                    this.itemData.tabID = fireTab.id.toString()
                 }
                 this.itemData.hidden = false
                 tabElement.classList.remove("tabHidden")
@@ -113,11 +135,16 @@ export default class Item extends Vue {
             event.preventDefault()
             var value = event.originalTarget.value
             if (value != "") this.itemData.title = value
-            this.rename = false
+            this.renameEnd()
+            this.save()
         }
         if (event.keyCode == KeyCode.escape) {
-            this.rename = false
+            this.renameEnd()
         }
+    }
+
+    renameEnd() {
+        this.$emit("renameEnd")
     }
 
     sendTargetElementChange() {
@@ -137,6 +164,8 @@ export default class Item extends Vue {
         //this.$emit("dragend", event)
     }
 
-    inbetweenDrop() {}
+    inbetweenDrop() {
+        // TODO missing implementation for dropping in between
+    }
 }
 </script>

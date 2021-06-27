@@ -158,7 +158,8 @@ function getNewUnusedFolderID(data: tabStructData): Number {
     return id
 }
 
-//Deprecated
+/** @deprecated
+ */
 export function getNumberOfFoldersAlreadyExisting(folderContainer: elementData[]) {
     let number = 0
     for (const key in folderContainer) {

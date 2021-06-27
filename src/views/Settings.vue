@@ -70,7 +70,7 @@ export default class Settings extends Vue {
         e.preventDefault()
         const data = await getDataStructFromFirefox()
         if (data == undefined) return
-        console.log(data)
+        // console.log(data)
         data.devMode = this.devModeSW.checked
         data.closeTabsInDeletingFolder = this.closeTabsDeletingFolderSW.checked
         data.colorScheme = this.darkModeSW.checked ? ColorScheme.light : ColorScheme.dark

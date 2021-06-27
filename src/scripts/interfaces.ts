@@ -33,12 +33,12 @@ export interface elementData {
 
 export enum Mode {
     Default,
-    Move,
+    Move
 }
 
 export enum ColorScheme {
     dark,
-    light,
+    light
 }
 
 export type tabIDType = string
@@ -47,7 +47,7 @@ export type folderIDType = string
 
 export enum KeyCode {
     enter = 13,
-    escape = 27,
+    escape = 27
 }
 
 export interface FirefoxManifest {
@@ -106,4 +106,15 @@ export interface FirefoxTab {
     url: string
     width: Number
     windowId: Number
+}
+
+export enum ContextAction {
+    rename,
+    delete
+}
+
+export interface ContextMenuData {
+    targetElementID: string
+    targetIsFolder: boolean
+    actionPerformed: ContextAction
 }

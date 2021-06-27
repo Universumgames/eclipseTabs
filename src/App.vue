@@ -46,7 +46,7 @@ export default class App extends Vue {
             updateTabsOnStartUp(that.eclipseData.rootFolder, tabs)
             that.save()
         })
-        console.log("Called startup")
+        // console.log("Called startup")
     }
 
     async allReload() {
@@ -69,12 +69,13 @@ export default class App extends Vue {
         this.setColorScheme()
         const that = this
         tabHelper.getTabs().then(async function(tabs: any) {
+            updateTabsOnStartUp(that.eclipseData.rootFolder, tabs)
             updateTabs(that.eclipseData, tabs)
             that.$forceUpdate()
 
             that.save()
         })
-        console.log("reloaded")
+        // console.log("reloaded")
     }
 
     updateList() {
