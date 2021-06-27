@@ -44,8 +44,6 @@
             v-on:expandAll="this.expandAll"
             v-on:contextDataChange="this.contextDataChange"
             v-on:contextMenuTargetChange="this.contextMenuTargetChange"
-            v-on:contextFolderDelete="this.contextFolderDelete"
-            v-on:contextItemDelete="this.contextItemDelete"
         />
     </div>
 </template>
@@ -99,8 +97,6 @@ export default class Sidebar extends Vue {
     binDrop() {
         removeElement(this.targetElement as folderData | itemData, this.targetElementParent, this.eclipseData)
         this.save()
-        // console.log(this.targetElement)
-        // console.log(this.targetElementParent)
     }
 
     moveClick() {
@@ -138,24 +134,6 @@ export default class Sidebar extends Vue {
         this.htmlTarget = contextMenuTarget
     }
 
-    async contextFolderDelete() {
-        // var folder: folderData
-        // if (isFolder(this.htmlTarget!)) {
-        //     folder = getFolderJSONObjectByID(this.htmlTarget!.getAttribute("folderID")!, this.eclipseData.rootFolder)!
-        //     await removeFolder(folder.folderID, folder.parentFolderID)
-        //     this.allreload()
-        // }
-    }
-
-    async contextItemDelete() {
-        // var item: itemData
-        // if (isItem(this.htmlTarget!)) {
-        //     item = getItemJSONObjectByItemID(this.htmlTarget!.getAttribute("itemID")!, this.eclipseData.rootFolder)!
-        //     await removeItem(item.itemID, item.parentFolderID)
-        //     this.allreload()
-        // } else console.warn("Method item delete handler was called on a non item element", this.htmlTarget)
-    }
-
     async contextDataChange(data: ContextMenuData) {
         this.contextData = data
         if (data.actionPerformed == ContextAction.delete) {
@@ -171,15 +149,7 @@ export default class Sidebar extends Vue {
                 console.warn("parent not found, search based on query:", data)
                 return
             }
-            //TODO try getting this to work.. vue dos not like it when an array-element gets deleted(?)
             removeElement(element, parent, this.eclipseData)
-            // if (data.targetIsFolder) {
-            //     const folder = element as folderData
-            //     await removeFolder(folder.folderID, folder.parentFolderID)
-            // } else {
-            //     const item = element as itemData
-            //     await removeItem(item.itemID, item.parentFolderID)
-            // }
             this.save()
         }
     }

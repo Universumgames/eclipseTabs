@@ -161,7 +161,6 @@ export default class Item extends Vue {
 
     dragend_handler() {
         this.container.classList.remove("hover")
-        //this.$emit("dragend", event)
     }
 
     inbetweenDrop() {

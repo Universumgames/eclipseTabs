@@ -31,8 +31,6 @@ import { ColorScheme, ContextAction, ContextMenuData, tabStructData } from "@/sc
         collapseAll: Object,
         expandAll: Object,
         contextMenuTargetChange: Object,
-        contextFolderDelete: Object,
-        contextItemDelete: Object,
         contextDataChange: Object
     }
 })
@@ -108,7 +106,6 @@ export default class ContextMenu extends Vue {
 
     async contextMenu_folder_delete_handler() {
         this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.delete })
-        this.$emit("contextFolderDelete")
     }
 
     async contextMenu_item_rename_handler() {
@@ -117,7 +114,6 @@ export default class ContextMenu extends Vue {
 
     async contextMenu_item_delete_handler() {
         this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.delete })
-        this.$emit("contextItemDelete")
     }
 
     menuDataChangeEmit(data: ContextMenuData) {

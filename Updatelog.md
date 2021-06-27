@@ -5,6 +5,7 @@ Update 1.1.0:
 -   updated some UI elements
 -   removed unnecessary permissions in addon
 -   finally, possibly introduced some unintentional bugs
+-   did I mention performance improvements already?
 
 IMPORTANT NOTE BEFORE UPGRADING
 Just like in every update we encourage you to export your current data before upgrading due to potential data loss in project structures. In this update the data will be overwritten for sure but can be easily reimported...
