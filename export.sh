@@ -23,10 +23,10 @@ compressSource(){
 
 compressProgram(){
     echo "Compiling (transpiling) source"
-    npx tsc 
-    echo "Transpiled!!"
+    vue-cli-service build
+    echo "Project build!!"
     ECLIPSE_EXPORT_PROG_FILE="${1}.zip"
-    zip -r -q "${ECLIPSE_EXPORT_PROG_FILE}" compiled/* icons/* pages/* manifest.json style/*
+    zip -r -q "${ECLIPSE_EXPORT_PROG_FILE}" dist/* manifest.json Updatelog.md LICENSE README.md
     echo "Program files zippen in ${ECLIPSE_EXPORT_PROG_FILE}"
 }
 
