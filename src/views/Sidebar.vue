@@ -71,7 +71,7 @@ export default class Sidebar extends Vue {
     eclipseData: tabStructData = createEmptyData()
     allreload: Function = () => {}
 
-    htmlTarget!: HTMLElement
+    htmlTarget: HTMLElement = document.body
     targetElement: elementData = this.eclipseData.rootFolder
     targetElementParent: folderData = this.eclipseData.rootFolder
     contextData = reactive<ContextMenuData>({ targetElementID: "", targetIsFolder: false, actionPerformed: ContextAction.rename })
@@ -110,6 +110,7 @@ export default class Sidebar extends Vue {
             default:
                 this.eclipseData.mode = Mode.Default
         }
+        this.save()
     }
 
     async clearStructClick() {

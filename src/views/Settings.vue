@@ -66,6 +66,10 @@ export default class Settings extends Vue {
         this.restoreOptions()
     }
 
+    unmounted() {
+        document.body.classList.remove("darkmode")
+    }
+
     async saveOptions(e: any) {
         e.preventDefault()
         const data = await getDataStructFromFirefox()
@@ -86,6 +90,8 @@ export default class Settings extends Vue {
             that.closeTabsDeletingFolderSW.checked = storage.closeTabsInDeletingFolder as boolean
             that.darkModeSW.checked = storage.colorScheme == ColorScheme.light
             that.hideOrSwitchSW.checked = storage.hideOrSwitchTab as boolean
+
+            if (storage.colorScheme == ColorScheme.dark) document.body.classList.add("darkmode")
         }
 
         getDataStructFromFirefox().then(eclipseStorage => {
