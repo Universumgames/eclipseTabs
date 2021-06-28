@@ -60,7 +60,7 @@
             @keyup="this.renameSubmit"
         />
         <!--Inbetween-->
-        <div v-if="this.modeMove" isInbetween="true" @drop="this.inbetweenDrop" ref="inbetween">
+        <div v-show="this.modeMove" isInbetween="true" @drop="this.inbetweenDrop" ref="inbetween">
             <small class="noEvents">Insert Below {{ this.folderData.name }}</small>
         </div>
     </div>
@@ -71,6 +71,8 @@ import { Options, Vue } from "vue-class-component"
 import Item from "@/components/Item.vue"
 import { ContextAction, ContextMenuData, elementData, folderData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as defs from "@/scripts/dataHandler/definitions"
+import { moveElement } from "@/scripts/dataHandler/changer"
+import { getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
 
 @Options({
     components: { Item },
@@ -124,6 +126,10 @@ export default class Folder extends Vue {
         this.dropContainer.onclick = this.folderClick
 
         this.dropContainer.setAttribute("folderID", this.folderData.folderID)
+
+        this.inbetween.addEventListener("dragover", e => {
+            e.preventDefault()
+        })
     }
 
     updated() {
@@ -236,6 +242,17 @@ export default class Folder extends Vue {
 
     inbetweenDrop() {
         // TODO missing implementation for dropping in between
+        if (this.targetElement == undefined) return
+        if (this.targetElement.parentFolderID != this.folderData.parentFolderID) {
+            moveElement(
+                this.targetElement!,
+                getFolderJSONObjectByID(this.targetElement.parentFolderID!, this.eclipseData.rootFolder)!,
+                getFolderJSONObjectByID(this.folderData.parentFolderID!, this.eclipseData.rootFolder)!
+            )
+        }
+        this.targetElement.index = +this.folderData.index + 1
+        this.save()
+        this.allreload()
     }
 }
 </script>

@@ -81,7 +81,9 @@ import { createTab } from "@/scripts/tabHelper"
         allreload: Function
     },
     emits: {
-        binDrop: Object
+        binDrop: Object,
+        moveClick: Object,
+        clearStructClick: Object
     }
 })
 export default class BottomMenu extends Vue {

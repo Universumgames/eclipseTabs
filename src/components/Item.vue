@@ -12,13 +12,15 @@
             <div class="noEvents name">{{ this.itemData.title }}</div>
         </div>
         <input type="text" :class="this.rename ? '' : 'disabled'" placeholder="New Name" @keyup="this.renameSubmit" ref="renameInput" />
-        <div v-if="this.modeMove" @drop="this.inbetweenDrop" ref="inbetween">
+        <div v-show="this.modeMove" @drop="this.inbetweenDrop" ref="inbetween">
             <small class="noEvents">Insert Below {{ this.itemData.title }}</small>
         </div>
     </div>
 </template>
 
 <script lang="ts">
+import { moveElement } from "@/scripts/dataHandler/changer"
+import { getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
 import { ContextMenuData, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as tabHelper from "@/scripts/tabHelper"
 import { Options, Vue } from "vue-class-component"
@@ -62,6 +64,10 @@ export default class Item extends Vue {
 
         this.dropContainer.draggable = true
         this.dropContainer.setAttribute("itemID", this.itemData.itemID)
+
+        this.inbetween.addEventListener("dragover", e => {
+            e.preventDefault()
+        })
     }
 
     get rename() {
@@ -165,6 +171,17 @@ export default class Item extends Vue {
 
     inbetweenDrop() {
         // TODO missing implementation for dropping in between
+        if (this.targetElement == undefined) return
+        if (this.targetElement.parentFolderID != this.itemData.parentFolderID) {
+            moveElement(
+                this.targetElement!,
+                getFolderJSONObjectByID(this.targetElement.parentFolderID!, this.eclipseData.rootFolder)!,
+                getFolderJSONObjectByID(this.itemData.parentFolderID!, this.eclipseData.rootFolder)!
+            )
+        }
+        this.targetElement.index = +this.itemData.index + 1
+        this.save()
+        this.allreload()
     }
 }
 </script>
