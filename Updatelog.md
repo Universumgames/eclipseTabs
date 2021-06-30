@@ -4,6 +4,8 @@ Update 1.1.0:
 -   improved performance
 -   updated some UI elements
 -   removed unnecessary permissions in addon
+-   fixed some css "bugs"
+-   some code cleaning (and refactoring)
 -   finally, possibly introduced some unintentional bugs
 -   did I mention performance improvements already?
 

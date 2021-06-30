@@ -85,3 +85,10 @@ export async function getTabByURL(url: string): Promise<FirefoxTab | undefined> 
     }
     return undefined
 }
+
+export function getTabByURLDirect(url: string, tabs: FirefoxTab[]): FirefoxTab | undefined {
+    for (const tab of tabs) {
+        if (tab.url.toLowerCase() == url.toLowerCase()) return tab
+    }
+    return undefined
+}

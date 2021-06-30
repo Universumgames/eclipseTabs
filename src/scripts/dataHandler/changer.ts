@@ -100,8 +100,9 @@ export function moveElement(element: elementData, oldParent: folderData, newPare
         element.parentFolderID = newParent.folderID
         element.index = generateIndexInFolder(newParent)
         newParent.elements[element.index] = Object.assign({}, element)
-        delete oldParent.elements[key as any]
-        oldParent.elements.length--
+        oldParent.elements.splice(oldParent.elements.indexOf(element), 1)
+        // delete oldParent.elements[key as any]
+        // oldParent.elements.length--
         return true
     }
     return false
@@ -133,8 +134,10 @@ export async function removeFolder(folderID: string, oldParentFolderID: string):
     if (oldParentFolder != undefined && folder != undefined) {
         const key = getKeyByIDAndType(oldParentFolder.elements, true, folder.folderID)
         if (key != undefined) {
-            delete oldParentFolder.elements[key as any]
-            oldParentFolder.elements.length -= 1
+            const ele = oldParentFolder.elements[key as any]
+            oldParentFolder.elements.splice(oldParentFolder.elements.indexOf(ele), 1)
+            // delete oldParentFolder.elements[key as any]
+            // oldParentFolder.elements.length -= 1
             await saveDataInFirefox(data)
             return true
         }

@@ -1,8 +1,6 @@
 <template>
     <div id="importContainer">
-        <textarea id="jsonInput" ref="jsonInputRef">
-            put the exported json in here, old data will be deleted in the process
-        </textarea>
+        <textarea id="jsonInput" ref="jsonInputRef" placeholder="put the exported json in here, old data will be deleted in the process"></textarea>
         <br /><br />
         <button id="inputJSONReplace" @click="onClickReplace">Replace Data</button>
         <button id="inputJSONCombine" @click="onClickCombine">Combine Data</button>

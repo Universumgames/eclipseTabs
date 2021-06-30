@@ -241,7 +241,6 @@ export default class Folder extends Vue {
     }
 
     inbetweenDrop() {
-        // TODO missing implementation for dropping in between
         if (this.targetElement == undefined) return
         if (this.targetElement.parentFolderID != this.folderData.parentFolderID) {
             moveElement(

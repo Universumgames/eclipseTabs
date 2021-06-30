@@ -1,16 +1,41 @@
+import { pinnedFolderID, unorderedFolderID, rootFolderID, unorderedIndex, pinnedIndex } from "./definitions"
 import { getManifest } from "../firefoxHandler"
-import { ColorScheme, FirefoxTab, folderData, itemData, Mode, tabStructData } from "../interfaces"
+import { ColorScheme, elementData, FirefoxTab, folderData, itemData, Mode, tabStructData } from "../interfaces"
 import { generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter"
 import { recursiveSelectionSort } from "./sorting"
 
 export function createEmptyRoot(): folderData {
-    return { folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, elements: [] } as folderData
+    return { folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, elements: [] }
 }
 
 export function createEmptyData(): tabStructData {
     const data = {
         mode: Mode.Default,
-        rootFolder: { folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, elements: [] },
+        rootFolder: {
+            folderID: rootFolderID,
+            name: "root",
+            open: true,
+            parentFolderID: rootFolderID,
+            index: 0,
+            elements: [
+                {
+                    name: "Pinned",
+                    open: true,
+                    folderID: pinnedFolderID,
+                    parentFolderID: rootFolderID,
+                    elements: new Array<elementData>(),
+                    index: pinnedIndex
+                } as folderData,
+                {
+                    name: "Other",
+                    open: true,
+                    folderID: unorderedFolderID,
+                    parentFolderID: rootFolderID,
+                    elements: new Array<elementData>(),
+                    index: unorderedIndex
+                } as folderData
+            ]
+        },
         colorScheme: ColorScheme.dark,
         devMode: false,
         closeTabsInDeletingFolder: false,

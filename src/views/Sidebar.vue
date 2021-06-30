@@ -161,7 +161,7 @@ export default class Sidebar extends Vue {
         let arr = new Array<elementData>()
         for (let key in this.eclipseData.rootFolder.elements) {
             const element = this.eclipseData.rootFolder.elements[key]
-            if (element != undefined && element != null) arr.push(element)
+            if (element != undefined && element != null && "folderID" in element) arr.push(element)
         }
         return arr
     }
