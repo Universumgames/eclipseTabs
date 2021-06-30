@@ -60,7 +60,6 @@ export default class App extends Vue {
         } else this.eclipseData = temp
         if (this.eclipseData.version == undefined) {
             this.eclipseData.version = "1.0.5"
-            this.displayHowTo()
             this.save()
         }
         if (this.eclipseData.version != getManifest().version) {
