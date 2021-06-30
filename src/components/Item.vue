@@ -64,6 +64,7 @@ export default class Item extends Vue {
 
         this.dropContainer.draggable = true
         this.dropContainer.setAttribute("itemID", this.itemData.itemID)
+        this.dropContainer.setAttribute("parentID", this.itemData.parentFolderID)
 
         this.inbetween.addEventListener("dragover", e => {
             e.preventDefault()

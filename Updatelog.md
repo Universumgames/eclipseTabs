@@ -7,6 +7,7 @@ Update 1.1.0:
 -   fixed some css "bugs"
 -   some code cleaning (and refactoring)
 -   finally, possibly introduced some unintentional bugs
+-   removed misleading context entries on special elements
 -   did I mention performance improvements already?
 
 IMPORTANT NOTE BEFORE UPGRADING

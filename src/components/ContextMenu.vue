@@ -21,6 +21,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
 import { ColorScheme, ContextAction, ContextMenuData, tabStructData } from "@/scripts/interfaces"
+import { pinnedFolderID, unorderedFolderID } from "@/scripts/dataHandler/definitions"
 
 @Options({
     components: {},
@@ -71,11 +72,19 @@ export default class ContextMenu extends Vue {
         this.contextMenu_folder.classList.add("disabled")
         this.contextMenu_item.classList.add("disabled")
 
-        if (target.getAttribute("folderID") != undefined) {
+        if (
+            target.getAttribute("folderID") != undefined &&
+            target.getAttribute("folderID") != pinnedFolderID &&
+            target.getAttribute("folderID") != unorderedFolderID
+        ) {
             this.contextMenu_folder.classList.remove("disabled")
             this.targetID = target.getAttribute("folderID")
             this.targetIsFolder = true
-        } else if (target.getAttribute("itemID") != undefined) {
+        } else if (
+            target.getAttribute("itemID") != undefined &&
+            target.getAttribute("parentID") != pinnedFolderID &&
+            target.getAttribute("parentID") != unorderedFolderID
+        ) {
             this.contextMenu_item.classList.remove("disabled")
             this.targetID = target.getAttribute("itemID")
             this.targetIsFolder = false

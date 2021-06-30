@@ -117,3 +117,4 @@ export default class App extends Vue {
 </style>
 
 <style src="@/assets/style/style.css"></style>
+<style src="@/assets/style/scrollbar.css"></style>

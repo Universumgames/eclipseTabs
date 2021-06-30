@@ -1,0 +1,5 @@
+.scroller {
+    overflow-y: scroll;
+    scrollbar-width: thin !important;
+    scrollbar-color: auto;
+}

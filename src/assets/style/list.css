@@ -5,9 +5,9 @@
 #list {
     overflow: auto;
     max-height: calc(100vh - 4rem);
-    -ms-overflow-style: none;
+    /* -ms-overflow-style: none; */
     /* IE and Edge */
-    scrollbar-width: none;
+    /* scrollbar-width: none; */
     /* Firefox */
     padding-left: 5px;
     padding-top: 5px;
@@ -22,22 +22,22 @@
 }
 
 .listItem {
-    padding: 2px;
+    padding: 0.15rem;
 }
 
 .favicon {
-    height: 15px;
-    width: 15px;
-    margin-right: 5px;
+    height: 1.2rem;
+    width: 1.2rem;
+    margin-right: 1ch;
 }
 
 .arrow {
-    height: 15px;
-    width: 15px;
-    margin-right: 5px;
+    height: 1.1rem;
+    width: 1.1rem;
+    margin-right: 0.8ch;
     position: relative;
-    top: 3px;
-    left: 2px;
+    top: 0.25rem;
+    left: 0.3rem;
 }
 
 .rotated {

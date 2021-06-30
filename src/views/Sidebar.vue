@@ -1,7 +1,7 @@
 <template>
     <div>
         <!--List container-->
-        <div id="list" ref="list">
+        <div id="list" ref="list" class="scroller">
             <Folder
                 v-for="folder in this.shortenList"
                 :key="folder.folderID"
