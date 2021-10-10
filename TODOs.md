@@ -20,18 +20,21 @@
 -   ✅ Versioning
 -   ✅ Added Option to Combine Data at Import
 
-## Known Bugs
+## Known Bugs, annoyances and fixes
 
--   ✅ bug when moving folder into root directory
--   ✅ warnings in sorting.ts ll. 10ff.
--   ✅ folder couldn't be deleted if it wasn't empty
--   ❌ glitching when opening/closing folders and sites are stll loading
--   ❌ when combining data at import the "Pinned Tab" and "Other" folder appear twice
--   ❌ "new Folder" input prompt can be outside of viewport and cannot be seen
+-   ✅ 🕷️ bug when moving folder into root directory
+-   ✅ warnings in sorting.ts l 10ff.
+-   ✅ 🕷️ folder couldn't be deleted if it wasn't empty
+-   ✅ 🕷️ "new Folder" input prompt was able to be outside of viewport and couldn't be seen
+-   ✅ 🕷️ "new folder" input prompt wasn't focused when button was clicked
+-   ✅ Placeholder text for renaming items/folders now to original name
+-   ✅ "Adding folder" couldn't be canceled with escape like the rename functionalities
+-   ❌ 🕷️ glitching when opening/closing folders and sites are stll loading
+-   ❌ 🕷️ when combining data at import the "Pinned Tab" and "Other" folder appear twice
+-   ❌ fav icon data is stored with each page and not in "global" storage --> huge memory increase
 
 ## Other ToDos
 
 -   ✅ improving UI 1.0 (drastically)
 -   ✅ improvinf UX 1.0 (drastically)
 -   ✅ improve renaming UX
--   ✅

@@ -11,7 +11,7 @@
             <img :src="this.itemData.favIconURL" class="favicon noEvents" />
             <div class="noEvents name">{{ this.itemData.title }}</div>
         </div>
-        <input type="text" :class="this.rename ? '' : 'disabled'" placeholder="New Name" @keyup="this.renameSubmit" ref="renameInput" />
+        <input type="text" :class="this.rename ? '' : 'disabled'" :placeholder="this.itemData.title" @keyup="this.renameSubmit" ref="renameInput" />
         <div v-show="this.modeMove" @drop="this.inbetweenDrop" ref="inbetween">
             <small class="noEvents">Insert Below {{ this.itemData.title }}</small>
         </div>

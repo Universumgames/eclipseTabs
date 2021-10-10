@@ -18,11 +18,11 @@
                 v-on:move="this.elementMove"
                 v-on:renameEnd="this.renameEnd"
             />
-        </div>
 
-        <!--add folder name input-->
-        <div id="addFolderNameInputContainer" class="disabled">
-            <input type="text" ref="addFolderNameInput" placeholder="foldername" @keyup="this.addFolderSubmit" />
+            <!--add folder name input-->
+            <div id="addFolderNameInputContainer" class="disabled">
+                <input type="text" ref="addFolderNameInput" placeholder="foldername" @keyup="this.addFolderSubmit" />
+            </div>
         </div>
 
         <!--Bottom Menu-->
@@ -92,6 +92,7 @@ export default class Sidebar extends Vue {
     //#region bottom menu events
     addFolderClick() {
         this.folderAddInput.parentElement!.classList.toggle("disabled")
+        this.folderAddInput.focus()
     }
 
     binDrop() {
@@ -187,6 +188,11 @@ export default class Sidebar extends Vue {
             this.folderAddInput.parentElement!.classList.toggle("disabled")
             if (value != "") addFolderDirect(this.eclipseData.rootFolder, (await generateFolderID()).toString(), value)
             this.save()
+        }
+        if (event.keyCode == KeyCode.escape) {
+            event.preventDefault()
+            this.folderAddInput.value = ""
+            this.folderAddInput.parentElement!.classList.toggle("disabled")
         }
     }
 

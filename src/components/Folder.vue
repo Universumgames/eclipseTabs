@@ -55,7 +55,7 @@
             v-show="this.isRenameable"
             ref="renameInput"
             type="text"
-            placeholder="New Name"
+            :placeholder="this.folderData.name"
             :class="this.rename ? '' : 'disabled'"
             @keyup="this.renameSubmit"
         />

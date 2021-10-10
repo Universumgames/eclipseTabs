@@ -7,7 +7,7 @@ import { closeTab, createTab, focusTab, getCurrentTab, getTabByTabID, getTabByUR
 import { isFolder, reloadExtension } from "../helper"
 import { folderExists, tabExistsByItemID } from "./checker"
 
-//TODO importing not working at all
+//TODO importing (combining) not working at all
 export async function importData(json: string, overwrite: boolean = false) {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return
@@ -15,14 +15,14 @@ export async function importData(json: string, overwrite: boolean = false) {
     if (pinnedOld == undefined) return
     pinnedOld.open = false
     await saveDataInFirefox(data)
-    const jsonData = JSON.parse(json) as tabStructData
+    const newJSONData = JSON.parse(json) as tabStructData
 
     //if an item is inside of the root element application breaks...
-    for (const key in jsonData.rootFolder.elements) {
-        const element = jsonData.rootFolder.elements[key]
+    for (const key in newJSONData.rootFolder.elements) {
+        const element = newJSONData.rootFolder.elements[key]
         if (!("folderID" in element)) {
             console.log("deleted element from root folder", element)
-            jsonData.rootFolder.elements.splice(jsonData.rootFolder.elements.indexOf(element), 1)
+            newJSONData.rootFolder.elements.splice(newJSONData.rootFolder.elements.indexOf(element), 1)
         }
     }
 
@@ -31,20 +31,20 @@ export async function importData(json: string, overwrite: boolean = false) {
     //when overwriting old data
     if (overwrite) {
         console.warn("Replacing data, old data for recovery: ", data)
-        toSave = jsonData
+        toSave = newJSONData
 
-        await saveDataInFirefox(jsonData)
-        console.log("new Data:", jsonData)
+        await saveDataInFirefox(newJSONData)
+        console.log("new Data:", newJSONData)
     } else {
         //copying new settings values
-        data.closeTabsInDeletingFolder = jsonData.closeTabsInDeletingFolder
-        data.colorScheme = jsonData.colorScheme
-        data.devMode = jsonData.devMode
-        data.displayHowTo = jsonData.displayHowTo
-        data.hideOrSwitchTab = jsonData.hideOrSwitchTab
-        data.mode = jsonData.mode
-        data.version = jsonData.version
-        importStructData(data, jsonData)
+        data.closeTabsInDeletingFolder = newJSONData.closeTabsInDeletingFolder
+        data.colorScheme = newJSONData.colorScheme
+        data.devMode = newJSONData.devMode
+        data.displayHowTo = newJSONData.displayHowTo
+        data.hideOrSwitchTab = newJSONData.hideOrSwitchTab
+        data.mode = newJSONData.mode
+        data.version = newJSONData.version
+        importStructData(data, newJSONData)
         toSave = data
         await saveDataInFirefox(data)
         // await saveDataInFirefox(importFolder(data, jsonData.rootFolder))
@@ -52,7 +52,7 @@ export async function importData(json: string, overwrite: boolean = false) {
     }
 
     //reopening pinned tabs
-    const pinned = getFolderJSONObjectByID(defs.pinnedFolderID, jsonData.rootFolder)
+    const pinned = getFolderJSONObjectByID(defs.pinnedFolderID, newJSONData.rootFolder)
     if (pinned != undefined) {
         const tabs = await getTabs()
         for (const element of pinned.elements) {
@@ -72,7 +72,7 @@ export async function importData(json: string, overwrite: boolean = false) {
     await saveDataInFirefox(toSave)
 
     //reopening other tabs
-    const unordered = getFolderJSONObjectByID(defs.unorderedFolderID, jsonData.rootFolder)
+    const unordered = getFolderJSONObjectByID(defs.unorderedFolderID, newJSONData.rootFolder)
     if (unordered != undefined) {
         const tabs = await getTabs()
 
