@@ -8,6 +8,11 @@ This repository is the beta for the newest version of the addon. Final releases 
 
 An [HowTo](/pages/howTo.md) is also avialable in [`/pages/howTo.md`](/pages/howTo.md).
 
+<iframe
+src="https://git.mt32.net/universum/eclipseTabs/TODOs.md"
+style="width:100%; height: 500px">
+</iframe>
+
 #### Disclaimer
 
 <small> The development is primarily focused on improving the extension for Firefox, because that's the browser I primarily use...</small>
