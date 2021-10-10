@@ -32,9 +32,10 @@
 -   ❌ 🕷️ glitching when opening/closing folders and sites are stll loading
 -   ❌ 🕷️ when combining data at import the "Pinned Tab" and "Other" folder appear twice
 -   ❌ fav icon data is stored with each page and not in "global" storage --> huge memory increase
+-   ❌ when update is installed two "HowTo" pages open up
 
 ## Other ToDos
 
 -   ✅ improving UI 1.0 (drastically)
--   ✅ improvinf UX 1.0 (drastically)
--   ✅ improve renaming UX
+-   ✅ improving UX 1.0 (drastically)
+-   ✅ improved UX

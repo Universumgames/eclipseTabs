@@ -12,7 +12,7 @@ export async function recursiveSelectionSort(element: folderData): Promise<void>
             if (element.elements[i] == undefined) {
                 const old = Object.assign({}, element)
                 element.elements.splice(i, 1)
-                console.warn("Error found in element (old, atfer-fix)", old, element)
+                console.warn("Error found in element (old, after-fix)", old, element)
                 continue
             }
             if (element.elements[i].index == undefined) element.elements[i].index = generateIndexInFolder(element)

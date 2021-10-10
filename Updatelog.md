@@ -1,3 +1,12 @@
+Update 1.1.1:
+
+-   fixed various bugs:
+    -   ✅ 🕷️ "new Folder" input prompt was able to be outside of viewport and couldn't be seen
+    -   ✅ 🕷️ "new folder" input prompt wasn't focused when button was clicked
+    -   ✅ Placeholder text for renaming items/folders now to original name
+    -   ✅ "Adding folder" couldn't be canceled with escape like the rename functionalities
+-   added an ToDo list with known bugs, future and past feature updates
+
 Update 1.1.0:
 
 -   complete underlying restructuring (switched from custom scripts to vue)
