@@ -9,7 +9,7 @@ import { createEmptyData } from "./scripts/dataHandler/adder"
 import { getDataStructFromFirefox, saveDataInFirefox } from "./scripts/dataHandler/getter"
 import { updateTabs, updateTabsOnStartUp } from "./scripts/dataHandler/updater"
 import { getManifest, getTheme, registerListener, startupHandler } from "./scripts/firefoxHandler"
-import { ColorScheme, tabStructData } from "./scripts/interfaces"
+import { FirefoxTheme, tabStructData } from "./scripts/interfaces"
 import * as tabHelper from "./scripts/tabHelper"
 
 export default class App extends Vue {
@@ -30,13 +30,26 @@ export default class App extends Vue {
         registerListener({
             updateList: () => {
                 this.updateList()
+            },
+            setColorScheme: async () => {
+                this.setColorScheme(await getTheme())
             }
         })
     }
 
-    setColorScheme() {
-        const body = document.getElementsByTagName("body")[0]
-        body.classList.add(this.eclipseData.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode")
+    setColorScheme(theme: FirefoxTheme) {
+        /*const body = document.getElementsByTagName("body")[0]
+        body.classList.add(this.eclipseData.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode")*/
+        const root = document.documentElement
+        root.style.setProperty("--bg-color", theme.colors.sidebar)
+        root.style.setProperty("--context-bg-color", theme.colors.popup)
+        root.style.setProperty("--text-color", theme.colors.sidebar_text)
+        root.style.setProperty("--color-hidden", theme.colors.frame)
+        // root.style.setProperty("--folder-closed-text-color", "blue")
+        root.style.setProperty("--divider-color", theme.colors.sidebar_border)
+        root.style.setProperty("--button-background-active", theme.colors.button_background_active)
+        root.style.setProperty("--button-background-hover", theme.colors.button_background_hover)
+        root.style.setProperty("--folder-arrow-color", theme.colors.icons)
     }
 
     async startup() {
@@ -68,9 +81,7 @@ export default class App extends Vue {
             await this.displayHowTo()
         }
         const theme = await getTheme()
-        console.log(theme.colors.sidebar)
-        console.log(theme.colors.sidebar_text)
-        this.setColorScheme()
+        this.setColorScheme(theme)
         const that = this
         tabHelper.getTabs().then(async function(tabs: any) {
             await updateTabsOnStartUp(that.eclipseData.rootFolder, tabs)

@@ -38,6 +38,7 @@
     position: relative;
     top: 0.25rem;
     left: 0.3rem;
+    stroke: var(--folder-arrow-color);
 }
 
 .rotated {
@@ -51,7 +52,7 @@
 }
 
 .tabHidden {
-    color: var(--colorHidden);
+    color: var(--color-hidden);
 }
 
 .name {

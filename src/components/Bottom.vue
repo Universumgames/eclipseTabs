@@ -1,5 +1,5 @@
 <template>
-    <div class="bottom bottomElement" :class="colorMode">
+    <div class="bottom bottomElement">
         <div class="bottomElements bottomElement">
             <span
                 id="addFolder"
@@ -111,10 +111,6 @@ export default class BottomMenu extends Vue {
         this.bin.addEventListener("drop", (event: any) => {
             this.binDrop(event)
         })
-    }
-
-    get colorMode() {
-        return this.eclipseData.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode"
     }
 
     get coloredSVGPath() {

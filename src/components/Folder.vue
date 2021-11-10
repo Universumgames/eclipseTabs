@@ -56,7 +56,7 @@
             ref="renameInput"
             type="text"
             :placeholder="this.folderData.name"
-            :class="this.rename ? '' : 'disabled'"
+            :class="(this.rename ? '' : 'disabled') + ' folder'"
             @keyup="this.renameSubmit"
         />
         <!--Inbetween-->

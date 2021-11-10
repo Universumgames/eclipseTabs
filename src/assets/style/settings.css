@@ -1,18 +1,25 @@
 #settingsContainer {
-    color: black;
     margin: 1rem;
-    line-height: 2.4;
+    line-height: 2;
     display: flow-root;
-}
-
-.darkmode #settingsContainer {
-    color: white;
-}
-
-.lightmode #settingsContainer {
-    color: black;
 }
 
 #settingsContainer .switch {
     margin-left: 1rem;
+}
+
+button {
+    border-color: rgba(0, 0, 0, 0);
+    color: var(--text-color);
+    background-color: var(--context-bg-color);
+    border-radius: 0.5ch;
+    margin: 0.2ch;
+}
+
+button:click {
+    background-color: var(--button-background-active);
+}
+
+button:hover {
+    background-color: var(--button-background-hover);
 }

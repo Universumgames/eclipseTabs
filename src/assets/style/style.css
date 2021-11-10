@@ -5,13 +5,16 @@
 }
 
 body {
-    color: white;
     height: 100vh;
     margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    fill: var(--text-color);
+    stroke: var(--text-color);
 }
 
 .closed {
-    color: lightgrey;
+    color: var(--folder-closed-text-color);
 }
 
 h3 {
@@ -47,22 +50,6 @@ h3 {
 
 .hover {
     opacity: 0.5;
-}
-
-.darkmode {
-    background-color: #252525;
-    color: #f6f6f6;
-    fill: #f6f6f6;
-    stroke: #f6f6f6;
-    --colorHidden: #5a5a5a;
-}
-
-.lightmode {
-    background-color: #f6f6f6;
-    color: black;
-    fill: black;
-    stroke: black;
-    --colorHidden: #cecece;
 }
 
 .inbetween {

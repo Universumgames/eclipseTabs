@@ -1,5 +1,5 @@
 <template>
-    <div ref="contextMenu" id="contextMenu" :class="'disabled ' + this.colorClass">
+    <div ref="contextMenu" id="contextMenu" class="disabled">
         <div class="noEvents" id="contextTitle">eclipseTabMenu</div>
         <div id="contextMenuList">
             <div id="contextMenu_generic">
@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
-import { ColorScheme, ContextAction, ContextMenuData, tabStructData } from "@/scripts/interfaces"
+import { ContextAction, ContextMenuData, tabStructData } from "@/scripts/interfaces"
 import { pinnedFolderID, unorderedFolderID } from "@/scripts/dataHandler/definitions"
 
 @Options({
@@ -55,10 +55,6 @@ export default class ContextMenu extends Vue {
 
         document.oncontextmenu = this.contextMenu_handler
         document.onclick = this.contextMenuClose_handler
-    }
-
-    get colorClass() {
-        return this.eclipseData.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode"
     }
 
     async contextMenu_handler(event: any) {

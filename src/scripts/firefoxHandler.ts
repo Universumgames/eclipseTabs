@@ -6,6 +6,7 @@ const firefoxBrowser: any = browser
 
 export interface firefoxHandler {
     updateList: any
+    setColorScheme: any
 }
 
 export interface firefoxStartupHandler {
@@ -23,6 +24,7 @@ export async function registerListener(handler: firefoxHandler) {
     firefoxBrowser.tabs.onMoved.addListener(handler.updateList)
     firefoxBrowser.tabs.onDetached.addListener(handler.updateList)
     firefoxBrowser.tabs.onCreated.addListener(handler.updateList)
+    firefoxBrowser.theme.onUpdated.addListener(handler.setColorScheme)
 
     /*while (true) {
         handler.updateList()

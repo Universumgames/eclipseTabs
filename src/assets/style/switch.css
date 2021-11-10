@@ -67,3 +67,238 @@ input:checked + .slider:before {
 .slider.round:before {
     border-radius: 50%;
 }
+
+/* input[type="checkbox"].toggle-button {
+    --button-height: 16px;
+    --button-half-height: 8px;
+    --button-width: 26px;
+    --button-border-width: 1px;
+    --dot-size: 10px;
+    --dot-margin: 2px;
+    --dot-transform-x: 10px;
+    --border-color: hsla(210, 4%, 10%, 0.14);
+}
+
+html|input[type="checkbox"]:checked {
+    border-color: var(--checkbox-checked-border-color);
+    background-color: var(--checkbox-checked-bgcolor);
+    background-image: url("chrome://global/skin/icons/check.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    -moz-context-properties: fill;
+    fill: currentColor;
+    color: var(--checkbox-checked-color);
+    color-adjust: exact;
+}
+
+html|input[type="checkbox"] {
+    appearance: none;
+    height: 16px;
+    width: 16px;
+    border: 1px solid var(--checkbox-border-color);
+    background-color: var(--checkbox-unchecked-bgcolor);
+    border-radius: 2px;
+    margin-inline: 0 6px;
+    flex-shrink: 0;
+}
+
+xul|*.checkbox-check,
+html|input[type="checkbox"] {
+    margin-block: 2px;
+}
+
+.card-contents {
+    word-break: break-word;
+}
+
+html|body {
+    font-size: 15px;
+    font-weight: normal;
+}
+
+:root {
+    --main-margin-start: 16px;
+    --sidebar-width: calc(var(--in-content-sidebar-width) - var(--main-margin-start));
+}
+
+:root {
+    --addon-icon-size: 32px;
+    --main-margin-start: 28px;
+    --section-width: 664px;
+    --sidebar-width: var(--in-content-sidebar-width);
+    --z-index-sticky-container: 1;
+    --z-index-popup: 10;
+}
+
+:root {
+    --in-content-sidebar-width: 118px;
+}
+
+:root {
+    font: message-box;
+    color: var(--in-content-page-color);
+}
+
+:host,
+:root {
+    --in-content-page-background: rgb(28, 27, 34);
+    --in-content-page-color: rgb(251, 251, 254);
+    --in-content-deemphasized-text: rgb(191, 191, 201);
+    --in-content-box-background: rgb(35, 34, 43);
+    --in-content-box-background-odd: rgba(249, 249, 250, 0.05);
+    --in-content-box-info-background: rgba(249, 249, 250, 0.15);
+    --in-content-border-color: rgba(249, 249, 250, 0.2);
+    --in-content-border-hover: rgba(249, 249, 250, 0.3);
+    --in-content-border-invalid: rgb(255, 132, 139);
+    --in-content-error-text-color: #ff9aa2;
+    --in-content-button-background: rgb(43, 42, 51);
+    --in-content-button-background-hover: rgb(82, 82, 94);
+    --in-content-button-background-active: rgb(91, 91, 102);
+    --in-content-icon-color: rgb(251, 251, 254);
+    --in-content-primary-button-text-color: rgb(43, 42, 51);
+    --in-content-primary-button-background: rgb(0, 221, 255);
+    --in-content-primary-button-background-hover: rgb(128, 235, 255);
+    --in-content-primary-button-background-active: rgb(170, 242, 255);
+    --in-content-danger-button-background: #ff848b;
+    --in-content-danger-button-background-hover: #ffbdc5;
+    --in-content-danger-button-background-active: #ffdfe7;
+    --in-content-table-background: rgb(35, 34, 43);
+    --in-content-accent-color: var(--in-content-primary-button-background);
+    --in-content-accent-color-active: var(--in-content-primary-button-background-hover);
+    --in-content-link-color: var(--in-content-primary-button-background);
+    --in-content-link-color-hover: var(--in-content-primary-button-background-hover);
+    --in-content-link-color-active: var(--in-content-primary-button-background-active);
+    --in-content-link-color-visited: var(--in-content-link-color);
+    --card-outline-color: var(--grey-60);
+    --dialog-warning-text-color: var(--red-40);
+    scrollbar-color: rgba(249, 249, 250, 0.4) rgba(20, 20, 25, 0.3);
+}
+
+:host,
+:root {
+    --in-content-page-color: rgb(21, 20, 26);
+    --in-content-page-background: #fff;
+    --in-content-text-color: var(--in-content-page-color);
+    --in-content-deemphasized-text: rgb(91, 91, 102);
+    --in-content-box-background: #fff;
+    --in-content-box-background-odd: rgba(12, 12, 13, 0.05);
+    --in-content-box-border-color: color-mix(in srgb, currentColor 41%, transparent);
+    --in-content-box-info-background: #f0f0f4;
+    --in-content-item-hover: color-mix(in srgb, var(--in-content-primary-button-background) 20%, transparent);
+    --in-content-item-hover-text: var(--in-content-page-color);
+    --in-content-item-selected: var(--in-content-primary-button-background);
+    --in-content-item-selected-text: var(--in-content-primary-button-text-color);
+    --in-content-icon-color: rgb(91, 91, 102);
+    --in-content-accent-color: #0a84ff;
+    --in-content-accent-color-active: #0060df;
+    --in-content-border-hover: var(--grey-90-a50);
+    --in-content-border-invalid: var(--red-50);
+    --in-content-border-color: #d7d7db;
+    --in-content-error-text-color: #c50042;
+    --in-content-link-color: var(--blue-60);
+    --in-content-link-color-hover: var(--blue-70);
+    --in-content-link-color-active: var(--blue-80);
+    --in-content-link-color-visited: var(--blue-60);
+    --in-content-button-text-color: var(--in-content-text-color);
+    --in-content-button-text-color-hover: var(--in-content-text-color);
+    --in-content-button-text-color-active: var(--in-content-button-text-color-hover);
+    --in-content-button-background: rgba(207, 207, 216, 0.33);
+    --in-content-button-background-hover: rgba(207, 207, 216, 0.66);
+    --in-content-button-background-active: rgb(207, 207, 216);
+    --in-content-button-border-color: transparent;
+    --in-content-button-border-color-hover: transparent;
+    --in-content-button-border-color-active: var(--in-content-button-border-color-hover);
+    --in-content-primary-button-text-color: rgb(251, 251, 254);
+    --in-content-primary-button-text-color-hover: var(--in-content-primary-button-text-color);
+    --in-content-primary-button-background: #0061e0;
+    --in-content-primary-button-background-hover: #0250bb;
+    --in-content-primary-button-background-active: #053e94;
+    --in-content-primary-button-border-color: transparent;
+    --in-content-primary-button-border-hover: transparent;
+    --in-content-danger-button-background: #e22850;
+    --in-content-danger-button-background-hover: #c50042;
+    --in-content-danger-button-background-active: #810220;
+    --in-content-focus-outline-color: var(--in-content-primary-button-background);
+    --in-content-table-background: #f8f8fa;
+    --in-content-table-border-color: var(--in-content-box-border-color);
+    --in-content-table-header-background: var(--in-content-primary-button-background);
+    --in-content-table-header-color: var(--in-content-primary-button-text-color);
+    --in-content-sidebar-width: 240px;
+    --dialog-warning-text-color: var(--red-60);
+    --checkbox-border-color: var(--in-content-box-border-color);
+    --checkbox-unchecked-bgcolor: var(--in-content-button-background);
+    --checkbox-unchecked-hover-bgcolor: var(--in-content-button-background-hover);
+    --checkbox-unchecked-active-bgcolor: var(--in-content-button-background-active);
+    --checkbox-checked-bgcolor: var(--in-content-primary-button-background);
+    --checkbox-checked-color: var(--in-content-primary-button-text-color);
+    --checkbox-checked-border-color: transparent;
+    --checkbox-checked-hover-bgcolor: var(--in-content-primary-button-background-hover);
+    --checkbox-checked-active-bgcolor: var(--in-content-primary-button-background-active);
+    --blue-40: #45a1ff;
+    --blue-50: #0a84ff;
+    --blue-60: #0060df;
+    --blue-70: #003eaa;
+    --blue-80: #002275;
+    --grey-30: #d7d7db;
+    --grey-60: #4a4a4f;
+    --grey-90-a10: rgba(12, 12, 13, 0.1);
+    --grey-90-a20: rgba(12, 12, 13, 0.2);
+    --grey-90-a30: rgba(12, 12, 13, 0.3);
+    --grey-90-a50: rgba(12, 12, 13, 0.5);
+    --grey-90-a60: rgba(12, 12, 13, 0.6);
+    --green-50: #30e60b;
+    --green-60: #12bc00;
+    --green-70: #058b00;
+    --green-80: #006504;
+    --green-90: #003706;
+    --orange-50: #ff9400;
+    --red-40: #ff4f5e;
+    --red-50: #ff0039;
+    --red-60: #d70022;
+    --red-70: #a4000f;
+    --red-80: #5a0002;
+    --red-90: #3e0200;
+    --yellow-50: #ffe900;
+    --yellow-60: #d7b600;
+    --yellow-60-a30: rgba(215, 182, 0, 0.3);
+    --yellow-70: #a47f00;
+    --yellow-80: #715100;
+    --yellow-90: #3e2800;
+    --shadow-10: 0 1px 4px var(--grey-90-a10);
+    --shadow-30: 0 4px 16px var(--grey-90-a10);
+    --card-padding: 16px;
+    --card-shadow: var(--shadow-10);
+    --card-outline-color: var(--grey-30);
+    --card-shadow-hover: var(--card-shadow), 0 0 0 5px var(--card-outline-color);
+    accent-color: var(--in-content-accent-color);
+}
+
+input[type="checkbox"].toggle-button:checked:hover {
+    background: var(--in-content-primary-button-background-hover);
+    border-color: var(--in-content-primary-button-background-active);
+}
+input[type="checkbox"].toggle-button:enabled:hover {
+    background: var(--in-content-button-background-hover);
+    border-color: var(--border-color);
+}
+html|input[type="checkbox"]:enabled:checked:hover {
+    background-color: var(--checkbox-checked-hover-bgcolor);
+}
+input[type="checkbox"].toggle-button:checked {
+    background: var(--in-content-primary-button-background);
+    border-color: var(--in-content-primary-button-background-hover);
+}
+html|input[type="checkbox"]:enabled:hover {
+    background-color: var(--checkbox-unchecked-hover-bgcolor);
+}
+
+input[type="checkbox"].toggle-button {
+    padding: 0;
+    margin: 0;
+    border: var(--button-border-width) solid var(--border-color);
+    height: var(--button-height);
+    width: var(--button-width);
+    border-radius: var(--button-half-height);
+    background: var(--in-content-button-background);
+    box-sizing: border-box;
+} */

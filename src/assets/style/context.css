@@ -3,14 +3,7 @@
     padding: 0.5rem;
     border-radius: 0.5rem;
     width: fit-content;
-}
-
-#contextMenu *.lightmode {
-    background-color: #d1d1d1;
-}
-
-#contextMenu *.darkmode {
-    background-color: #121111;
+    background-color: var(--context-bg-color);
 }
 
 #contextTitle::after,
@@ -23,14 +16,8 @@
     margin: 0.2rem 0 0.2rem 0;
 }
 
-.darkmode > #contextTitle::after,
-.darkmode #contextMenu_item::before,
-.darkmode #contextMenu_folder::before {
-    background-color: #d8d8d8 !important;
-}
-
-.lightmode > #contextTitle::after,
-.lightmode #contextMenu_item::before,
-.lightmode #contextMenu_folder::before {
-    background-color: #121111 !important;
+#contextTitle::after,
+#contextMenu_item::before,
+#contextMenu_folder::before {
+    background-color: var(--divider-color) !important;
 }
