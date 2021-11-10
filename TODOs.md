@@ -4,6 +4,8 @@
 
 ## Featureset
 
+<small>Added feature: ✅ <br> Future Feature: ❌</small>
+
 <!-- ✅❌ -->
 
 -   ✅ add subfolders
@@ -19,8 +21,14 @@
 -   ✅ Add HowTo Page
 -   ✅ Versioning
 -   ✅ Added Option to Combine Data at Import
+-   ✅ implemented hiding currently focused tab and switching to tab to the right (workaround for Firefox restriction)
+-   ❌ Drag and Drop links into sidebar or something similar
+-   ❌ (cloud sync maybe)
+-
 
 ## Known Bugs, annoyances and fixes
+
+<small>Fixed Bug: ✅ <br> Known but not yet fixed bug: ❌</small>
 
 -   ✅ 🕷️ bug when moving folder into root directory
 -   ✅ warnings in sorting.ts l 10ff.
@@ -29,10 +37,10 @@
 -   ✅ 🕷️ "new folder" input prompt wasn't focused when button was clicked
 -   ✅ Placeholder text for renaming items/folders now to original name
 -   ✅ "Adding folder" couldn't be canceled with escape like the rename functionalities
+-   ✅ when update is installed two "HowTo" pages open up
 -   ❌ 🕷️ glitching when opening/closing folders and sites are stll loading
 -   ❌ 🕷️ when combining data at import the "Pinned Tab" and "Other" folder appear twice
 -   ❌ fav icon data is stored with each page and not in "global" storage --> huge memory increase
--   ❌ when update is installed two "HowTo" pages open up
 
 ## Other ToDos
 

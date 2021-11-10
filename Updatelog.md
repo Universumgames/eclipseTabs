@@ -1,3 +1,11 @@
+Update 1.1.2:
+
+-   new features:
+    -   ✅ implemented hiding currently focused tab and switching to tab to the right (workaround for Firefox restriction)
+    -   ✅ amplifying difference between shown and hidden elements
+-   bugfixes:
+    -   ✅ 🕷️ when update is installed two "HowTo" pages opened (sometimes)
+
 Update 1.1.1:
 
 -   fixed various bugs:

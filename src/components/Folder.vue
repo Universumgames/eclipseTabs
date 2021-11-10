@@ -105,6 +105,8 @@ export default class Folder extends Vue {
 
     oldRename: boolean = false
 
+    // oldOpened: Boolean = false
+
     mounted() {
         this.icon = this.$refs.icon as HTMLElement
         this.renameInput = this.$refs.renameInput as HTMLElement
@@ -130,6 +132,8 @@ export default class Folder extends Vue {
         this.inbetween.addEventListener("dragover", e => {
             e.preventDefault()
         })
+
+        // this.oldOpened = this.folderData.open
     }
 
     updated() {
@@ -210,6 +214,7 @@ export default class Folder extends Vue {
     drop_handler(event: any) {
         this.container.classList.remove("hover")
         if (event.explicitOriginalTarget == this.dropContainer) this.$emit("move", this.folderData)
+        console.log(event)
     }
 
     movePassOn(targetFolder: folderData) {
@@ -230,6 +235,8 @@ export default class Folder extends Vue {
 
     dragenter_handler() {
         if (this.targetElement != this.folderData) {
+            // this.oldOpened = this.folderData.open
+            // this.folderData.open = true
             this.container.classList.add("hover")
         }
     }
@@ -237,6 +244,7 @@ export default class Folder extends Vue {
     dragleave_handler() {
         if (this.targetElement != this.folderData) {
             this.container.classList.remove("hover")
+            // this.folderData.open = this.oldOpened
         }
     }
 

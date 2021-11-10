@@ -102,18 +102,23 @@ export default class Item extends Vue {
         if (e.explicitOriginalTarget != this.dropContainer) return
         var tabElement = e.originalTarget as HTMLHtmlElement
         var tabID = this.itemData.tabID
-        var tabs = await tabHelper.getTabByTabID(tabID)
-        var tab = (await tabHelper.tabExists(tabID))
-            ? tabs
-            : {
-                  pinned: false
-              }
+        const tabList = await tabHelper.getTabs()
+        var tabs = tabHelper.getTabByTabIDSync(tabID, tabList)
+        var tab =
+            tabs != undefined
+                ? tabs
+                : {
+                      pinned: false
+                  }
         // var currentTab = tabHelper.getCurrentTab();
         if (!tab.pinned) {
-            const tabExists = await tabHelper.tabExists(tabID)
+            const tabExists = tabHelper.tabExistsSync(tabID, tabList)
             if (!this.itemData.hidden) {
                 if (this.eclipseData.hideOrSwitchTab == false) {
-                    if (tabExists && (await tabHelper.hideTab(tabID))) {
+                    const next = tabHelper.getNeighbourTabSync(tabID, tabList)
+                    tabHelper.focusTab(next)
+                    tabHelper.hideTab(tabID)
+                    if (tabExists) {
                         this.itemData.hidden = true
                         tabElement.classList.add("tabHidden")
                     }
@@ -123,7 +128,7 @@ export default class Item extends Vue {
                     if (!(await tabHelper.showTab(tabID))) {
                         await tabHelper.createTab(this.itemData.url)
                     }
-                    await tabHelper.focusTab(tabID)
+                    tabHelper.focusTab(tabID)
                 } else {
                     const fireTab = await tabHelper.createTab(this.itemData.url)
                     this.itemData.tabID = fireTab.id.toString()
@@ -132,7 +137,7 @@ export default class Item extends Vue {
                 tabElement.classList.remove("tabHidden")
             }
         } else {
-            await tabHelper.focusTab(tabID)
+            tabHelper.focusTab(tabID)
         }
         this.save()
     }

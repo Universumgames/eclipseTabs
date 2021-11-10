@@ -54,6 +54,7 @@ h3 {
     color: #f6f6f6;
     fill: #f6f6f6;
     stroke: #f6f6f6;
+    --colorHidden: #5a5a5a;
 }
 
 .lightmode {
@@ -61,6 +62,7 @@ h3 {
     color: black;
     fill: black;
     stroke: black;
+    --colorHidden: #cecece;
 }
 
 .inbetween {

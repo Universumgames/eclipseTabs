@@ -8,7 +8,7 @@ import { Vue } from "vue-class-component"
 import { createEmptyData } from "./scripts/dataHandler/adder"
 import { getDataStructFromFirefox, saveDataInFirefox } from "./scripts/dataHandler/getter"
 import { updateTabs, updateTabsOnStartUp } from "./scripts/dataHandler/updater"
-import { getManifest, registerListener, startupHandler } from "./scripts/firefoxHandler"
+import { getManifest, getTheme, registerListener, startupHandler } from "./scripts/firefoxHandler"
 import { ColorScheme, tabStructData } from "./scripts/interfaces"
 import * as tabHelper from "./scripts/tabHelper"
 
@@ -58,20 +58,23 @@ export default class App extends Vue {
             this.save()
             console.log("Data cleared or extension is newly installed, created new storage structure: ", this.eclipseData)
         } else this.eclipseData = temp
-        if (this.eclipseData.version == undefined) {
-            this.eclipseData.version = "1.0.5"
+        if (this.eclipseData.version == undefined || this.eclipseData.version == "") {
+            this.eclipseData.version = "1.1.0"
             this.save()
         }
         if (this.eclipseData.version != getManifest().version) {
             this.eclipseData.version = getManifest().version
-            this.displayHowTo()
-            this.save()
+            await this.save()
+            await this.displayHowTo()
         }
+        const theme = await getTheme()
+        console.log(theme.colors.sidebar)
+        console.log(theme.colors.sidebar_text)
         this.setColorScheme()
         const that = this
         tabHelper.getTabs().then(async function(tabs: any) {
-            updateTabsOnStartUp(that.eclipseData.rootFolder, tabs)
-            updateTabs(that.eclipseData, tabs)
+            await updateTabsOnStartUp(that.eclipseData.rootFolder, tabs)
+            await updateTabs(that.eclipseData as tabStructData, tabs)
             that.$forceUpdate()
             that.save()
         })
@@ -88,8 +91,8 @@ export default class App extends Vue {
         await saveDataInFirefox(JSON.parse(JSON.stringify(this.eclipseData)))
     }
 
-    displayHowTo() {
-        tabHelper.createTab("./index.html#/howto")
+    async displayHowTo() {
+        await tabHelper.createTabIfNotExist("./index.html#/howto")
     }
 }
 </script>

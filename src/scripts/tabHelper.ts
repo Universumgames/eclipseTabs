@@ -52,13 +52,27 @@ export async function createTab(url: string): Promise<FirefoxTab> {
     })
 }
 
+export async function createTabIfNotExist(url: string): Promise<FirefoxTab> {
+    const tab = await getTabByURL(url)
+    if (tab == undefined) return createTab(url)
+    else return tab
+}
+
 export async function tabExists(tabID: string): Promise<Boolean> {
     return (await getTabByTabID(tabID)) != undefined
 }
 
+export function tabExistsSync(tabID: string, tabs: Array<FirefoxTab>): Boolean {
+    return getTabByTabIDSync(tabID, tabs) != undefined
+}
+
 export async function getTabByTabID(tabID: string): Promise<any> {
-    if (tabID == "-1") return undefined
     const tabs = await getTabs()
+    return getTabByTabIDSync(tabID, tabs)
+}
+
+export function getTabByTabIDSync(tabID: string, tabs: Array<FirefoxTab>): any {
+    if (tabID == "-1") return undefined
     for (const tab of tabs) {
         if (((tab.id as unknown) as string) == tabID) return tab
     }
@@ -86,9 +100,31 @@ export async function getTabByURL(url: string): Promise<FirefoxTab | undefined> 
     return undefined
 }
 
-export function getTabByURLDirect(url: string, tabs: FirefoxTab[]): FirefoxTab | undefined {
+export function getTabByURLDirect(url: string, tabs: Array<FirefoxTab>): FirefoxTab | undefined {
     for (const tab of tabs) {
         if (tab.url.toLowerCase() == url.toLowerCase()) return tab
     }
     return undefined
+}
+
+export async function getNeighbourTab(tabID: string): Promise<string> {
+    const tabs = await getTabs()
+    return getNeighbourTabSync(tabID, tabs)
+}
+
+export function getNeighbourTabSync(tabID: string, tabs: Array<FirefoxTab>): string {
+    let currVisited = false
+    let prevTab: FirefoxTab = tabs[0]
+    let nextTab: FirefoxTab | undefined = undefined
+    for (const tab of tabs) {
+        if (currVisited) {
+            nextTab = tab
+            break
+        }
+
+        if (((tab.id as unknown) as string) == tabID) currVisited = true
+        else prevTab = tab
+    }
+    if (nextTab == undefined) nextTab = prevTab
+    return (nextTab.id as unknown) as string
 }

@@ -118,3 +118,10 @@ export interface ContextMenuData {
     targetIsFolder: boolean
     actionPerformed: ContextAction
 }
+
+export interface FirefoxTheme {
+    colors: {
+        sidebar: string
+        sidebar_text: string
+    }
+}

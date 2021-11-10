@@ -1,5 +1,5 @@
 import { createEmptyData, createEmptyRoot } from "./dataHandler/adder"
-import { folderData, tabStructData, FirefoxManifest, FirefoxBookmarksRoot } from "./interfaces"
+import { folderData, tabStructData, FirefoxManifest, FirefoxBookmarksRoot, FirefoxTheme } from "./interfaces"
 
 //@ts-ignore
 const firefoxBrowser: any = browser
@@ -77,4 +77,8 @@ export function getManifest(): FirefoxManifest {
 
 export async function getBookmarks(): Promise<FirefoxBookmarksRoot> {
     return (await firefoxBrowser.bookmarks.getTree())[0]
+}
+
+export async function getTheme(): Promise<FirefoxTheme> {
+    return (await firefoxBrowser.theme.getCurrent()) as FirefoxTheme
 }

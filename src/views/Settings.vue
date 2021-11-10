@@ -35,7 +35,8 @@
         </div>
         <br />
         <!--<label>Border color <input type="text" id="color" /></label>-->
-        <button type="submit" @click="saveOptions">Save</button>
+        <button type="submit" @click="saveOptions">Save</button><br />
+        <button type="submit" @click="openHowTo">Open HowTo Page</button>
     </form>
 </template>
 
@@ -44,6 +45,7 @@ import { Options, Vue } from "vue-class-component"
 import { getDataStructFromFirefox, saveDataInFirefox } from "@/scripts/dataHandler/getter"
 import { ColorScheme, tabStructData } from "@/scripts/interfaces"
 import { reloadExtension } from "@/scripts/helper"
+import * as tabHelper from "@/scripts/tabHelper"
 
 @Options({
     props: {
@@ -97,6 +99,10 @@ export default class Settings extends Vue {
         getDataStructFromFirefox().then(eclipseStorage => {
             setCurrentChoices(eclipseStorage!)
         })
+    }
+
+    openHowTo() {
+        tabHelper.createTabIfNotExist("./index.html#/howto")
     }
 }
 </script>
