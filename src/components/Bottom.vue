@@ -1,5 +1,5 @@
 <template>
-    <div class="bottom bottomElement">
+    <div class="bottom bottomElement" :class="colorMode">
         <div class="bottomElements bottomElement">
             <span
                 id="addFolder"
@@ -13,10 +13,6 @@
                     filename="addFolder.svg"
                     type="image/svg+xml"
                 ></object>
-            </span>
-
-            <span ref="delete" class="bottomElement" @drop="this.binDrop" title="Just drag stuff over here to erase it from existence">
-                <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'bin.svg'" filename="bin.svg" type="image/svg+xml"></object>
             </span>
 
             <span
@@ -45,18 +41,28 @@
             >
                 <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'move.svg'" filename="move.svg" type="image/svg+xml"></object>
             </span>
+            <span
+                v-show="this.deleteVisible"
+                ref="delete"
+                class="bottomElement bin"
+                @drop="this.binDrop"
+                title="Just drag stuff over here to erase it from existence"
+            >
+                <span>Garbage Bin </span>
+                <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'bin.svg'" filename="bin.svg" type="image/svg+xml"></object>
+            </span>
         </div>
         <br />
         <!--Debug elements-->
         <div v-show="this.eclipseData.devMode" id="debugElements">
             <button @click="clearStruct">
-                <span title="You * up your data struct? Just reset it to default values to test and try again">Clear Data Struct</span>
-            </button>
+                <span title="You * up your data struct? Just reset it to default values to test and try again">Clear Data Struct</span></button
+            ><br />
             <button @click="reloadStruct">
                 <span title="You are not sure, the displayed data ist the newest? Reload everything, it's like restarting your browser or the addon"
                     >Reload Data Struct</span
-                >
-            </button>
+                ></button
+            ><br />
             <button @click="reloadAddon">
                 <span
                     title="Don't want to switch the tab to the debugging window and reload the addon to load the newest creations? Reload the addon from here, unless you * up the whole addon"
@@ -78,7 +84,8 @@ import { createTab } from "@/scripts/tabHelper"
         eclipseData: Object,
         targetElement: Object,
         targetElementParent: Object,
-        allreload: Function
+        allreload: Function,
+        deleteVisible: Boolean
     },
     emits: {
         binDrop: Object,
@@ -92,6 +99,7 @@ export default class BottomMenu extends Vue {
     targetElementParent: folderData | undefined = undefined
     allreload!: Function
     moveBtn!: HTMLElement
+    deleteVisible!: Boolean
 
     bin!: HTMLElement
 
@@ -111,6 +119,10 @@ export default class BottomMenu extends Vue {
         this.bin.addEventListener("drop", (event: any) => {
             this.binDrop(event)
         })
+    }
+
+    get colorMode() {
+        return this.eclipseData.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode"
     }
 
     get coloredSVGPath() {

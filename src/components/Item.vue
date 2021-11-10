@@ -1,7 +1,7 @@
 <template>
     <div
         ref="container"
-        :class="'overflow listItem ' + (this.hidden ? 'tabHidden' : '')"
+        :class="'overflow listItem element ' + (this.hidden ? 'tabHidden' : '')"
         @click="this.click"
         @dragstart="this.dragstart_handler"
         @dropend="this.dropend_handler"
@@ -173,6 +173,7 @@ export default class Item extends Vue {
 
     dragend_handler() {
         this.container.classList.remove("hover")
+        this.$emit("dragend", undefined)
     }
 
     inbetweenDrop() {

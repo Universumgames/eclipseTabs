@@ -9,7 +9,7 @@ import { createEmptyData } from "./scripts/dataHandler/adder"
 import { getDataStructFromFirefox, saveDataInFirefox } from "./scripts/dataHandler/getter"
 import { updateTabs, updateTabsOnStartUp } from "./scripts/dataHandler/updater"
 import { getManifest, getTheme, registerListener, startupHandler } from "./scripts/firefoxHandler"
-import { FirefoxTheme, tabStructData } from "./scripts/interfaces"
+import { ColorScheme, FirefoxTheme, tabStructData } from "./scripts/interfaces"
 import * as tabHelper from "./scripts/tabHelper"
 
 export default class App extends Vue {
@@ -37,19 +37,20 @@ export default class App extends Vue {
         })
     }
 
+    // eslint-disable-next-line no-unused-vars
     setColorScheme(theme: FirefoxTheme) {
-        /*const body = document.getElementsByTagName("body")[0]
-        body.classList.add(this.eclipseData.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode")*/
-        const root = document.documentElement
-        root.style.setProperty("--bg-color", theme.colors.sidebar)
-        root.style.setProperty("--context-bg-color", theme.colors.popup)
-        root.style.setProperty("--text-color", theme.colors.sidebar_text)
-        root.style.setProperty("--color-hidden", theme.colors.frame)
-        // root.style.setProperty("--folder-closed-text-color", "blue")
-        root.style.setProperty("--divider-color", theme.colors.sidebar_border)
-        root.style.setProperty("--button-background-active", theme.colors.button_background_active)
-        root.style.setProperty("--button-background-hover", theme.colors.button_background_hover)
-        root.style.setProperty("--folder-arrow-color", theme.colors.icons)
+        const body = document.getElementsByTagName("body")[0]
+        body.classList.add(this.eclipseData.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode")
+        // const root = document.documentElement
+        // root.style.setProperty("--bg-color", theme.colors.sidebar)
+        // root.style.setProperty("--context-bg-color", theme.colors.popup)
+        // root.style.setProperty("--text-color", theme.colors.sidebar_text)
+        // root.style.setProperty("--color-hidden", theme.colors.frame)
+        // // root.style.setProperty("--folder-closed-text-color", "blue")
+        // root.style.setProperty("--divider-color", theme.colors.sidebar_border)
+        // root.style.setProperty("--button-background-active", theme.colors.button_background_active)
+        // root.style.setProperty("--button-background-hover", theme.colors.button_background_hover)
+        // root.style.setProperty("--folder-arrow-color", theme.colors.icons)
     }
 
     async startup() {
@@ -100,6 +101,7 @@ export default class App extends Vue {
 
     async save() {
         await saveDataInFirefox(JSON.parse(JSON.stringify(this.eclipseData)))
+        console.log(this.eclipseData)
     }
 
     async displayHowTo() {

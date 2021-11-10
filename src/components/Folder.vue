@@ -1,17 +1,20 @@
 <template>
     <div ref="container">
-        <div ref="dropContainer" :folderID="folderData.folderID" :index="folderData.index">
+        <div ref="dropContainer" :folderID="folderData.folderID" :index="folderData.index" class="element">
             <!--Dropdown icon-->
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 version="1.1"
-                viewBox="-2 -2 15 15"
-                :class="'arrow noEvents ' + (this.folderData.open ? '' : 'rotated')"
+                viewBox="0 0 8 14"
+                :class="'arrow noEvents ' + (!this.folderData.open ? '' : 'rotated')"
                 :id="this.folderData.folderID + '_image'"
                 ref="icon"
                 preserveAspectRatio="none"
             >
-                <path style="fill:none;stroke-width:2px;stroke-linecap:butt;stroke-line:join:miter;stroke-opacity:1" d="M 0.0,0.0 6,8.0 12.0,0.0" />
+                <path
+                    style="fill:none;stroke:#f98604;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+                    d="M 0.82682333,12.402343 6.6145833,6.6145833 0.82682333,0.82682333"
+                />
             </svg>
             <!--Text node-->
             <div class="noEvents name">{{ this.folderData.name }}</div>
@@ -32,6 +35,7 @@
                     v-on:save="this.save"
                     v-on:targetElementChange="this.targetElementChangePassOn"
                     v-on:renameEnd="this.renameEnd"
+                    v-on:dragend="this.$emit('dragend', undefined)"
                 ></Item>
                 <Folder
                     v-if="'folderID' in element"
@@ -47,6 +51,7 @@
                     v-on:targetElementChange="this.targetElementChangePassOn"
                     v-on:move="this.movePassOn"
                     v-on:renameEnd="this.renameEnd"
+                    v-on:dragend="this.$emit('dragend', undefined)"
                 ></Folder>
             </div>
         </div>
@@ -116,14 +121,16 @@ export default class Folder extends Vue {
         this.dropContainer = this.$refs.dropContainer as HTMLElement
 
         //register drag events
-        if (this.isRenameable) this.dropContainer.draggable = true
-        this.dropContainer.addEventListener("dragstart", this.dragstart_handler)
-        this.dropContainer.addEventListener("drop", this.drop_handler)
-        this.dropContainer.addEventListener("dragover", this.dragover_handler)
-        this.dropContainer.addEventListener("dropend", this.dropend_handler)
-        this.dropContainer.addEventListener("dragend", this.dragend_handler)
-        this.dropContainer.addEventListener("dragenter", this.dragenter_handler)
-        this.dropContainer.addEventListener("dragleave", this.dragleave_handler)
+        if (this.isRenameable) {
+            this.dropContainer.draggable = true
+            this.dropContainer.addEventListener("dragstart", this.dragstart_handler)
+            this.dropContainer.addEventListener("drop", this.drop_handler)
+            this.dropContainer.addEventListener("dragover", this.dragover_handler)
+            this.dropContainer.addEventListener("dropend", this.dropend_handler)
+            this.dropContainer.addEventListener("dragend", this.dragend_handler)
+            this.dropContainer.addEventListener("dragenter", this.dragenter_handler)
+            this.dropContainer.addEventListener("dragleave", this.dragleave_handler)
+        }
         //on click
         this.dropContainer.onclick = this.folderClick
 
@@ -214,10 +221,11 @@ export default class Folder extends Vue {
     drop_handler(event: any) {
         this.container.classList.remove("hover")
         if (event.explicitOriginalTarget == this.dropContainer) this.$emit("move", this.folderData)
-        console.log(event)
     }
 
     movePassOn(targetFolder: folderData) {
+        console.log(targetFolder)
+        console.log(this.folderData)
         this.$emit("move", targetFolder)
     }
 
@@ -227,6 +235,7 @@ export default class Folder extends Vue {
 
     dropend_handler() {
         //empty
+        this.$emit("dragend", undefined)
     }
 
     dragend_handler() {

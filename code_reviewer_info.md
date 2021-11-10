@@ -1,1 +1,3 @@
 <!-- TODO add reviewer info here -->
+
+The project is created using vue 3 to download all necessary components you can use npm with the command `npm install` to install all packages. Then to compile and zip the project you can use my `export.sh` script with `./export.sh main eclipseTabs` wich will create a zip file with the name `eclipseTabs.zip` containing all relevant js files for the addon.

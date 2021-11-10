@@ -4,13 +4,18 @@
 
 #list {
     overflow: auto;
-    max-height: calc(100vh - 4rem);
+    max-height: calc(100vh - 4.5rem);
     /* -ms-overflow-style: none; */
     /* IE and Edge */
     /* scrollbar-width: none; */
     /* Firefox */
     padding-left: 5px;
     padding-top: 5px;
+    z-index: 1;
+}
+
+#list.larger {
+    max-height: calc(100vh - 5rem - 7.5vw);
 }
 
 #list.devMode {
@@ -21,20 +26,42 @@
     display: none;
 }
 
+#root_dropoff {
+    height: 15ch;
+    width: 80vw;
+    background-color: var(--element-hover-color);
+    border-color: var(--divider-color);
+    border-radius: 1ch;
+    margin: auto;
+    margin-top: 5ch;
+    position: relative;
+}
+
+#root_dropoff > span {
+    right: 50%;
+    bottom: 50%;
+    transform: translate(50%, 50%);
+    position: absolute;
+    font-weight: 200;
+    font-size: large;
+    text-align: center;
+}
+
 .listItem {
     padding: 0.15rem;
 }
 
 .favicon {
-    height: 1.2rem;
-    width: 1.2rem;
+    height: 1rem;
+    width: 1rem;
     margin-right: 1ch;
+    margin-bottom: -0.15rem;
 }
 
 .arrow {
-    height: 1.1rem;
-    width: 1.1rem;
-    margin-right: 0.8ch;
+    height: 1rem;
+    width: auto;
+    margin-right: 1rem;
     position: relative;
     top: 0.25rem;
     left: 0.3rem;
@@ -42,7 +69,7 @@
 }
 
 .rotated {
-    transform: rotate(-90deg);
+    transform: rotate(90deg);
 }
 
 .overflow {
@@ -52,9 +79,18 @@
 }
 
 .tabHidden {
-    color: var(--color-hidden);
+    color: var(--text-color-hidden);
 }
 
 .name {
     display: inline;
+}
+
+.element {
+    /* background-color: var(--element-hover-color); */
+    border-radius: 0.5ch;
+}
+
+.element:hover {
+    background-color: var(--item-bg-hover-color);
 }

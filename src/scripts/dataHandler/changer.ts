@@ -12,6 +12,7 @@ import {
 } from "./getter"
 import * as tabHelper from "../tabHelper"
 import { generateIndexInFolder } from "./adder"
+import { tabExistsByItemID } from "./checker"
 
 /** @deprecated should not be used anymore
  * */
@@ -90,12 +91,19 @@ export async function moveFolder(folderID: string, oldParentFolderID: string, ne
 
 export function moveElement(element: elementData, oldParent: folderData, newParent: folderData): boolean {
     if (oldParent == undefined || element == undefined || newParent == undefined) return false
+    if (oldParent == newParent || element == newParent) return false
+    if ("itemID" in element && newParent.folderID == defs.rootFolderID) return false
+    console.log(element, oldParent, newParent)
+    if (newParent.folderID == defs.pinnedFolderID || (newParent.folderID == defs.unorderedFolderID && "folderID" in element)) return false
 
     const key = getKeyByIDAndType(
         oldParent.elements,
         "itemID" in element ? false : true,
         "itemID" in element ? (element as itemData).itemID : (element as folderData).folderID
     )
+    const id = "itemID" in element ? (element as itemData).itemID : (element as folderData).folderID
+    if ("itemID" in element && getItemJSONObjectByItemID((element as itemData).itemID, newParent) != undefined) return false
+    if ("folderID" in element && getFolderJSONObjectByID((element as folderData).folderID, newParent) != undefined) return false
     if (oldParent != undefined && newParent != undefined && element != undefined && key != undefined) {
         element.parentFolderID = newParent.folderID
         element.index = generateIndexInFolder(newParent)

@@ -23,7 +23,7 @@ compressSource(){
 
 compressProgram(){
     echo "Compiling (transpiling) source"
-    vue-cli-service build
+    npx vue-cli-service build
     echo "Project build!!"
     ECLIPSE_EXPORT_PROG_FILE="${1}.zip"
     zip -r -q "${ECLIPSE_EXPORT_PROG_FILE}" dist/* manifest.json Updatelog.md LICENSE README.md

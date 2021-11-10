@@ -1,7 +1,7 @@
 <template>
     <div>
         <!--List container-->
-        <div id="list" ref="list" class="scroller">
+        <div id="list" ref="list" :class="'scroller ' + (this.currentlyDragging ? 'larger' : '')">
             <Folder
                 v-for="folder in this.shortenList"
                 :key="folder.folderID"
@@ -17,11 +17,15 @@
                 v-on:targetElementChange="this.targetElementChange"
                 v-on:move="this.elementMove"
                 v-on:renameEnd="this.renameEnd"
+                v-on:dragend="this.currentlyDragging = false"
             />
 
             <!--add folder name input-->
             <div id="addFolderNameInputContainer" class="disabled">
                 <input type="text" ref="addFolderNameInput" placeholder="foldername" @keyup="this.addFolderSubmit" />
+            </div>
+            <div v-show="this.currentlyDragging" ref="root_dropoff" id="root_dropoff">
+                <span>Dropoff spot for moving to root level</span>
             </div>
         </div>
 
@@ -31,6 +35,7 @@
             :targetElement="this.targetElement"
             :targetElementParent="this.targetElementParent"
             :allreload="this.allreload"
+            :deleteVisible="this.currentlyDragging"
             v-on:folderClick="this.addFolderClick"
             v-on:binDrop="this.binDrop"
             v-on:clearStructClick="this.clearStructClick"
@@ -53,6 +58,7 @@ import { Options, Vue } from "vue-class-component"
 import { ContextAction, ContextMenuData, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import { generateFolderID, getFolderJSONObjectByID, getItemJSONObjectByItemID, saveDataInFirefox } from "@/scripts/dataHandler/getter"
 import { addFolderDirect, createEmptyData } from "@/scripts/dataHandler/adder"
+import * as defs from "@/scripts/dataHandler/definitions"
 import { collapseAllDirect, expandAllDirect, moveElement, removeElement } from "@/scripts/dataHandler/changer"
 
 import BottomMenu from "@/components/Bottom.vue"
@@ -76,17 +82,26 @@ export default class Sidebar extends Vue {
     targetElementParent: folderData = this.eclipseData.rootFolder
     contextData = reactive<ContextMenuData>({ targetElementID: "", targetIsFolder: false, actionPerformed: ContextAction.rename })
 
+    currentlyDragging: Boolean = false
+
     folderAddInput!: HTMLInputElement
+
+    rootDropOffElement!: HTMLElement
 
     mounted() {
         // console.log(this.eclipseData)
 
-        document.body.addEventListener("drop", this.bodyDrop)
         this.folderAddInput = this.$refs.addFolderNameInput as HTMLInputElement
 
         this.htmlTarget = this.$refs.list as HTMLElement
         this.targetElement = this.eclipseData.rootFolder
         this.targetElementParent = this.eclipseData.rootFolder
+        this.rootDropOffElement = this.$refs.root_dropoff as HTMLElement
+
+        this.rootDropOffElement.addEventListener("drop", this.bodyDrop)
+        this.rootDropOffElement.addEventListener("dragover", e => {
+            e.preventDefault()
+        })
     }
 
     //#region bottom menu events
@@ -98,6 +113,7 @@ export default class Sidebar extends Vue {
     binDrop() {
         removeElement(this.targetElement as folderData | itemData, this.targetElementParent, this.eclipseData)
         this.save()
+        this.currentlyDragging = false
     }
 
     moveClick() {
@@ -178,6 +194,7 @@ export default class Sidebar extends Vue {
     targetElementChange(element: elementData, parent: folderData) {
         this.targetElement = element
         this.targetElementParent = parent
+        this.currentlyDragging = true
     }
 
     async addFolderSubmit(event: any) {
@@ -200,12 +217,22 @@ export default class Sidebar extends Vue {
         if (this.targetElement != undefined) {
             if (!moveElement(this.targetElement, this.targetElementParent, targetFolder))
                 console.warn("Unable to move element ", this.targetElement, this.targetElementParent, targetFolder)
+            console.log("Moved target $1 to folder $2", this.targetElement, targetFolder)
+
             this.save()
         } else console.warn("TargetElement is undefined, unable to move element to folder ", targetFolder)
+        this.currentlyDragging = false
     }
 
     bodyDrop() {
-        if (this.targetElement != undefined) moveElement(this.targetElement, this.targetElementParent, this.eclipseData.rootFolder)
+        if (this.targetElement != undefined) {
+            if ("itemID" in this.targetElement) {
+                const unorderedFolder = getFolderJSONObjectByID(defs.unorderedFolderID, this.eclipseData.rootFolder)
+                if (unorderedFolder != undefined) moveElement(this.targetElement, this.targetElementParent, unorderedFolder)
+            } else moveElement(this.targetElement, this.targetElementParent, this.eclipseData.rootFolder)
+            this.save()
+        }
+        this.currentlyDragging = false
     }
 }
 </script>

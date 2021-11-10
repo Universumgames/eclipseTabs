@@ -1,4 +1,18 @@
-Update 1.1.2:
+Hotfix 1.1.3.1:
+
+-   major inconvenience when list is hidden behind enlarged garbage bin 🤦
+    -   reduced size of bin
+    -   other accommodations
+
+Update 1.1.3:
+
+-   new Features:
+    -   minor UI/UX Update: color change and behaviour of garbage bin changed
+-   bugfixes:
+    -   ✅ 🕷️ items and folders could be deleted when moved into itself/same parent directory
+    -   ✅ 🕷️ folders couldn't be moved into root directory
+
+Minor Update 1.1.2:
 
 -   new features:
     -   ✅ implemented hiding currently focused tab and switching to tab to the right (workaround for Firefox restriction)

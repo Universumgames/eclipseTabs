@@ -22,6 +22,7 @@
 -   ✅ Versioning
 -   ✅ Added Option to Combine Data at Import
 -   ✅ implemented hiding currently focused tab and switching to tab to the right (workaround for Firefox restriction)
+-   ❌ using user installed theme as color values (firefox themes are not suited for this)
 -   ❌ Drag and Drop links into sidebar or something similar
 -   ❌ (cloud sync maybe)
 -
@@ -38,7 +39,8 @@
 -   ✅ Placeholder text for renaming items/folders now to original name
 -   ✅ "Adding folder" couldn't be canceled with escape like the rename functionalities
 -   ✅ when update is installed two "HowTo" pages open up
--   ❌ 🕷️ glitching when opening/closing folders and sites are stll loading
+-   ✅ items and folders could be deleted when moved into itself/same parent directory
+-   ❌ 🕷️ glitching when opening/closing folders and sites are still loading
 -   ❌ 🕷️ when combining data at import the "Pinned Tab" and "Other" folder appear twice
 -   ❌ fav icon data is stored with each page and not in "global" storage --> huge memory increase
 
