@@ -52,8 +52,7 @@ export function getFolderJSONObjectByID(id: folderIDType, data: folderData): fol
 
 function getFolderJSONObjectByIDRecursion(id: folderIDType, folder: Array<elementData>): folderData | undefined {
     let returnVal: folderData | undefined
-    for (const key in folder) {
-        const element = folder[key]
+    for (const element of folder) {
         if (element != undefined) {
             if ("folderID" in element) {
                 const fold = element as folderData

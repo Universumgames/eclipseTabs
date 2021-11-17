@@ -3,16 +3,18 @@
         <div class="noEvents" id="contextTitle">eclipseTabMenu</div>
         <div id="contextMenuList">
             <div id="contextMenu_generic">
-                <div id="contextMenu_generic_collapseAll" @click="this.contextMenu_generic_collapseAll_handler">Collapse All</div>
-                <div id="contextMenu_generic_expandAll" @click="this.contextMenu_generic_expandAll_handler">Expand All</div>
+                <div class="contextElement" id="contextMenu_generic_collapseAll" @click="this.contextMenu_generic_collapseAll_handler">
+                    Collapse All
+                </div>
+                <div class="contextElement" id="contextMenu_generic_expandAll" @click="this.contextMenu_generic_expandAll_handler">Expand All</div>
             </div>
             <div ref="contextMenu_folder" id="contextMenu_folder" class="disabled">
-                <div id="contextMenu_folder_rename" @click="this.contextMenu_folder_rename_handler">Rename Folder</div>
-                <div id="contextMenu_folder_delete" @click="this.contextMenu_folder_delete_handler">Delete Folder</div>
+                <div class="contextElement" id="contextMenu_folder_rename" @click="this.contextMenu_folder_rename_handler">Rename Folder</div>
+                <div class="contextElement" id="contextMenu_folder_delete" @click="this.contextMenu_folder_delete_handler">Delete Folder</div>
             </div>
             <div ref="contextMenu_item" id="contextMenu_item" class="disabled">
-                <div id="contextMenu_item_rename" @click="this.contextMenu_item_rename_handler">Rename item</div>
-                <div id="contextMenu_item_delete" @click="this.contextMenu_item_delete_handler">Delete item</div>
+                <div class="contextElement" id="contextMenu_item_rename" @click="this.contextMenu_item_rename_handler">Rename item</div>
+                <div class="contextElement" id="contextMenu_item_delete" @click="this.contextMenu_item_delete_handler">Delete item</div>
             </div>
         </div>
     </div>

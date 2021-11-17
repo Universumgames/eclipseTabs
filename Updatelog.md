@@ -1,3 +1,10 @@
+Update 1.1.4:
+
+-   bugfixes
+    -   ✅ 🕷️ when importing data and combining it with existing ones, duplicate directories were create which broke "pinned" and "other" completely
+    -   ✅ 🕷️ HowTo was still able to open multiple times
+    -   ✅ 🕷️ hidden items hadn't correct text color set
+
 Hotfix 1.1.3.1:
 
 -   major inconvenience when list is hidden behind enlarged garbage bin 🤦

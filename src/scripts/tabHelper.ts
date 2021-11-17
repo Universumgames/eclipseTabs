@@ -54,7 +54,7 @@ export async function createTab(url: string): Promise<FirefoxTab> {
 
 export async function createTabIfNotExist(url: string): Promise<FirefoxTab> {
     const tab = await getTabByURL(url)
-    if (tab == undefined) return createTab(url)
+    if (tab == undefined) return await createTab(url)
     else return tab
 }
 

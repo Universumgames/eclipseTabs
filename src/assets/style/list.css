@@ -2,24 +2,33 @@
     display: none;
 }
 
+#container {
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    justify-content: flex-start;
+}
+
 #list {
     overflow: auto;
-    max-height: calc(100vh - 4.5rem);
+    height: auto;
     /* -ms-overflow-style: none; */
     /* IE and Edge */
     /* scrollbar-width: none; */
     /* Firefox */
-    padding-left: 5px;
-    padding-top: 5px;
-    z-index: 1;
+    padding-left: 0.7ch;
+    padding-right: 0.7ch;
+    padding-top: 0.7ch;
+    /* z-index: 1; */
 }
 
 #list.larger {
-    max-height: calc(100vh - 5rem - 7.5vw);
+    /* max-height: calc(100vh - 5rem - 7.5vw); */
 }
 
 #list.devMode {
-    max-height: calc(100vh - 10rem);
+    /* max-height: calc(100vh - 20vw); */
 }
 
 #list::-webkit-scrollbar {
@@ -35,6 +44,7 @@
     margin: auto;
     margin-top: 5ch;
     position: relative;
+    margin-bottom: 4ch;
 }
 
 #root_dropoff > span {
@@ -80,6 +90,7 @@
 
 .tabHidden {
     color: var(--text-color-hidden);
+    background-color: var(--item-bg-color-hidden);
 }
 
 .name {
@@ -89,6 +100,9 @@
 .element {
     /* background-color: var(--element-hover-color); */
     border-radius: 0.5ch;
+    padding: 0.2rem;
+    padding-left: 0.4rem;
+    overflow-x: hidden;
 }
 
 .element:hover {

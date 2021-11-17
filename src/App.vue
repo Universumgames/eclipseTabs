@@ -14,9 +14,10 @@ import * as tabHelper from "./scripts/tabHelper"
 
 export default class App extends Vue {
     eclipseData = reactive<tabStructData>(createEmptyData())
+    loadedOnce: Boolean = false
 
     created() {
-        this.startup()
+        // this.startup()
     }
 
     async mounted() {
@@ -25,7 +26,6 @@ export default class App extends Vue {
         this.$router.beforeEach(to => {
             document.title = to.meta.title != undefined ? (to.meta.title as string) : "404 Page not found"
         })
-        await this.allReload()
 
         registerListener({
             updateList: () => {
@@ -78,8 +78,8 @@ export default class App extends Vue {
         }
         if (this.eclipseData.version != getManifest().version) {
             this.eclipseData.version = getManifest().version
-            await this.save()
-            await this.displayHowTo()
+            this.save()
+            this.displayHowTo()
         }
         const theme = await getTheme()
         this.setColorScheme(theme)
@@ -104,8 +104,11 @@ export default class App extends Vue {
         console.log(this.eclipseData)
     }
 
-    async displayHowTo() {
-        await tabHelper.createTabIfNotExist("./index.html#/howto")
+    displayHowTo() {
+        if (this.loadedOnce) return
+        this.loadedOnce = true
+        // console.error("display howto")
+        tabHelper.createTabIfNotExist("./index.html#howto")
     }
 }
 </script>
@@ -116,11 +119,6 @@ export default class App extends Vue {
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
 }
-
-#nav {
-    padding: 30px;
-}
-
 #nav a {
     font-weight: bold;
     color: #2c3e50;

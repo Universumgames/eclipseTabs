@@ -7,7 +7,6 @@ import { closeTab, createTab, focusTab, getCurrentTab, getTabByTabID, getTabByUR
 import { isFolder, reloadExtension } from "../helper"
 import { folderExists, tabExistsByItemID } from "./checker"
 
-//TODO importing (combining) not working at all
 export async function importData(json: string, overwrite: boolean = false) {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return
@@ -103,16 +102,15 @@ function importFolderRec(storedFolder: folderData, importFolder: folderData) {
         console.warn("Folder to import to is undefined")
         return
     }
-    for (const importKey in importFolder.elements) {
-        const importElement = importFolder.elements[importKey]
+    for (const importElement of importFolder.elements) {
         if ("itemID" in importElement) {
             const importItem = importElement as itemData
             if (getItemJSONObjectByItemID(importItem.itemID, storedFolder) == undefined) storedFolder.elements.push(importElement)
         } else if ("folderID" in importElement) {
-            const importFolder = importElement as folderData
-            const stored = getFolderJSONObjectByID(importFolder.folderID, importFolder)
-            if (stored == undefined) storedFolder.elements.push(importFolder)
-            else importFolderRec(stored, importFolder)
+            const importFolder2 = importElement as folderData
+            const stored = getFolderJSONObjectByID(importFolder2.folderID, storedFolder)
+            if (stored == undefined) storedFolder.elements.push(importFolder2)
+            else importFolderRec(stored, importFolder2)
         }
     }
 }

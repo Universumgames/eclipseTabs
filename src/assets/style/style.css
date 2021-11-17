@@ -17,12 +17,13 @@ body {
     --bg-color: #141e26ff;
     --context-bg-color: #223341ff;
     --text-color: #f6f6f6;
-    --text-color-hidden: var(--text-color);
-    --item-bg-color-hidden: ;
-    --item-bg-color: ;
+    --text-color-hidden: #868686;
+    --item-bg-color-hidden: #00000000;
+    /* --item-bg-color: #00000000; */
     --item-bg-hover-color: var(--context-bg-color);
     --divider-color: var(--text-color);
-    --button-background-hover: ;
+    --button-background: var(--context-bg-color);
+    --button-background-hover: var(--folder-arrow-color);
     --folder-arrow-color: #f98604;
     --element-hover-color: var(--context-bg-color);
 }
@@ -31,9 +32,13 @@ body {
     --bg-color: #ebf0f5;
     --context-bg-color: #b4c5d6ff;
     --text-color: black;
-    --text-color-hidden: var(--text-color);
+    --text-color-hidden: #acacac;
+    --item-bg-color-hidden: #00000000;
+    /* --item-bg-color: ; */
+    --item-bg-hover-color: var(--context-bg-color);
     --divider-color: var(--text-color);
-    --button-background-hover: ;
+    --button-background: var(--context-bg-color);
+    --button-background-hover: var(--folder-arrow-color);
     --folder-arrow-color: #f98604;
     --element-hover-color: var(--context-bg-color);
 }

@@ -1,18 +1,19 @@
 {
     "manifest_version": 2,
     "name": "eclipseTab",
-    "version": "1.1.3.1",
+    "version": "1.1.4",
     "developer": {
         "name": "UniversumGames",
         "url": "https://universegame.de/"
     },
     "browser_specific_settings": {
         "gecko": {
-            "id": "eclipseTab@universegame.de"
+            "id": "eclipseTab@universegame.de",
+            "strict_min_version": "80.0"
         }
     },
     "homepage_url": "https://universegame.de",
-    "description": "Easy management of your tabs and own bookmark system",
+    "description": "Simple bookmark tool to easily open and manage tabs",
     "icons": {
         "48": "dist/icons/eclipse_48.png"
     },

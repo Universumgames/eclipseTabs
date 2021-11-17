@@ -21,3 +21,7 @@
 #contextMenu_folder::before {
     background-color: var(--divider-color) !important;
 }
+
+.contextElement {
+    cursor: pointer;
+}

@@ -2,6 +2,7 @@
     margin: 1rem;
     line-height: 2;
     display: flow-root;
+    height: 100%;
 }
 
 #settingsContainer .switch {
@@ -11,7 +12,7 @@
 button {
     border-color: rgba(0, 0, 0, 0);
     color: var(--text-color);
-    background-color: var(--context-bg-color);
+    background-color: var(--button-background);
     border-radius: 0.5ch;
     margin: 0.2ch;
 }

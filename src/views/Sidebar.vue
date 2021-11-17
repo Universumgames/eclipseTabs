@@ -1,46 +1,48 @@
 <template>
-    <div>
+    <div id="sidebar">
         <!--List container-->
-        <div id="list" ref="list" :class="'scroller ' + (this.currentlyDragging ? 'larger' : '')">
-            <Folder
-                v-for="folder in this.shortenList"
-                :key="folder.folderID"
+        <div id="container">
+            <div id="list" ref="list" class="scroller">
+                <Folder
+                    v-for="folder in this.shortenList"
+                    :key="folder.folderID"
+                    :eclipseData="this.eclipseData"
+                    :folderData="folder"
+                    :tier="0"
+                    :allreload="this.allreload"
+                    :parentFolder="this.eclipseData.rootFolder"
+                    :htmlTarget="this.htmlTarget"
+                    :targetElement="this.targetElement"
+                    :contextData="this.contextData"
+                    v-on:save="save"
+                    v-on:targetElementChange="this.targetElementChange"
+                    v-on:move="this.elementMove"
+                    v-on:renameEnd="this.renameEnd"
+                    v-on:dragend="this.currentlyDragging = false"
+                />
+
+                <!--add folder name input-->
+                <div id="addFolderNameInputContainer" class="disabled">
+                    <input type="text" ref="addFolderNameInput" placeholder="foldername" @keyup="this.addFolderSubmit" />
+                </div>
+                <div v-show="this.currentlyDragging" ref="root_dropoff" id="root_dropoff">
+                    <span>Dropoff spot for moving to root level</span>
+                </div>
+            </div>
+
+            <!--Bottom Menu-->
+            <BottomMenu
                 :eclipseData="this.eclipseData"
-                :folderData="folder"
-                :tier="0"
-                :allreload="this.allreload"
-                :parentFolder="this.eclipseData.rootFolder"
-                :htmlTarget="this.htmlTarget"
                 :targetElement="this.targetElement"
-                :contextData="this.contextData"
-                v-on:save="save"
-                v-on:targetElementChange="this.targetElementChange"
-                v-on:move="this.elementMove"
-                v-on:renameEnd="this.renameEnd"
-                v-on:dragend="this.currentlyDragging = false"
+                :targetElementParent="this.targetElementParent"
+                :allreload="this.allreload"
+                :deleteVisible="this.currentlyDragging"
+                v-on:folderClick="this.addFolderClick"
+                v-on:binDrop="this.binDrop"
+                v-on:clearStructClick="this.clearStructClick"
+                v-on:moveClick="this.moveClick"
             />
-
-            <!--add folder name input-->
-            <div id="addFolderNameInputContainer" class="disabled">
-                <input type="text" ref="addFolderNameInput" placeholder="foldername" @keyup="this.addFolderSubmit" />
-            </div>
-            <div v-show="this.currentlyDragging" ref="root_dropoff" id="root_dropoff">
-                <span>Dropoff spot for moving to root level</span>
-            </div>
         </div>
-
-        <!--Bottom Menu-->
-        <BottomMenu
-            :eclipseData="this.eclipseData"
-            :targetElement="this.targetElement"
-            :targetElementParent="this.targetElementParent"
-            :allreload="this.allreload"
-            :deleteVisible="this.currentlyDragging"
-            v-on:folderClick="this.addFolderClick"
-            v-on:binDrop="this.binDrop"
-            v-on:clearStructClick="this.clearStructClick"
-            v-on:moveClick="this.moveClick"
-        />
 
         <!--Context menu-->
         <context-menu
