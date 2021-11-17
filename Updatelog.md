@@ -1,3 +1,12 @@
+Update 1.1.5:
+
+-   new features:
+    -   ✅ context menu additions:
+        -   ✅ expand/collapse selected folder
+        -   ✅ show/hide selected item
+        -   ✅ cascade expand/collapse (expand/collapse all subfolders of selected folder and itself)
+    -   ✅ Updated HoTo (added further reading and made links more visible)
+
 Update 1.1.4:
 
 -   bugfixes

@@ -99,7 +99,7 @@ export default class Item extends Vue {
     }
 
     async click(e: any) {
-        if (e.explicitOriginalTarget != this.dropContainer) return
+        if (e.explicitOriginalTarget != this.dropContainer && e.originalTarget != this.dropContainer) return
         var tabElement = e.originalTarget as HTMLHtmlElement
         var tabID = this.itemData.tabID
         const tabList = await tabHelper.getTabs()

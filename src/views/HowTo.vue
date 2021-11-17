@@ -2,9 +2,11 @@
     <div class="darkmode" id="howtoContainer">
         <h1 id="eclipsetab">eclipseTab</h1>
         <h2 id="-what-s-new-https-github-com-universumgames-eclipsetabs-blob-firefox-updatelog-md-">
-            <a href="https://github.com/Universumgames/eclipseTabs/blob/firefox/Updatelog.md">What&#39;s new</a>
+            <a href="https://github.com/Universumgames/eclipseTabs/blob/firefox/Updatelog.md">What&#39;s new <external-link /></a>
         </h2>
-        <p><a href="https://github.com/Universumgames/eclipseTabs/blob/firefox/Updatelog.md">Link to Changelog</a></p>
+        <p>
+            <a href="https://github.com/Universumgames/eclipseTabs/blob/firefox/Updatelog.md">Link to Changelog <external-link /></a>
+        </p>
         <h2 id="getting-started">Getting started</h2>
         <p>You have no idea how to use this awesome addon? Then this is the right place for you.</p>
         <p>
@@ -61,10 +63,34 @@
         </p>
         <h2 id="further-reading">Further Reading</h2>
         <ul>
-            <li><a href="https://github.com/Universumgames/eclipseTabs">Source Code</a></li>
-            <li><a href="https://github.com/Universumgames/eclipseTabs/blob/firefox/Updatelog.md">Changelog</a></li>
+            <li>
+                <a href="https://github.com/Universumgames/eclipseTabs">Source Code <external-link /></a>
+            </li>
+            <li>
+                <a href="https://github.com/Universumgames/eclipseTabs/blob/vue/Updatelog.md">Changelog <external-link /></a>
+            </li>
+            <li>
+                <a href="https://github.com/Universumgames/eclipseTabs/blob/vue/TODOs.md">ToDo list <external-link /></a>
+            </li>
+            <li>
+                <a href="https://github.com/Universumgames/eclipseTabs/blob/vue/README.md">Readme <external-link /></a>
+            </li>
+            <li>
+                <a href="https://github.com/Universumgames/eclipseTabs/blob/vue/LICENSE">License <external-link /></a>
+            </li>
         </ul>
     </div>
 </template>
 
 <style src="@/assets/style/howTo.css"></style>
+
+<script lang="ts">
+import ExternalLink from "@/components/ExternalLink.vue"
+
+export default {
+    name: "HowTo",
+    components: {
+        ExternalLink
+    }
+}
+</script>

@@ -196,7 +196,7 @@ export default class Folder extends Vue {
     }
 
     folderClick(e: any) {
-        if (e.explicitOriginalTarget == this.dropContainer) {
+        if (e.explicitOriginalTarget == this.dropContainer || e.originalTarget == this.dropContainer) {
             this.folderData.open = !this.folderData.open
             this.save()
         }

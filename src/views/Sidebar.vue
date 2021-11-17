@@ -61,7 +61,7 @@ import { ContextAction, ContextMenuData, elementData, folderData, itemData, KeyC
 import { generateFolderID, getFolderJSONObjectByID, getItemJSONObjectByItemID, saveDataInFirefox } from "@/scripts/dataHandler/getter"
 import { addFolderDirect, createEmptyData } from "@/scripts/dataHandler/adder"
 import * as defs from "@/scripts/dataHandler/definitions"
-import { collapseAllDirect, expandAllDirect, moveElement, removeElement } from "@/scripts/dataHandler/changer"
+import { collapseAllDirect, expandAllDirect, moveElement, removeElement, toggleExpandCascade } from "@/scripts/dataHandler/changer"
 
 import BottomMenu from "@/components/Bottom.vue"
 import ContextMenu from "@/components/ContextMenu.vue"
@@ -156,14 +156,14 @@ export default class Sidebar extends Vue {
 
     async contextDataChange(data: ContextMenuData) {
         this.contextData = data
+        const element = data.targetIsFolder
+            ? getFolderJSONObjectByID(data.targetElementID, this.eclipseData.rootFolder)
+            : getItemJSONObjectByItemID(data.targetElementID, this.eclipseData.rootFolder)
+        if (element == undefined) {
+            console.warn("element not found, search based on query:", data)
+            return
+        }
         if (data.actionPerformed == ContextAction.delete) {
-            const element = data.targetIsFolder
-                ? getFolderJSONObjectByID(data.targetElementID, this.eclipseData.rootFolder)
-                : getItemJSONObjectByItemID(data.targetElementID, this.eclipseData.rootFolder)
-            if (element == undefined) {
-                console.warn("element not found, search based on query:", data)
-                return
-            }
             const parent = getFolderJSONObjectByID(element.parentFolderID!, this.eclipseData.rootFolder)
             if (parent == undefined) {
                 console.warn("parent not found, search based on query:", data)
@@ -172,6 +172,15 @@ export default class Sidebar extends Vue {
             removeElement(element, parent, this.eclipseData)
             this.save()
         }
+        if (data.actionPerformed == ContextAction.toggle) {
+            this.htmlTarget.click()
+            console.log(this.htmlTarget)
+        }
+        if (data.actionPerformed == ContextAction.cascadeToggle && data.targetIsFolder) {
+            toggleExpandCascade(element as folderData)
+            this.save()
+        }
+        console.log(data)
     }
 
     //#endregion

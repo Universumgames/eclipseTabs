@@ -9,11 +9,11 @@
 You have no idea how to use this awesome addon? Then this is the right place for you.
 
 When you are seeing this window the most difficult step is already done. But If you want to hide or closed the sidebar accidentally, just look out for this symbol. <br>
-<img alt="sidebar icon"  src="./howToImgs/sidebar.png">
+<img alt="sidebar icon"  src="../assets/howToImgs/sidebar.png">
 
 ## Menubar
 
-<img alt="sidebar icon"  src="./howToImgs/menubar.png"><br>
+<img alt="sidebar icon"  src="../assets/howToImgs/menubar.png"><br>
 The Menu bar consists of five elements: "Create Folder", "Delete" , "Export", "Import" and "Move".
 
 ## Creating a folder
@@ -50,4 +50,7 @@ To save your new settings and to take affect, just click "Save" and switch the c
 ## Further Reading
 
 -   [Source Code](https://github.com/Universumgames/eclipseTabs)
--   [Changelog](https://github.com/Universumgames/eclipseTabs/blob/firefox/Updatelog.md)
+-   [Changelog](https://github.com/Universumgames/eclipseTabs/blob/vue/Updatelog.md)
+-   [ToDo list](https://github.com/Universumgames/eclipseTabs/blob/vue/TODOs.md)
+-   [Readme](https://github.com/Universumgames/eclipseTabs/blob/vue/README.md)
+-   [License](https://github.com/Universumgames/eclipseTabs/blob/vue/LICENSE)

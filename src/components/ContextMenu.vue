@@ -11,10 +11,24 @@
             <div ref="contextMenu_folder" id="contextMenu_folder" class="disabled">
                 <div class="contextElement" id="contextMenu_folder_rename" @click="this.contextMenu_folder_rename_handler">Rename Folder</div>
                 <div class="contextElement" id="contextMenu_folder_delete" @click="this.contextMenu_folder_delete_handler">Delete Folder</div>
+                <div class="contextElement" id="contextMenu_folder_toggle" @click="this.contextMenu_folder_toggle_handler">
+                    Open/Close Folder
+                </div>
+                <div class="contextElement" id="contextMenu_folder_cascade_toggle" @click="this.contextMenu_folder_cascade_toggle_handler">
+                    Open/Close Folder and Subfolders
+                </div>
             </div>
             <div ref="contextMenu_item" id="contextMenu_item" class="disabled">
                 <div class="contextElement" id="contextMenu_item_rename" @click="this.contextMenu_item_rename_handler">Rename item</div>
                 <div class="contextElement" id="contextMenu_item_delete" @click="this.contextMenu_item_delete_handler">Delete item</div>
+                <div
+                    v-if="this.eclipseData.hideOrSwitchTab == false"
+                    class="contextElement"
+                    id="contextMenu_item_toggle"
+                    @click="this.contextMenu_item_toggle_handler"
+                >
+                    Show/Hide item
+                </div>
             </div>
         </div>
     </div>
@@ -108,19 +122,59 @@ export default class ContextMenu extends Vue {
     }
 
     async contextMenu_folder_rename_handler() {
-        this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.rename })
+        this.menuDataChangeEmit({
+            targetElementID: this.targetID!,
+            targetIsFolder: this.targetIsFolder,
+            actionPerformed: ContextAction.rename
+        })
     }
 
     async contextMenu_folder_delete_handler() {
-        this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.delete })
+        this.menuDataChangeEmit({
+            targetElementID: this.targetID!,
+            targetIsFolder: this.targetIsFolder,
+            actionPerformed: ContextAction.delete
+        })
+    }
+
+    async contextMenu_folder_toggle_handler() {
+        this.menuDataChangeEmit({
+            targetElementID: this.targetID!,
+            targetIsFolder: this.targetIsFolder,
+            actionPerformed: ContextAction.toggle
+        })
+    }
+
+    async contextMenu_folder_cascade_toggle_handler() {
+        this.menuDataChangeEmit({
+            targetElementID: this.targetID!,
+            targetIsFolder: this.targetIsFolder,
+            actionPerformed: ContextAction.cascadeToggle
+        })
     }
 
     async contextMenu_item_rename_handler() {
-        this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.rename })
+        this.menuDataChangeEmit({
+            targetElementID: this.targetID!,
+            targetIsFolder: this.targetIsFolder,
+            actionPerformed: ContextAction.rename
+        })
     }
 
     async contextMenu_item_delete_handler() {
-        this.menuDataChangeEmit({ targetElementID: this.targetID!, targetIsFolder: this.targetIsFolder, actionPerformed: ContextAction.delete })
+        this.menuDataChangeEmit({
+            targetElementID: this.targetID!,
+            targetIsFolder: this.targetIsFolder,
+            actionPerformed: ContextAction.delete
+        })
+    }
+
+    async contextMenu_item_toggle_handler() {
+        this.menuDataChangeEmit({
+            targetElementID: this.targetID!,
+            targetIsFolder: this.targetIsFolder,
+            actionPerformed: ContextAction.toggle
+        })
     }
 
     menuDataChangeEmit(data: ContextMenuData) {

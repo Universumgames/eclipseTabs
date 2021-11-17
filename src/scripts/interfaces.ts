@@ -110,7 +110,9 @@ export interface FirefoxTab {
 
 export enum ContextAction {
     rename,
-    delete
+    delete,
+    toggle,
+    cascadeToggle
 }
 
 export interface ContextMenuData {

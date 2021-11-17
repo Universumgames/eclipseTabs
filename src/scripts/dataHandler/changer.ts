@@ -217,7 +217,7 @@ export function expandAllDirect(eclipseData: tabStructData) {
     expandRecursion(eclipseData.rootFolder)
 }
 
-function expandRecursion(data: folderData) {
+export function expandRecursion(data: folderData) {
     data.elements.forEach(element => {
         if ("folderID" in element) {
             const folder = element as folderData
@@ -232,15 +232,15 @@ function expandRecursion(data: folderData) {
 export async function collapseAll() {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return
-    collapseAllRecursion(data.rootFolder)
+    collapseRecursion(data.rootFolder)
     await saveDataInFirefox(data)
 }
 
 export function collapseAllDirect(eclipseData: tabStructData) {
-    collapseAllRecursion(eclipseData.rootFolder)
+    collapseRecursion(eclipseData.rootFolder)
 }
 
-function collapseAllRecursion(data: folderData) {
+export function collapseRecursion(data: folderData) {
     data.elements.forEach(element => {
         if ("folderID" in element) {
             const folder = element as folderData
@@ -248,4 +248,10 @@ function collapseAllRecursion(data: folderData) {
             expandRecursion(folder)
         }
     })
+}
+
+export function toggleExpandCascade(folder: folderData) {
+    if (folder.open) collapseRecursion(folder)
+    else expandRecursion(folder)
+    folder.open = !folder.open
 }

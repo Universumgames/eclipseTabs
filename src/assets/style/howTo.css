@@ -24,3 +24,7 @@
 #howtoContainer a:focus {
     color: darkgreen;
 }
+
+#howtoContainer a {
+    color: greenyellow;
+}

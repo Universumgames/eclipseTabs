@@ -23,10 +23,10 @@
 -   ✅ Added Option to Combine Data at Import
 -   ✅ implemented hiding currently focused tab and switching to tab to the right (workaround for Firefox restriction)
 -   ❌ search function
--   ❌ context menu adds:
-    -   ❌ expand/collapse selected folder
-    -   ❌ show/hide selected item
-    -   ❌ cascade expand/collapse (expand/collapse all subfolders)
+-   ✅ context menu additions:
+    -   ✅ expand/collapse selected folder
+    -   ✅ show/hide selected item
+    -   ✅ cascade expand/collapse (expand/collapse all subfolders)
 -   ❌ using user installed theme as color values (firefox themes are not suited for this)
 -   ❌ Drag and Drop links into sidebar or something similar
 -   ❌ (cloud sync maybe)
