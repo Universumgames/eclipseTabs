@@ -18,7 +18,7 @@ Update 1.1.5:
 Update 1.1.4:
 
 -   bugfixes
-    -   ✅ 🕷️ when importing data and combining it with existing ones, duplicate directories were create which broke "pinned" and "other" completely
+    -   ✅ 🕷️ when importing data and combining it with existing ones, duplicate directories were created which broke "pinned" and "other" completely
     -   ✅ 🕷️ HowTo was still able to open multiple times
     -   ✅ 🕷️ hidden items hadn't correct text color set
 
