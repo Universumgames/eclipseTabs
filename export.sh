@@ -26,7 +26,7 @@ compressProgram(){
     npx vue-cli-service build
     echo "Project build!!"
     ECLIPSE_EXPORT_PROG_FILE="${1}.zip"
-    zip -r -q "${ECLIPSE_EXPORT_PROG_FILE}" dist/* manifest.json Updatelog.md LICENSE README.md
+    zip -r -q "${ECLIPSE_EXPORT_PROG_FILE}" dist/* manifest.json Updatelog.md LICENSE README.md howTo.html howTo.md 
     echo "Program files zippen in ${ECLIPSE_EXPORT_PROG_FILE}"
 }
 

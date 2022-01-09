@@ -13,7 +13,7 @@ When you are seeing this window the most difficult step is already done. But If 
 
 ## Menubar
 
-<img alt="sidebar icon"  src="../assets/howToImgs/menubar.png"><br>
+<img alt="sidebar icon"  src="../assets/howToImgs/menuBar.png"><br>
 The Menu bar consists of five elements: "Create Folder", "Delete" , "Export", "Import" and "Move".
 
 ## Creating a folder
@@ -54,3 +54,5 @@ To save your new settings and to take affect, just click "Save" and switch the c
 -   [ToDo list](https://github.com/Universumgames/eclipseTabs/blob/vue/TODOs.md)
 -   [Readme](https://github.com/Universumgames/eclipseTabs/blob/vue/README.md)
 -   [License](https://github.com/Universumgames/eclipseTabs/blob/vue/LICENSE)
+-   [Newest version of HowTo](https://github.com/Universumgames/eclipseTabs/blob/vue/howTo.md)
+-   [Report a bug](https://github.com/Universumgames/eclipseTabs/issues)
