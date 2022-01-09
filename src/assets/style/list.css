@@ -105,6 +105,16 @@
     overflow-x: hidden;
 }
 
-.element:hover {
+.element:hover,
+.element:focus {
     background-color: var(--item-bg-hover-color);
+}
+
+#addFolderNameInputContainer,
+#searchInput {
+    margin: 2ch;
+}
+
+.highlighted {
+    background-color: var(--highlighted-bg-color);
 }

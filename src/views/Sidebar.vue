@@ -14,6 +14,7 @@
                     :htmlTarget="this.htmlTarget"
                     :targetElement="this.targetElement"
                     :contextData="this.contextData"
+                    :searchResults="this.searchResults"
                     v-on:save="save"
                     v-on:targetElementChange="this.targetElementChange"
                     v-on:move="this.elementMove"
@@ -27,6 +28,19 @@
                 </div>
                 <div v-show="this.currentlyDragging" ref="root_dropoff" id="root_dropoff">
                     <span>Dropoff spot for moving to root level</span>
+                </div>
+                <div id="searchInput" v-show="this.currentlySearching">
+                    <input
+                        type="text"
+                        v-model="this.queryString"
+                        @keyup="this.onQueryUpdate"
+                        placeholder="search query"
+                        ref="searchInputElement"
+                        style="display:inline"
+                    />
+                    <p style="margin: 1ch">Found {{ this.searchResults.length }} matching elements</p>
+                    <button style="margin-top: 1ch" @click="this.revealFoundElements">Reveal all found elements</button>
+                    <button style="margin-top: 1ch" @click="this.currentlySearching = false">Close search</button>
                 </div>
             </div>
 
@@ -51,6 +65,7 @@
             v-on:expandAll="this.expandAll"
             v-on:contextDataChange="this.contextDataChange"
             v-on:contextMenuTargetChange="this.contextMenuTargetChange"
+            v-on:search="this.contextSearchBegin"
         />
     </div>
 </template>
@@ -58,10 +73,17 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
 import { ContextAction, ContextMenuData, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
-import { generateFolderID, getFolderJSONObjectByID, getItemJSONObjectByItemID, saveDataInFirefox } from "@/scripts/dataHandler/getter"
+import { generateFolderID, getFolderJSONObjectByID, getItemJSONObjectByItemID, saveDataInFirefox, search } from "@/scripts/dataHandler/getter"
 import { addFolderDirect, createEmptyData } from "@/scripts/dataHandler/adder"
 import * as defs from "@/scripts/dataHandler/definitions"
-import { collapseAllDirect, expandAllDirect, moveElement, removeElement, toggleExpandCascade } from "@/scripts/dataHandler/changer"
+import {
+    collapseAllDirect,
+    expandAllDirect,
+    moveElement,
+    removeElement,
+    revealElementDirect,
+    toggleExpandCascade
+} from "@/scripts/dataHandler/changer"
 
 import BottomMenu from "@/components/Bottom.vue"
 import ContextMenu from "@/components/ContextMenu.vue"
@@ -85,6 +107,11 @@ export default class Sidebar extends Vue {
     contextData = reactive<ContextMenuData>({ targetElementID: "", targetIsFolder: false, actionPerformed: ContextAction.rename })
 
     currentlyDragging: Boolean = false
+    currentlySearching: Boolean = false
+    searchInputElement!: HTMLInputElement
+
+    searchResults: elementData[] = []
+    queryString = ""
 
     folderAddInput!: HTMLInputElement
 
@@ -99,11 +126,14 @@ export default class Sidebar extends Vue {
         this.targetElement = this.eclipseData.rootFolder
         this.targetElementParent = this.eclipseData.rootFolder
         this.rootDropOffElement = this.$refs.root_dropoff as HTMLElement
+        this.searchInputElement = this.$refs.searchInputElement as HTMLInputElement
 
         this.rootDropOffElement.addEventListener("drop", this.bodyDrop)
         this.rootDropOffElement.addEventListener("dragover", e => {
             e.preventDefault()
         })
+
+        // document.body.addEventListener("keyup", this.onKeyPressBody)
     }
 
     //#region bottom menu events
@@ -228,11 +258,12 @@ export default class Sidebar extends Vue {
         if (this.targetElement != undefined) {
             if (!moveElement(this.targetElement, this.targetElementParent, targetFolder))
                 console.warn("Unable to move element ", this.targetElement, this.targetElementParent, targetFolder)
-            console.log("Moved target $1 to folder $2", this.targetElement, targetFolder)
+            else console.log("Moved target $1 to folder $2", this.targetElement, targetFolder)
 
             this.save()
         } else console.warn("TargetElement is undefined, unable to move element to folder ", targetFolder)
         this.currentlyDragging = false
+        // this.$forceUpdate()
     }
 
     bodyDrop() {
@@ -245,6 +276,43 @@ export default class Sidebar extends Vue {
         }
         this.currentlyDragging = false
     }
+
+    contextSearchBegin() {
+        this.currentlySearching = true
+        setTimeout(() => {
+            this.searchInputElement.focus()
+        }, 200)
+    }
+
+    async onQueryUpdate(event: any) {
+        if (event.keyCode == KeyCode.escape) {
+            event.preventDefault()
+            this.currentlySearching = false
+            this.searchResults = []
+            return
+        }
+        console.log(this.queryString)
+        this.searchResults = search(this.queryString, this.eclipseData.rootFolder)
+        console.log("Search Results: ", this.searchResults)
+    }
+
+    async revealFoundElements() {
+        for (const element of this.searchResults) {
+            revealElementDirect(element, this.eclipseData)
+        }
+        this.save()
+    }
+
+    /* onKeyPressBody(event: any) {
+        if (event.keyCode == KeyCode.escape) {
+            this.currentlySearching = false
+            this.folderAddInput.value = ""
+            this.folderAddInput.parentElement!.classList.add("disabled")
+        } else {
+            console.log(event)
+            this.contextSearchBegin()
+        }
+    } */
 }
 </script>
 

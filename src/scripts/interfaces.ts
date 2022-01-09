@@ -1,3 +1,43 @@
+export interface browserHandler {
+    updateList: any
+    setColorScheme: any
+}
+
+export interface browserStartupHandler {
+    startup: any
+}
+
+export interface Browser extends TabManager {
+    getBrowser(): any
+    reload(): void
+    registerListener(handler: browserHandler): void
+    tabQuery(query: any): Promise<Array<any>>
+    startupHandler(handler: browserStartupHandler): void
+    localStorageSet(data: any): Promise<any>
+    localStorageGetTabStructData(name: string): Promise<tabStructData | undefined>
+    getManifest(): FirefoxManifest
+    getBookmarks(): Promise<FirefoxBookmarksRoot>
+    getTheme(): Promise<FirefoxTheme>
+}
+
+//TODO declare tabmanager and implement interface
+export interface TabManager {
+    hideTab(id: string | Number): Promise<Boolean>
+    showTab(id: string | Number): Promise<Boolean>
+    pinTab(id: string | Number): Promise<Boolean>
+    unpinTab(id: string | Number): Promise<Boolean>
+    focusTab(id: string | Number): void
+    createTab(url: string): Promise<FirefoxTab>
+    getTabs(): Promise<Array<FirefoxTab>>
+    getCurrentTab(): Promise<FirefoxTab>
+    closeTab(id: string | Number): void
+}
+
+export enum BrowserType {
+    Gecko,
+    Chrome
+}
+
 export interface tabStructData {
     mode: Mode
     rootFolder: folderData

@@ -26,6 +26,7 @@ body {
     --button-background-hover: var(--folder-arrow-color);
     --folder-arrow-color: #f98604;
     --element-hover-color: var(--context-bg-color);
+    --highlighted-bg-color: var(--folder-arrow-color);
 }
 
 .lightmode {
@@ -41,6 +42,7 @@ body {
     --button-background-hover: var(--folder-arrow-color);
     --folder-arrow-color: #f98604;
     --element-hover-color: var(--context-bg-color);
+    --highlighted-bg-color: var(--folder-arrow-color);
 }
 
 .closed {
@@ -64,10 +66,6 @@ h3 {
 
 .disabled {
     display: none;
-}
-
-#addFolderNameInputContainer {
-    margin: 2ch;
 }
 
 .noEvents {

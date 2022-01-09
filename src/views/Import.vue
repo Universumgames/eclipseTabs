@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import { Vue } from "vue-class-component"
-import { getBookmarks } from "@/scripts/firefoxHandler"
+import { getBookmarks } from "@/scripts/browserHandler"
 import { importBookmarks, importData } from "@/scripts/dataHandler/importer"
 
 export default class Import extends Vue {

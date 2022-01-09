@@ -1,5 +1,5 @@
 import { pinnedFolderID, unorderedFolderID, rootFolderID, unorderedIndex, pinnedIndex } from "./definitions"
-import { getManifest } from "../firefoxHandler"
+import { getManifest } from "../browserHandler"
 import { ColorScheme, elementData, FirefoxTab, folderData, itemData, Mode, tabStructData } from "../interfaces"
 import { generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter"
 import { recursiveSelectionSort } from "./sorting"

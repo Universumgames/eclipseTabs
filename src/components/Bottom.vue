@@ -5,7 +5,9 @@
                 id="addFolder"
                 class="bottomElement"
                 @click="addFolderClick"
+                @keyup.enter="addFolderClick"
                 title="Need order? Create a new folder, name it and move it to andy subdirectory you want"
+                tabindex="0"
             >
                 <object
                     class="bottomElementPic noEvents"
@@ -19,7 +21,9 @@
                 id="exportData"
                 class="bottomElement"
                 @click="exportClick"
+                @keyup.enter="exportClick"
                 title="You create a backup from time to time, especially before updating the addon. Click this and the corresponding json will be displayed in a new tab"
+                tabindex="0"
             >
                 <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'export.svg'" filename="export.svg" type="image/svg+xml"></object>
             </span>
@@ -28,7 +32,9 @@
                 id="importData"
                 class="bottomElement"
                 @click="importClick"
+                @keyup.enter="importClick"
                 title="Old data got deleted or you transferred your exported data from an other pc to this one? Click here to import your json data"
+                tabindex="0"
             >
                 <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'import.svg'" filename="import.svg" type="image/svg+xml"></object>
             </span>
@@ -36,8 +42,10 @@
                 id="moveElements"
                 class="bottomElement"
                 @click="moveClick"
+                @keyup.enter="moveClick"
                 ref="moveBtn"
                 title="Not happy with the order? Use this to change the view so you can properly change the order of your folders or items"
+                tabindex="0"
             >
                 <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'move.svg'" filename="move.svg" type="image/svg+xml"></object>
             </span>

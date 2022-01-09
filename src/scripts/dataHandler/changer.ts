@@ -93,7 +93,7 @@ export function moveElement(element: elementData, oldParent: folderData, newPare
     if (oldParent == undefined || element == undefined || newParent == undefined) return false
     if (oldParent == newParent || element == newParent) return false
     if ("itemID" in element && newParent.folderID == defs.rootFolderID) return false
-    console.log(element, oldParent, newParent)
+
     if (newParent.folderID == defs.pinnedFolderID || (newParent.folderID == defs.unorderedFolderID && "folderID" in element)) return false
 
     const key = getKeyByIDAndType(
@@ -101,9 +101,19 @@ export function moveElement(element: elementData, oldParent: folderData, newPare
         "itemID" in element ? false : true,
         "itemID" in element ? (element as itemData).itemID : (element as folderData).folderID
     )
-    const id = "itemID" in element ? (element as itemData).itemID : (element as folderData).folderID
-    if ("itemID" in element && getItemJSONObjectByItemID((element as itemData).itemID, newParent) != undefined) return false
-    if ("folderID" in element && getFolderJSONObjectByID((element as folderData).folderID, newParent) != undefined) return false
+    /* const id = "itemID" in element ? (element as itemData).itemID : (element as folderData).folderID
+
+    const elItem = "itemID" in element ? getItemJSONObjectByItemID(id, newParent) : undefined
+    const elFolder = "folderID" in element ? getFolderJSONObjectByID(id, newParent) : undefined
+
+    // eslint-disable-next-line no-debugger
+    debugger
+
+    // check if element is item and item is not in new folder
+    if (elItem != undefined) return false
+    // check if element is folder and folder is not in new folder
+    if (elFolder != undefined) return false */
+
     if (oldParent != undefined && newParent != undefined && element != undefined && key != undefined) {
         element.parentFolderID = newParent.folderID
         element.index = generateIndexInFolder(newParent)
@@ -111,6 +121,7 @@ export function moveElement(element: elementData, oldParent: folderData, newPare
         oldParent.elements.splice(oldParent.elements.indexOf(element), 1)
         // delete oldParent.elements[key as any]
         // oldParent.elements.length--
+        console.log(element, oldParent, newParent)
         return true
     }
     return false
@@ -202,6 +213,24 @@ export async function removeElement(element: itemData | folderData, parentFolder
         // parentFolder.elements.length--
         return true
     } else return false
+}
+
+export async function revealElement(element: elementData) {
+    const data = await getDataStructFromFirefox()
+    if (data == undefined) return
+    revealElementDirect(element, data)
+    await saveDataInFirefox(data)
+}
+
+export async function revealElementDirect(element: elementData, data: tabStructData) {
+    let currEl: elementData = element
+    while (currEl != undefined) {
+        const parentFolder = getFolderJSONObjectByID(currEl.parentFolderID, data.rootFolder)
+        if (parentFolder == undefined || parentFolder == data.rootFolder) return
+        parentFolder.open = true
+        currEl = parentFolder
+        console.log(currEl)
+    }
 }
 
 /** @deprecated

@@ -8,7 +8,7 @@ import { Vue } from "vue-class-component"
 import { createEmptyData } from "./scripts/dataHandler/adder"
 import { getDataStructFromFirefox, saveDataInFirefox } from "./scripts/dataHandler/getter"
 import { updateTabs, updateTabsOnStartUp } from "./scripts/dataHandler/updater"
-import { getManifest, getTheme, registerListener, startupHandler } from "./scripts/firefoxHandler"
+import { getManifest, getTheme, registerListener, startupHandler } from "./scripts/browserHandler"
 import { ColorScheme, FirefoxTheme, tabStructData } from "./scripts/interfaces"
 import * as tabHelper from "./scripts/tabHelper"
 
@@ -101,7 +101,7 @@ export default class App extends Vue {
 
     async save() {
         await saveDataInFirefox(JSON.parse(JSON.stringify(this.eclipseData)))
-        console.log(this.eclipseData)
+        console.log("Data: ", this.eclipseData)
     }
 
     displayHowTo() {

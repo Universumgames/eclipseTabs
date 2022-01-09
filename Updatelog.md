@@ -1,3 +1,11 @@
+Update 1.1.6:
+
+-   new features:
+    -   searching elements by name, id or url is possible
+    -   added VERY basic keyboard accessibility
+-   bugfixes:
+    -   ✅ 🕷️ elements couldn't be moved to one parent directory
+
 Update 1.1.5:
 
 -   new features:

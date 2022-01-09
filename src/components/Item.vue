@@ -1,11 +1,13 @@
 <template>
     <div
         ref="container"
-        :class="'overflow listItem element ' + (this.hidden ? 'tabHidden' : '')"
+        :class="'overflow listItem element ' + (this.hidden ? 'tabHidden' : '') + ' ' + (this.containedInSearchResult() ? 'highlighted' : '')"
         @click="this.click"
+        @keyup.enter="this.click"
         @dragstart="this.dragstart_handler"
         @dropend="this.dropend_handler"
         @dragend="this.dragend_handler"
+        tabindex="0"
     >
         <div ref="dropContainer" :itemID="this.itemData.itemID" :index="this.itemData.index">
             <img :src="this.itemData.favIconURL" class="favicon noEvents" />
@@ -35,7 +37,8 @@ import { Options, Vue } from "vue-class-component"
         targetElement: Object,
         contextData: Object,
         tier: Number,
-        allreload: Function
+        allreload: Function,
+        searchResults: Array
     }
 })
 export default class Item extends Vue {
@@ -47,6 +50,7 @@ export default class Item extends Vue {
     contextData!: ContextMenuData
     tier: number = 0
     allreload!: Function
+    searchResults!: elementData[]
 
     container!: HTMLElement
     dropContainer!: HTMLElement
@@ -98,8 +102,21 @@ export default class Item extends Vue {
         return this.itemData.hidden
     }
 
+    containedInSearchResult(): boolean {
+        for (const element of this.searchResults) {
+            if ("itemID" in element && (element as itemData).itemID == this.itemData.itemID) return true
+        }
+        return false
+    }
+
     async click(e: any) {
-        if (e.explicitOriginalTarget != this.dropContainer && e.originalTarget != this.dropContainer) return
+        if (
+            e.explicitOriginalTarget != this.dropContainer &&
+            e.originalTarget != this.dropContainer &&
+            e.explicitOriginalTarget != this.container &&
+            e.originalTarget != this.container
+        )
+            return
         var tabElement = e.originalTarget as HTMLHtmlElement
         var tabID = this.itemData.tabID
         const tabList = await tabHelper.getTabs()

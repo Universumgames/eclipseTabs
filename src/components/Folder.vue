@@ -1,6 +1,14 @@
 <template>
     <div ref="container">
-        <div ref="dropContainer" :folderID="folderData.folderID" :index="folderData.index" class="element">
+        <div
+            ref="dropContainer"
+            :folderID="folderData.folderID"
+            :index="folderData.index"
+            :class="'element' + ' ' + (this.containedInSearchResult() ? 'highlighted' : '')"
+            tabindex="0"
+            @click="this.folderClick"
+            @keyup.enter="this.folderClick"
+        >
             <!--Dropdown icon-->
             <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -32,6 +40,7 @@
                     :htmlTarget="this.htmlTarget"
                     :targetElement="this.targetElement"
                     :contextData="this.contextData"
+                    :searchResults="this.searchResults"
                     v-on:save="this.save"
                     v-on:targetElementChange="this.targetElementChangePassOn"
                     v-on:renameEnd="this.renameEnd"
@@ -47,6 +56,7 @@
                     :htmlTarget="this.htmlTarget"
                     :targetElement="this.targetElement"
                     :contextData="this.contextData"
+                    :searchResults="this.searchResults"
                     v-on:save="save"
                     v-on:targetElementChange="this.targetElementChangePassOn"
                     v-on:move="this.movePassOn"
@@ -89,7 +99,8 @@ import { getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
         targetElement: Object,
         contextData: Object,
         tier: Number,
-        allreload: Function
+        allreload: Function,
+        searchResults: Array
     }
 })
 export default class Folder extends Vue {
@@ -101,6 +112,7 @@ export default class Folder extends Vue {
     contextData!: ContextMenuData
     tier: number = 0
     allreload!: Function
+    searchResults!: elementData[]
 
     icon!: HTMLElement
     renameInput!: HTMLElement
@@ -131,8 +143,6 @@ export default class Folder extends Vue {
             this.dropContainer.addEventListener("dragenter", this.dragenter_handler)
             this.dropContainer.addEventListener("dragleave", this.dragleave_handler)
         }
-        //on click
-        this.dropContainer.onclick = this.folderClick
 
         this.dropContainer.setAttribute("folderID", this.folderData.folderID)
 
@@ -185,6 +195,13 @@ export default class Folder extends Vue {
 
     get modeMove() {
         return this.eclipseData.mode == Mode.Move
+    }
+
+    containedInSearchResult(): boolean {
+        for (const element of this.searchResults) {
+            if ("folderID" in element && (element as folderData).folderID == this.folderData.folderID) return true
+        }
+        return false
     }
 
     sendTargetElementChange() {

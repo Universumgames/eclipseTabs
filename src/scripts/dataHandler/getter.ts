@@ -1,5 +1,5 @@
 import { elementData, FirefoxTab, folderData, folderIDType, itemData, itemIDType, tabIDType, tabStructData } from "../interfaces"
-import * as firefoxHandler from "../firefoxHandler"
+import * as browserHandler from "../browserHandler"
 
 //#region getter
 export function getItemJSONObjectByItemID(itemID: itemIDType, data: folderData): itemData | undefined {
@@ -83,6 +83,23 @@ export function getKeyByIDAndType(elements: Array<elementData>, isFolder: Boolea
     return undefined
 }
 
+export function search(query: string, folder: folderData): elementData[] {
+    let results: elementData[] = []
+    const queryLow = query.toLowerCase()
+    for (const element of folder.elements) {
+        if ("itemID" in element) {
+            const item = element as itemData
+            if (item.itemID.includes(queryLow) || item.title.toLowerCase().includes(queryLow) || item.url.toLowerCase().includes(queryLow))
+                results.push(item)
+        } else if ("folderID" in element) {
+            const folder = element as folderData
+            if (folder.folderID.includes(queryLow) || folder.name.toLowerCase().includes(queryLow)) results.push(folder)
+            results = [...results, ...search(query, folder)]
+        }
+    }
+    return results
+}
+
 export function getItemJSONObjectByUrl(elements: Array<elementData>, url: string): itemData | undefined {
     return getItemJSONObjectByURLRecursion(elements, url)
 }
@@ -122,11 +139,11 @@ export function getFoldersInFolder(folder: folderData): Array<folderData> {
 
 export function saveDataInFirefox(eclipseData: tabStructData | undefined) {
     if (eclipseData == undefined) return false
-    return firefoxHandler.localStorageSet({ eclipseData })
+    return browserHandler.localStorageSet({ eclipseData })
 }
 
 async function getFirefoxStructFromFirefox() {
-    return firefoxHandler.localStorageGetTabStructData("eclipseData")
+    return browserHandler.localStorageGetTabStructData("eclipseData")
 }
 
 export async function getDataStructFromFirefox(): Promise<tabStructData | undefined> {
@@ -135,11 +152,11 @@ export async function getDataStructFromFirefox(): Promise<tabStructData | undefi
 //#endregion
 
 export async function getActiveTab() {
-    return (await firefoxHandler.tabQuery({ currentWindow: true, active: true }))[0]
+    return (await browserHandler.tabQuery({ currentWindow: true, active: true }))[0]
 }
 
 export function getCurrentWindowTabs() {
-    return firefoxHandler.tabQuery({ currentWindow: true })
+    return browserHandler.tabQuery({ currentWindow: true })
 }
 
 //#region genertators

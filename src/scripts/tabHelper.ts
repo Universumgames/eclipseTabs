@@ -1,55 +1,28 @@
-import * as firefoxHandler from "./firefoxHandler"
+import { getCurrentBrowser } from "./browserHandler"
 import { FirefoxTab } from "./interfaces"
 
 export async function hideTab(id: string | Number): Promise<Boolean> {
-    if (id != undefined) {
-        if ((await getCurrentTab()).id == id) return false
-        // console.log(`hide ${id}`)
-        //@ts-ignore
-        await browser.tabs.hide(+id)
-        return true
-    }
-    return false
+    return getCurrentBrowser().hideTab(id)
 }
 
 export async function showTab(id: string | Number): Promise<Boolean> {
-    if (id != undefined) {
-        // console.log(`show ${id}`)
-        //@ts-ignore
-        await browser.tabs.show(+id)
-        return true
-    }
-    return false
+    return getCurrentBrowser().showTab(id)
 }
 
 export async function pinTab(id: string | Number): Promise<Boolean> {
-    if (id != undefined) {
-        //@ts-ignore
-        await browser.tabs.update(id, { pinned: true })
-        return true
-    }
-    return false
+    return getCurrentBrowser().pinTab(id)
 }
 
 export async function unpinTab(id: string | Number): Promise<Boolean> {
-    if (id != undefined) {
-        //@ts-ignore
-        await browser.tabs.update(id, { pinned: false })
-        return true
-    }
-    return false
+    return getCurrentBrowser().unpinTab(id)
 }
 
 export function focusTab(id: string | Number): void {
-    //@ts-ignore
-    browser.tabs.update(+id, { active: true })
+    getCurrentBrowser().focusTab(id)
 }
 
 export async function createTab(url: string): Promise<FirefoxTab> {
-    //@ts-ignore
-    return browser.tabs.create({
-        url: `${url}`
-    })
+    return getCurrentBrowser().createTab(url)
 }
 
 export async function createTabIfNotExist(url: string): Promise<FirefoxTab> {
@@ -80,16 +53,15 @@ export function getTabByTabIDSync(tabID: string, tabs: Array<FirefoxTab>): any {
 }
 
 export async function getTabs(): Promise<Array<FirefoxTab>> {
-    return await firefoxHandler.tabQuery({})
+    return getCurrentBrowser().getTabs()
 }
 
 export async function getCurrentTab(): Promise<FirefoxTab> {
-    return (await firefoxHandler.tabQuery({ active: true }))[0]
+    return getCurrentBrowser().getCurrentTab()
 }
 
 export async function closeTab(id: string | Number) {
-    //@ts-ignore
-    return browser.tabs.remove(id as number)
+    return getCurrentBrowser().closeTab(id)
 }
 
 export async function getTabByURL(url: string): Promise<FirefoxTab | undefined> {

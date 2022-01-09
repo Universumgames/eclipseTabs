@@ -7,6 +7,7 @@
                     Collapse All
                 </div>
                 <div class="contextElement" id="contextMenu_generic_expandAll" @click="this.contextMenu_generic_expandAll_handler">Expand All</div>
+                <div class="contextElement" id="contextMenu_generic_search" @click="this.contextMenu_generic_search_handler">Search</div>
             </div>
             <div ref="contextMenu_folder" id="contextMenu_folder" class="disabled">
                 <div class="contextElement" id="contextMenu_folder_rename" @click="this.contextMenu_folder_rename_handler">Rename Folder</div>
@@ -48,7 +49,8 @@ import { pinnedFolderID, unorderedFolderID } from "@/scripts/dataHandler/definit
         collapseAll: Object,
         expandAll: Object,
         contextMenuTargetChange: Object,
-        contextDataChange: Object
+        contextDataChange: Object,
+        search: null
     }
 })
 export default class ContextMenu extends Vue {
@@ -119,6 +121,10 @@ export default class ContextMenu extends Vue {
 
     async contextMenu_generic_expandAll_handler() {
         this.$emit("expandAll")
+    }
+
+    async contextMenu_generic_search_handler() {
+        this.$emit("search")
     }
 
     async contextMenu_folder_rename_handler() {
