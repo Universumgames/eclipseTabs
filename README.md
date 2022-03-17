@@ -1,4 +1,4 @@
-# eclipseTab
+# eclipseTabs
 
 This is browser extension for firefox (in the future more browsers will be supported).
 The extension is designed to organize your hundreds of tabs into folders and sub-folders. Using it with Firefox you are even capable of hiding tabs from your normal tab view. If all current and future features will be available with other browsers cannot be guaranteed.
@@ -6,9 +6,9 @@ The extension is designed to organize your hundreds of tabs into folders and sub
 This repository is the beta for the newest version of the addon. Final releases will be published on the Firefox Addon Store as well in form of tags in this repository.
 <br/>
 
-An [HowTo](/howTo.md) is also avialable in [`/howTo.md`](/howTo.md).
+A [HowTo](/howTo.md) is also avialable in [`/howTo.md`](/howTo.md).
 
-[An TODO list can be found here](./TODOs.md)
+[A TODO list can be found here](./TODOs.md)
 
 #### Disclaimer
 
