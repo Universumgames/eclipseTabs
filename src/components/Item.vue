@@ -9,7 +9,7 @@
         @dragend="this.dragend_handler"
         tabindex="0"
     >
-        <div ref="dropContainer" :itemID="this.itemData.itemID" :index="this.itemData.index">
+        <div ref="dropContainer" :itemID="this.itemData.itemID" :index="this.itemData.index" :parentID="this.itemData.parentFolderID">
             <img :src="this.itemData.favIconURL" class="favicon noEvents" />
             <div class="noEvents name">{{ this.itemData.title }}</div>
         </div>

@@ -3,6 +3,7 @@
         <div
             ref="dropContainer"
             :folderID="folderData.folderID"
+            :parentID="folderData.parentFolderID"
             :index="folderData.index"
             :class="'element' + ' ' + (this.containedInSearchResult() ? 'highlighted' : '')"
             tabindex="0"

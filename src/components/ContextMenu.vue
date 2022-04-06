@@ -1,5 +1,5 @@
 <template>
-    <div ref="contextMenu" id="contextMenu" class="disabled">
+    <div ref="contextMenu" id="contextMenu" v-show="this.showContextMenu">
         <div class="noEvents" id="contextTitle">eclipseTabMenu</div>
         <div id="contextMenuList">
             <div id="contextMenu_generic">
@@ -8,8 +8,9 @@
                 </div>
                 <div class="contextElement" id="contextMenu_generic_expandAll" @click="this.contextMenu_generic_expandAll_handler">Expand All</div>
                 <div class="contextElement" id="contextMenu_generic_search" @click="this.contextMenu_generic_search_handler">Search</div>
+                <div class="contextElement" @click="this.reportBug">Submit a bug</div>
             </div>
-            <div ref="contextMenu_folder" id="contextMenu_folder" class="disabled">
+            <div ref="contextMenu_folder" id="contextMenu_folder" v-show="this.targetIsFolder">
                 <div class="contextElement" id="contextMenu_folder_rename" @click="this.contextMenu_folder_rename_handler">Rename Folder</div>
                 <div class="contextElement" id="contextMenu_folder_delete" @click="this.contextMenu_folder_delete_handler">Delete Folder</div>
                 <div class="contextElement" id="contextMenu_folder_toggle" @click="this.contextMenu_folder_toggle_handler">
@@ -19,7 +20,7 @@
                     Open/Close Folder and Subfolders
                 </div>
             </div>
-            <div ref="contextMenu_item" id="contextMenu_item" class="disabled">
+            <div ref="contextMenu_item" id="contextMenu_item" v-show="this.targetIsItem">
                 <div class="contextElement" id="contextMenu_item_rename" @click="this.contextMenu_item_rename_handler">Rename item</div>
                 <div class="contextElement" id="contextMenu_item_delete" @click="this.contextMenu_item_delete_handler">Delete item</div>
                 <div
@@ -39,6 +40,8 @@
 import { Options, Vue } from "vue-class-component"
 import { ContextAction, ContextMenuData, tabStructData } from "@/scripts/interfaces"
 import { pinnedFolderID, unorderedFolderID } from "@/scripts/dataHandler/definitions"
+import { getManifest } from "@/scripts/browserHandler"
+import { createTab } from "@/scripts/tabHelper"
 
 @Options({
     components: {},
@@ -57,19 +60,18 @@ export default class ContextMenu extends Vue {
     eclipseData!: tabStructData
 
     contextMenu!: HTMLElement
-    contextMenu_item!: HTMLElement
-    contextMenu_folder!: HTMLElement
 
     menuData!: ContextMenu
 
     target!: HTMLElement
     targetID: string | undefined | null
     targetIsFolder: boolean = false
+    targetIsItem: boolean = false
+
+    showContextMenu: boolean = false
 
     mounted() {
         this.contextMenu = this.$refs.contextMenu as HTMLElement
-        this.contextMenu_item = this.$refs.contextMenu_item as HTMLElement
-        this.contextMenu_folder = this.$refs.contextMenu_folder as HTMLElement
 
         document.oncontextmenu = this.contextMenu_handler
         document.onclick = this.contextMenuClose_handler
@@ -82,26 +84,24 @@ export default class ContextMenu extends Vue {
         this.contextMenu.style.left = event.clientX + "px"
         this.contextMenu.style.top = event.clientY + "px"
 
-        this.contextMenu.classList.remove("disabled")
-        this.contextMenu_folder.classList.add("disabled")
-        this.contextMenu_item.classList.add("disabled")
+        this.showContextMenu = true
 
         if (
             target.getAttribute("folderID") != undefined &&
             target.getAttribute("folderID") != pinnedFolderID &&
             target.getAttribute("folderID") != unorderedFolderID
         ) {
-            this.contextMenu_folder.classList.remove("disabled")
             this.targetID = target.getAttribute("folderID")
             this.targetIsFolder = true
+            this.targetIsItem = false
         } else if (
             target.getAttribute("itemID") != undefined &&
             target.getAttribute("parentID") != pinnedFolderID &&
             target.getAttribute("parentID") != unorderedFolderID
         ) {
-            this.contextMenu_item.classList.remove("disabled")
             this.targetID = target.getAttribute("itemID")
             this.targetIsFolder = false
+            this.targetIsItem = true
         }
 
         this.target = target
@@ -110,9 +110,9 @@ export default class ContextMenu extends Vue {
     }
 
     async contextMenuClose_handler() {
-        this.contextMenu.classList.add("disabled")
-        this.contextMenu_folder.classList.add("disabled")
-        this.contextMenu_item.classList.add("disabled")
+        this.showContextMenu = false
+        this.targetIsFolder = false
+        this.targetIsItem = false
     }
 
     async contextMenu_generic_collapseAll_handler() {
@@ -185,6 +185,14 @@ export default class ContextMenu extends Vue {
 
     menuDataChangeEmit(data: ContextMenuData) {
         this.$emit("contextDataChange", data)
+    }
+
+    reportBug() {
+        createTab("https://universegame.de/bug/?app=eclipseTabs&v=" + this.extensionVersion)
+    }
+
+    get extensionVersion() {
+        return getManifest().version
     }
 }
 </script>

@@ -1,3 +1,7 @@
+Update 1.1.7:
+- bugfixes
+- add easy Bugreport access
+
 Update 1.1.6:
 
 -   new features:
