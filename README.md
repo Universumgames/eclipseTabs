@@ -18,7 +18,7 @@ A [HowTo](/howTo.md) is also avialable in [`/howTo.md`](/howTo.md).
 
 ## Installation
 
-The extension was just published on the Mozilla Extension store -or whatever you want to call it- and is now available for download. To download the extension (you have to use Firefox), go to the [addon page](https://addons.mozilla.org/en-US/firefox/addon/eclipsetabs), click on "add to Firefox", grant the extension the requested permissions and you're ready to go.
+The extension has been published on the Mozilla Extension store -or whatever you want to call it- and is available for download. To download the extension (you have to use Firefox), go to the [addon page](https://addons.mozilla.org/firefox/addon/eclipsetabs), click on "Add to Firefox", grant the extension the requested permissions and you're ready to go.
 
 ### Old-Installation (without the Mozilla Extension/Addon store)
 
@@ -28,8 +28,8 @@ To create a zip containing all relevant files, you can either compile them yours
 
 #### Manual zipping
 
-<small>The only way to install this extension at the moment is either to zip all important files into one folder called `"eclipseTab.zip"`. Within the folder should be the `compiled`(see Compilation) directory where all Javascript files are located, the `manifest.json` as well as the `icons` directory. </small>
+<small>The only way to install this extension at the moment is either to zip all important files into one folder called `"eclipseTab.zip"`. Within the folder should be the `compiled`(see Compilation) directory where all JavaScript files are located, the `manifest.json` as well as the `icons` directory. </small>
 
 #### Compilation
 
-If you want to compile the project yourself, just go to the root directory of the project and, if you have it installed, just run the command `tsc` in the command-line. The transpiled javascript files will be inside the `compiled` folder.
+If you want to compile the project yourself, just go to the root directory of the project and, if you have it installed, just run the command `tsc` in the command-line. The transpiled JavaScript files will be inside the `compiled` folder.
