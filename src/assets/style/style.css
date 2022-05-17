@@ -97,3 +97,7 @@ a:link,
 a:visited {
     color: white;
 }
+
+noscript {
+    color: black !important;
+}

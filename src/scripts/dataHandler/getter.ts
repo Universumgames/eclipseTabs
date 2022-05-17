@@ -159,7 +159,7 @@ export function getCurrentWindowTabs() {
     return browserHandler.tabQuery({ currentWindow: true })
 }
 
-//#region genertators
+//#region generators
 export async function generateFolderID(): Promise<Number | String> {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return -1
@@ -201,4 +201,13 @@ export function getNumberOfItemsAlreadyExisting(folderContainer: any) {
         if (item.folder) number += getNumberOfFoldersAlreadyExisting(item.elements)
     }
     return number
+}
+
+export function getNumberOfOpenedTabs(folder: folderData): number {
+    let count = 0
+    for (const element of folder.elements) {
+        if ("itemID" in element && (element as itemData).tabID != "-1") count++
+        else if ("folderID" in element) count += getNumberOfOpenedTabs(element as folderData)
+    }
+    return count
 }

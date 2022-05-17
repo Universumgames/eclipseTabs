@@ -1,6 +1,14 @@
+Update 1.1.8:
+
+-   "Create folder at location" added
+-   See URL when hovering an item
+-   See number of open/hidden tabs in a directory
+-   fixed a few accessibility issues
+
 Update 1.1.7:
-- bugfixes
-- add easy Bugreport access
+
+-   bugfixes
+-   add easy Bugreport access
 
 Update 1.1.6:
 

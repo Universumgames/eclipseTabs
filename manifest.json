@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "eclipseTab",
-    "version": "1.1.7",
+    "version": "1.1.8",
     "developer": {
         "name": "UniversumGames",
         "url": "https://universegame.de/"
@@ -15,7 +15,9 @@
     "homepage_url": "https://universegame.de",
     "description": "Simple bookmark tool to easily open and manage tabs",
     "icons": {
-        "48": "dist/icons/eclipse_48.png"
+        "48": "dist/icons/eclipse_48.png",
+        "126": "dist/icons/eclipse_126.png",
+        "96": "dist/icons/eclipse.svg"
     },
     "permissions": ["storage", "tabs", "tabHide", "contextMenus", "bookmarks"],
     "sidebar_action": {

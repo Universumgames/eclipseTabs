@@ -5,20 +5,23 @@
             :folderID="folderData.folderID"
             :parentID="folderData.parentFolderID"
             :index="folderData.index"
-            :class="'element' + ' ' + (this.containedInSearchResult() ? 'highlighted' : '')"
+            :class="'element' + ' ' + (containedInSearchResult() ? 'highlighted' : '')"
             tabindex="0"
-            @click="this.folderClick"
-            @keyup.enter="this.folderClick"
+            @click="folderClick"
+            @keyup.enter="folderClick"
         >
             <!--Dropdown icon-->
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 version="1.1"
                 viewBox="0 0 8 14"
-                :class="'arrow noEvents ' + (!this.folderData.open ? '' : 'rotated')"
-                :id="this.folderData.folderID + '_image'"
+                :class="'arrow noEvents ' + (!folderData.open ? '' : 'rotated')"
+                :id="folderData.folderID + '_image'"
                 ref="icon"
                 preserveAspectRatio="none"
+                alt="arrow indicating open/closed state"
+                role="img"
+                aria-label="arrow indicating open/close state of folder"
             >
                 <path
                     style="fill:none;stroke:#f98604;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -26,58 +29,60 @@
                 />
             </svg>
             <!--Text node-->
-            <div class="noEvents name">{{ this.folderData.name }}</div>
+            <div class="noEvents name">
+                {{ folderData.name }} <small>({{ getter_getNumberOfOpenedTabs(folderData) }})</small>
+            </div>
         </div>
         <!--Child container-->
-        <div v-show="this.folderData.open" v-if="this.folderData.elements.length > 0">
-            <div v-for="element in this.folderData.elements" :key="element.index">
+        <div v-show="folderData.open" v-if="folderData.elements.length > 0">
+            <div v-for="element in folderData.elements" :key="element.index">
                 <Item
                     v-if="'itemID' in element"
-                    :eclipseData="this.eclipseData"
+                    :eclipseData="eclipseData"
                     :itemData="element"
-                    :tier="this.tier + 1"
-                    :allreload="this.allreload"
-                    :parentFolder="this.folderData"
-                    :htmlTarget="this.htmlTarget"
-                    :targetElement="this.targetElement"
-                    :contextData="this.contextData"
-                    :searchResults="this.searchResults"
-                    v-on:save="this.save"
-                    v-on:targetElementChange="this.targetElementChangePassOn"
-                    v-on:renameEnd="this.renameEnd"
-                    v-on:dragend="this.$emit('dragend', undefined)"
+                    :tier="tier + 1"
+                    :allreload="allreload"
+                    :parentFolder="folderData"
+                    :htmlTarget="htmlTarget"
+                    :targetElement="targetElement"
+                    :contextData="contextData"
+                    :searchResults="searchResults"
+                    v-on:save="save"
+                    v-on:targetElementChange="targetElementChangePassOn"
+                    v-on:renameEnd="renameEnd"
+                    v-on:dragend="$emit('dragend', undefined)"
                 ></Item>
                 <Folder
                     v-if="'folderID' in element"
-                    :eclipseData="this.eclipseData"
+                    :eclipseData="eclipseData"
                     :folderData="element"
-                    :tier="this.tier + 1"
-                    :allreload="this.allreload"
-                    :parentFolder="this.folderData"
-                    :htmlTarget="this.htmlTarget"
-                    :targetElement="this.targetElement"
-                    :contextData="this.contextData"
-                    :searchResults="this.searchResults"
+                    :tier="tier + 1"
+                    :allreload="allreload"
+                    :parentFolder="folderData"
+                    :htmlTarget="htmlTarget"
+                    :targetElement="targetElement"
+                    :contextData="contextData"
+                    :searchResults="searchResults"
                     v-on:save="save"
-                    v-on:targetElementChange="this.targetElementChangePassOn"
-                    v-on:move="this.movePassOn"
-                    v-on:renameEnd="this.renameEnd"
-                    v-on:dragend="this.$emit('dragend', undefined)"
+                    v-on:targetElementChange="targetElementChangePassOn"
+                    v-on:move="movePassOn"
+                    v-on:renameEnd="renameEnd"
+                    v-on:dragend="$emit('dragend', undefined)"
                 ></Folder>
             </div>
         </div>
         <!--renaming functionality-->
         <input
-            v-show="this.isRenameable"
+            v-show="isRenameable"
             ref="renameInput"
             type="text"
-            :placeholder="this.folderData.name"
-            :class="(this.rename ? '' : 'disabled') + ' folder'"
-            @keyup="this.renameSubmit"
+            :placeholder="folderData.name"
+            :class="(rename ? '' : 'disabled') + ' folder'"
+            @keyup="renameSubmit"
         />
         <!--Inbetween-->
-        <div v-show="this.modeMove" isInbetween="true" @drop="this.inbetweenDrop" ref="inbetween">
-            <small class="noEvents">Insert Below {{ this.folderData.name }}</small>
+        <div v-show="modeMove" isInbetween="true" @drop="inbetweenDrop" ref="inbetween">
+            <small class="noEvents">Insert Below {{ folderData.name }}</small>
         </div>
     </div>
 </template>
@@ -88,7 +93,7 @@ import Item from "@/components/Item.vue"
 import { ContextAction, ContextMenuData, elementData, folderData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as defs from "@/scripts/dataHandler/definitions"
 import { moveElement } from "@/scripts/dataHandler/changer"
-import { getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
+import { getFolderJSONObjectByID, getNumberOfOpenedTabs } from "@/scripts/dataHandler/getter"
 
 @Options({
     components: { Item },
@@ -287,6 +292,10 @@ export default class Folder extends Vue {
         this.targetElement.index = +this.folderData.index + 1
         this.save()
         this.allreload()
+    }
+
+    getter_getNumberOfOpenedTabs(folder: folderData) {
+        return getNumberOfOpenedTabs(folder)
     }
 }
 </script>

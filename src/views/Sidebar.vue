@@ -4,68 +4,69 @@
         <div id="container">
             <div id="list" ref="list" class="scroller">
                 <Folder
-                    v-for="folder in this.shortenList"
-                    :key="folder.folderID"
-                    :eclipseData="this.eclipseData"
+                    v-for="folder in shortenList"
+                    v-bind:key="folder.folderID"
+                    :eclipseData="eclipseData"
                     :folderData="folder"
                     :tier="0"
-                    :allreload="this.allreload"
-                    :parentFolder="this.eclipseData.rootFolder"
-                    :htmlTarget="this.htmlTarget"
-                    :targetElement="this.targetElement"
-                    :contextData="this.contextData"
-                    :searchResults="this.searchResults"
+                    :allreload="allreload"
+                    :parentFolder="eclipseData.rootFolder"
+                    :htmlTarget="htmlTarget"
+                    :targetElement="targetElement"
+                    :contextData="contextData"
+                    :searchResults="searchResults"
                     v-on:save="save"
-                    v-on:targetElementChange="this.targetElementChange"
-                    v-on:move="this.elementMove"
-                    v-on:renameEnd="this.renameEnd"
-                    v-on:dragend="this.currentlyDragging = false"
+                    v-on:targetElementChange="targetElementChange"
+                    v-on:move="elementMove"
+                    v-on:renameEnd="renameEnd"
+                    v-on:dragend="currentlyDragging = false"
                 />
 
                 <!--add folder name input-->
                 <div id="addFolderNameInputContainer" class="disabled">
-                    <input type="text" ref="addFolderNameInput" placeholder="foldername" @keyup="this.addFolderSubmit" />
+                    <p>{{ folderCreateNote }}</p>
+                    <input type="text" ref="addFolderNameInput" placeholder="foldername" @keyup="addFolderSubmit" />
                 </div>
-                <div v-show="this.currentlyDragging" ref="root_dropoff" id="root_dropoff">
+                <div v-show="currentlyDragging" ref="root_dropoff" id="root_dropoff">
                     <span>Dropoff spot for moving to root level</span>
                 </div>
-                <div id="searchInput" v-show="this.currentlySearching">
+                <div id="searchInput" v-show="currentlySearching">
                     <input
                         type="text"
-                        v-model="this.queryString"
-                        @keyup="this.onQueryUpdate"
+                        v-model="queryString"
+                        @keyup="onQueryUpdate"
                         placeholder="search query"
                         ref="searchInputElement"
                         style="display:inline"
                     />
-                    <p style="margin: 1ch">Found {{ this.searchResults.length }} matching elements</p>
-                    <button style="margin-top: 1ch" @click="this.revealFoundElements">Reveal all found elements</button>
-                    <button style="margin-top: 1ch" @click="this.currentlySearching = false">Close search</button>
+                    <p style="margin: 1ch">Found {{ searchResults.length }} matching elements</p>
+                    <button style="margin-top: 1ch" @click="revealFoundElements">Reveal all found elements</button>
+                    <button style="margin-top: 1ch" @click="currentlySearching = false">Close search</button>
                 </div>
             </div>
 
             <!--Bottom Menu-->
             <BottomMenu
-                :eclipseData="this.eclipseData"
-                :targetElement="this.targetElement"
-                :targetElementParent="this.targetElementParent"
-                :allreload="this.allreload"
-                :deleteVisible="this.currentlyDragging"
-                v-on:folderClick="this.addFolderClick"
-                v-on:binDrop="this.binDrop"
-                v-on:clearStructClick="this.clearStructClick"
-                v-on:moveClick="this.moveClick"
+                :eclipseData="eclipseData"
+                :targetElement="targetElement"
+                :targetElementParent="targetElementParent"
+                :allreload="allreload"
+                :deleteVisible="currentlyDragging"
+                v-on:folderClick="addFolderClick"
+                v-on:binDrop="binDrop"
+                v-on:clearStructClick="clearStructClick"
+                v-on:moveClick="moveClick"
             />
         </div>
 
         <!--Context menu-->
         <context-menu
-            :eclipseData="this.eclipseData"
-            v-on:collapseAll="this.collapseAllClick"
-            v-on:expandAll="this.expandAll"
-            v-on:contextDataChange="this.contextDataChange"
-            v-on:contextMenuTargetChange="this.contextMenuTargetChange"
-            v-on:search="this.contextSearchBegin"
+            :eclipseData="eclipseData"
+            v-on:collapseAll="collapseAllClick"
+            v-on:expandAll="expandAll"
+            v-on:contextDataChange="contextDataChange"
+            v-on:contextMenuTargetChange="contextMenuTargetChange"
+            v-on:search="contextSearchBegin"
         />
     </div>
 </template>
@@ -106,6 +107,8 @@ export default class Sidebar extends Vue {
     targetElementParent: folderData = this.eclipseData.rootFolder
     contextData = reactive<ContextMenuData>({ targetElementID: "", targetIsFolder: false, actionPerformed: ContextAction.rename })
 
+    folderCreateNote = "Create new Folder"
+
     currentlyDragging: Boolean = false
     currentlySearching: Boolean = false
     searchInputElement!: HTMLInputElement
@@ -138,6 +141,7 @@ export default class Sidebar extends Vue {
 
     //#region bottom menu events
     addFolderClick() {
+        this.folderCreateNote = "Create new Folder"
         this.folderAddInput.parentElement!.classList.toggle("disabled")
         this.folderAddInput.focus()
     }
@@ -210,16 +214,21 @@ export default class Sidebar extends Vue {
             toggleExpandCascade(element as folderData)
             this.save()
         }
+
+        if (data.actionPerformed == ContextAction.createAtLocation && data.targetIsFolder) {
+            this.addFolderClick()
+            this.folderCreateNote = "Create new Folder at " + getFolderJSONObjectByID(data.targetElementID, this.eclipseData.rootFolder)?.name
+        }
         console.log(data)
     }
 
     //#endregion
 
     get shortenList() {
-        let arr = new Array<elementData>()
+        let arr = new Array<folderData>()
         for (let key in this.eclipseData.rootFolder.elements) {
             const element = this.eclipseData.rootFolder.elements[key]
-            if (element != undefined && element != null && "folderID" in element) arr.push(element)
+            if (element != undefined && element != null && "folderID" in element) arr.push(element as folderData)
         }
         return arr
     }
@@ -244,7 +253,14 @@ export default class Sidebar extends Vue {
             var value = this.folderAddInput.value
             this.folderAddInput.value = ""
             this.folderAddInput.parentElement!.classList.toggle("disabled")
-            if (value != "") addFolderDirect(this.eclipseData.rootFolder, (await generateFolderID()).toString(), value)
+
+            if (value == "") return
+            if (this.contextData != undefined && this.contextData.actionPerformed == ContextAction.createAtLocation) {
+                const parentFolder = getFolderJSONObjectByID(this.contextData.targetElementID, this.eclipseData.rootFolder)
+                if (parentFolder == undefined) return
+                addFolderDirect(parentFolder, (await generateFolderID()).toString(), value)
+                this.contextData.actionPerformed = ContextAction.none
+            } else addFolderDirect(this.eclipseData.rootFolder, (await generateFolderID()).toString(), value)
             this.save()
         }
         if (event.keyCode == KeyCode.escape) {

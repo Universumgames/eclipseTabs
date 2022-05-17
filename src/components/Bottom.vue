@@ -14,7 +14,9 @@
                     :data="coloredSVGPath + 'addFolder.svg'"
                     filename="addFolder.svg"
                     type="image/svg+xml"
-                ></object>
+                    aria-label="Create new folder"
+                    >Create new folder</object
+                >
             </span>
 
             <span
@@ -25,7 +27,14 @@
                 title="You create a backup from time to time, especially before updating the addon. Click this and the corresponding json will be displayed in a new tab"
                 tabindex="0"
             >
-                <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'export.svg'" filename="export.svg" type="image/svg+xml"></object>
+                <object
+                    class="bottomElementPic noEvents"
+                    :data="coloredSVGPath + 'export.svg'"
+                    filename="export.svg"
+                    type="image/svg+xml"
+                    aria-label="export svg data"
+                    >Export SVG data</object
+                >
             </span>
 
             <span
@@ -36,7 +45,14 @@
                 title="Old data got deleted or you transferred your exported data from an other pc to this one? Click here to import your json data"
                 tabindex="0"
             >
-                <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'import.svg'" filename="import.svg" type="image/svg+xml"></object>
+                <object
+                    class="bottomElementPic noEvents"
+                    :data="coloredSVGPath + 'import.svg'"
+                    filename="import.svg"
+                    type="image/svg+xml"
+                    aria-label="Import SVG data"
+                    >Import SVG Data</object
+                >
             </span>
             <span
                 id="moveElements"
@@ -47,22 +63,36 @@
                 title="Not happy with the order? Use this to change the view so you can properly change the order of your folders or items"
                 tabindex="0"
             >
-                <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'move.svg'" filename="move.svg" type="image/svg+xml"></object>
+                <object
+                    class="bottomElementPic noEvents"
+                    :data="coloredSVGPath + 'move.svg'"
+                    filename="move.svg"
+                    type="image/svg+xml"
+                    aria-label="Toggle Moving element view"
+                    >Toggle moving element view</object
+                >
             </span>
             <span
-                v-show="this.deleteVisible"
+                v-show="deleteVisible"
                 ref="delete"
                 class="bottomElement bin"
-                @drop="this.binDrop"
+                @drop="binDrop"
                 title="Just drag stuff over here to erase it from existence"
             >
                 <span>Garbage Bin </span>
-                <object class="bottomElementPic noEvents" :data="coloredSVGPath + 'bin.svg'" filename="bin.svg" type="image/svg+xml"></object>
+                <object
+                    class="bottomElementPic noEvents"
+                    :data="coloredSVGPath + 'bin.svg'"
+                    filename="bin.svg"
+                    type="image/svg+xml"
+                    aria-label="Move current Object to trash"
+                    >Delete current selected element</object
+                >
             </span>
         </div>
         <br />
         <!--Debug elements-->
-        <div v-show="this.eclipseData.devMode" id="debugElements">
+        <div v-show="eclipseData.devMode" id="debugElements">
             <button @click="clearStruct">
                 <span title="You * up your data struct? Just reset it to default values to test and try again">Clear Data Struct</span></button
             ><br />

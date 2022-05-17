@@ -149,10 +149,12 @@ export interface FirefoxTab {
 }
 
 export enum ContextAction {
+    none,
     rename,
     delete,
     toggle,
-    cascadeToggle
+    cascadeToggle,
+    createAtLocation
 }
 
 export interface ContextMenuData {

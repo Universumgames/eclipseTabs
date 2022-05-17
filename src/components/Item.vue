@@ -1,21 +1,22 @@
 <template>
     <div
         ref="container"
-        :class="'overflow listItem element ' + (this.hidden ? 'tabHidden' : '') + ' ' + (this.containedInSearchResult() ? 'highlighted' : '')"
-        @click="this.click"
-        @keyup.enter="this.click"
-        @dragstart="this.dragstart_handler"
-        @dropend="this.dropend_handler"
-        @dragend="this.dragend_handler"
+        :class="'overflow listItem element ' + (hidden ? 'tabHidden' : '') + ' ' + (containedInSearchResult() ? 'highlighted' : '')"
+        @click="click"
+        @keyup.enter="click"
+        @dragstart="dragstart_handler"
+        @dropend="dropend_handler"
+        @dragend="dragend_handler"
         tabindex="0"
+        :title="itemData.url"
     >
-        <div ref="dropContainer" :itemID="this.itemData.itemID" :index="this.itemData.index" :parentID="this.itemData.parentFolderID">
-            <img :src="this.itemData.favIconURL" class="favicon noEvents" />
-            <div class="noEvents name">{{ this.itemData.title }}</div>
+        <div ref="dropContainer" :itemID="itemData.itemID" :index="itemData.index" :parentID="itemData.parentFolderID">
+            <img :src="itemData.favIconURL" class="favicon noEvents" alt="FavIcon of website" />
+            <div class="noEvents name">{{ itemData.title }}</div>
         </div>
-        <input type="text" :class="this.rename ? '' : 'disabled'" :placeholder="this.itemData.title" @keyup="this.renameSubmit" ref="renameInput" />
-        <div v-show="this.modeMove" @drop="this.inbetweenDrop" ref="inbetween">
-            <small class="noEvents">Insert Below {{ this.itemData.title }}</small>
+        <input type="text" :class="rename ? '' : 'disabled'" :placeholder="itemData.title" @keyup="renameSubmit" ref="renameInput" />
+        <div v-show="modeMove" @drop="inbetweenDrop" ref="inbetween">
+            <small class="noEvents">Insert Below {{ itemData.title }}</small>
         </div>
     </div>
 </template>
@@ -208,3 +209,9 @@ export default class Item extends Vue {
     }
 }
 </script>
+
+<style scoped>
+span {
+    margin: 0;
+}
+</style>
