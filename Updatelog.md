@@ -1,3 +1,7 @@
+Update 1.1.9:
+
+-   previous Update broke Context Menu Action for renaming an item, this Update fixes this
+
 Update 1.1.8:
 
 -   "Create folder at location" added

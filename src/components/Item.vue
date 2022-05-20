@@ -24,7 +24,7 @@
 <script lang="ts">
 import { moveElement } from "@/scripts/dataHandler/changer"
 import { getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
-import { ContextMenuData, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
+import { ContextAction, ContextMenuData, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as tabHelper from "@/scripts/tabHelper"
 import { Options, Vue } from "vue-class-component"
 
@@ -80,7 +80,7 @@ export default class Item extends Vue {
         return (
             this.contextData.targetElementID == this.itemData.itemID &&
             this.contextData.targetIsFolder == false &&
-            this.contextData.actionPerformed == 0
+            this.contextData.actionPerformed == ContextAction.rename
         )
     }
 
