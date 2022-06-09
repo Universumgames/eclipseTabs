@@ -85,11 +85,13 @@ import {
     revealElementDirect,
     toggleExpandCascade
 } from "@/scripts/dataHandler/changer"
+import { shareString } from "@/scripts/share"
 
 import BottomMenu from "@/components/Bottom.vue"
 import ContextMenu from "@/components/ContextMenu.vue"
 import Folder from "@/components/Folder.vue"
 import { reactive } from "vue"
+import { createTab } from "@/scripts/tabHelper"
 
 @Options({
     components: { BottomMenu, ContextMenu, Folder },
@@ -105,7 +107,7 @@ export default class Sidebar extends Vue {
     htmlTarget: HTMLElement = document.body
     targetElement: elementData = this.eclipseData.rootFolder
     targetElementParent: folderData = this.eclipseData.rootFolder
-    contextData = reactive<ContextMenuData>({ targetElementID: "", targetIsFolder: false, actionPerformed: ContextAction.rename })
+    contextData = reactive<ContextMenuData>({ targetElementID: "", targetIsFolder: false, actionPerformed: ContextAction.rename, unsafe: true })
 
     folderCreateNote = "Create new Folder"
 
@@ -197,6 +199,15 @@ export default class Sidebar extends Vue {
             console.warn("element not found, search based on query:", data)
             return
         }
+        console.log(data)
+
+        // allow unsafe (action on "other" and "pinned" folders)
+        if (data.actionPerformed == ContextAction.share) {
+            this.share(element)
+        }
+
+        if (data.unsafe) return
+        // do not allow unsafe
         if (data.actionPerformed == ContextAction.delete) {
             const parent = getFolderJSONObjectByID(element.parentFolderID!, this.eclipseData.rootFolder)
             if (parent == undefined) {
@@ -214,12 +225,10 @@ export default class Sidebar extends Vue {
             toggleExpandCascade(element as folderData)
             this.save()
         }
-
         if (data.actionPerformed == ContextAction.createAtLocation && data.targetIsFolder) {
             this.addFolderClick()
             this.folderCreateNote = "Create new Folder at " + getFolderJSONObjectByID(data.targetElementID, this.eclipseData.rootFolder)?.name
         }
-        console.log(data)
     }
 
     //#endregion
@@ -238,7 +247,7 @@ export default class Sidebar extends Vue {
     }
 
     renameEnd() {
-        this.contextData = { targetElementID: "", targetIsFolder: false, actionPerformed: ContextAction.rename }
+        this.contextData = { targetElementID: "", targetIsFolder: false, actionPerformed: ContextAction.rename, unsafe: true }
     }
 
     targetElementChange(element: elementData, parent: folderData) {
@@ -317,6 +326,13 @@ export default class Sidebar extends Vue {
             revealElementDirect(element, this.eclipseData)
         }
         this.save()
+    }
+
+    share(element: elementData) {
+        const share = shareString(element)
+        //prompt("Copy to clipboard: Ctrl+C, Enter", share)
+        let a = URL.createObjectURL(new Blob([share]))
+        createTab(a)
     }
 
     /* onKeyPressBody(event: any) {

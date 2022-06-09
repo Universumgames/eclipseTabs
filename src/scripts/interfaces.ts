@@ -154,13 +154,15 @@ export enum ContextAction {
     delete,
     toggle,
     cascadeToggle,
-    createAtLocation
+    createAtLocation,
+    share
 }
 
 export interface ContextMenuData {
     targetElementID: string
     targetIsFolder: boolean
     actionPerformed: ContextAction
+    unsafe: boolean
 }
 
 /** See documentation of themes here:  https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/theme#colors*/

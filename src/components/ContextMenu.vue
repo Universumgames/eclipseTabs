@@ -10,7 +10,11 @@
                 <div class="contextElement" id="contextMenu_generic_search" @click="contextMenu_generic_search_handler">Search</div>
                 <div class="contextElement" @click="reportBug">Submit a bug</div>
             </div>
-            <div ref="contextMenu_folder" id="contextMenu_folder" v-show="targetIsFolder">
+
+            <div v-show="targetIsFolder || targetIsItem">
+                <div class="contextElement" @click="share">Share</div>
+            </div>
+            <div ref="contextMenu_folder" id="contextMenu_folder" v-show="targetIsFolder && !unsafe">
                 <div class="contextElement" id="contextMenu_folder_rename" @click="contextMenu_folder_rename_handler">Rename Folder</div>
                 <div class="contextElement" id="contextMenu_folder_delete" @click="contextMenu_folder_delete_handler">Delete Folder</div>
                 <div class="contextElement" id="contextMenu_folder_toggle" @click="contextMenu_folder_toggle_handler">
@@ -23,7 +27,7 @@
                     Create Folder at location
                 </div>
             </div>
-            <div ref="contextMenu_item" id="contextMenu_item" v-show="targetIsItem">
+            <div ref="contextMenu_item" id="contextMenu_item" v-show="targetIsItem && !unsafe">
                 <div class="contextElement" id="contextMenu_item_rename" @click="contextMenu_item_rename_handler">Rename item</div>
                 <div class="contextElement" id="contextMenu_item_delete" @click="contextMenu_item_delete_handler">Delete item</div>
                 <div
@@ -71,6 +75,8 @@ export default class ContextMenu extends Vue {
     targetIsFolder: boolean = false
     targetIsItem: boolean = false
 
+    unsafe: boolean = true
+
     showContextMenu: boolean = false
 
     mounted() {
@@ -89,25 +95,23 @@ export default class ContextMenu extends Vue {
 
         this.showContextMenu = true
 
-        if (
-            target.getAttribute("folderID") != undefined &&
-            target.getAttribute("folderID") != pinnedFolderID &&
-            target.getAttribute("folderID") != unorderedFolderID
-        ) {
+        if (target.getAttribute("folderID") != undefined) {
             this.targetID = target.getAttribute("folderID")
             this.targetIsFolder = true
             this.targetIsItem = false
-        } else if (
-            target.getAttribute("itemID") != undefined &&
-            target.getAttribute("parentID") != pinnedFolderID &&
-            target.getAttribute("parentID") != unorderedFolderID
-        ) {
+        } else if (target.getAttribute("itemID") != undefined) {
             this.targetID = target.getAttribute("itemID")
             this.targetIsFolder = false
             this.targetIsItem = true
         }
 
         this.target = target
+
+        this.unsafe =
+            target.getAttribute("folderID") == pinnedFolderID ||
+            target.getAttribute("folderID") == unorderedFolderID ||
+            target.getAttribute("parentID") == pinnedFolderID ||
+            target.getAttribute("parentID") == unorderedFolderID
 
         this.$emit("contextMenuTargetChange", target)
     }
@@ -134,7 +138,8 @@ export default class ContextMenu extends Vue {
         this.menuDataChangeEmit({
             targetElementID: this.targetID!,
             targetIsFolder: this.targetIsFolder,
-            actionPerformed: ContextAction.rename
+            actionPerformed: ContextAction.rename,
+            unsafe: this.unsafe
         })
     }
 
@@ -142,7 +147,8 @@ export default class ContextMenu extends Vue {
         this.menuDataChangeEmit({
             targetElementID: this.targetID!,
             targetIsFolder: this.targetIsFolder,
-            actionPerformed: ContextAction.delete
+            actionPerformed: ContextAction.delete,
+            unsafe: this.unsafe
         })
     }
 
@@ -150,7 +156,8 @@ export default class ContextMenu extends Vue {
         this.menuDataChangeEmit({
             targetElementID: this.targetID!,
             targetIsFolder: this.targetIsFolder,
-            actionPerformed: ContextAction.toggle
+            actionPerformed: ContextAction.toggle,
+            unsafe: this.unsafe
         })
     }
 
@@ -158,7 +165,8 @@ export default class ContextMenu extends Vue {
         this.menuDataChangeEmit({
             targetElementID: this.targetID!,
             targetIsFolder: this.targetIsFolder,
-            actionPerformed: ContextAction.cascadeToggle
+            actionPerformed: ContextAction.cascadeToggle,
+            unsafe: this.unsafe
         })
     }
 
@@ -166,7 +174,8 @@ export default class ContextMenu extends Vue {
         this.menuDataChangeEmit({
             targetElementID: this.targetID!,
             targetIsFolder: this.targetIsFolder,
-            actionPerformed: ContextAction.rename
+            actionPerformed: ContextAction.rename,
+            unsafe: this.unsafe
         })
     }
 
@@ -174,7 +183,8 @@ export default class ContextMenu extends Vue {
         this.menuDataChangeEmit({
             targetElementID: this.targetID!,
             targetIsFolder: this.targetIsFolder,
-            actionPerformed: ContextAction.delete
+            actionPerformed: ContextAction.delete,
+            unsafe: this.unsafe
         })
     }
 
@@ -182,15 +192,17 @@ export default class ContextMenu extends Vue {
         this.menuDataChangeEmit({
             targetElementID: this.targetID!,
             targetIsFolder: this.targetIsFolder,
-            actionPerformed: ContextAction.toggle
+            actionPerformed: ContextAction.toggle,
+            unsafe: this.unsafe
         })
     }
 
-    async contextMenu_folder_create_at_location(){
+    async contextMenu_folder_create_at_location() {
         this.menuDataChangeEmit({
             targetElementID: this.targetID!,
             targetIsFolder: this.targetIsFolder,
-            actionPerformed: ContextAction.createAtLocation
+            actionPerformed: ContextAction.createAtLocation,
+            unsafe: this.unsafe
         })
     }
 
@@ -204,6 +216,15 @@ export default class ContextMenu extends Vue {
 
     get extensionVersion() {
         return getManifest().version
+    }
+
+    async share() {
+        this.menuDataChangeEmit({
+            targetElementID: this.targetID!,
+            targetIsFolder: this.targetIsFolder,
+            actionPerformed: ContextAction.share,
+            unsafe: this.unsafe
+        })
     }
 }
 </script>

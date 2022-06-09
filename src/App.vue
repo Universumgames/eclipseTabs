@@ -1,5 +1,5 @@
 <template>
-    <router-view :eclipseData="this.eclipseData" :allreload="this.allReload" v-on:save="this.save" />
+    <router-view :eclipseData="eclipseData" :allreload="allReload" v-on:save="save" />
 </template>
 
 <script lang="ts">

@@ -4,7 +4,7 @@ import { addFolder, addTabSync } from "./adder"
 import { getDataStructFromFirefox, getFolderJSONObjectByID, getItemJSONObjectByItemID, saveDataInFirefox } from "./getter"
 import * as defs from "./definitions"
 import { closeTab, createTab, focusTab, getCurrentTab, getTabByTabID, getTabByURL, getTabByURLDirect, getTabs, pinTab } from "../tabHelper"
-import { isFolder, reloadExtension } from "../helper"
+import { reloadExtension } from "../helper"
 import { folderExists, tabExistsByItemID } from "./checker"
 
 export async function importData(json: string, overwrite: boolean = false) {
