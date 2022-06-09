@@ -11,7 +11,7 @@
         :title="itemData.url"
     >
         <div ref="dropContainer" :itemID="itemData.itemID" :index="itemData.index" :parentID="itemData.parentFolderID">
-            <img :src="itemData.favIconURL" class="favicon noEvents" alt="FavIcon of website" />
+            <img :src="itemData.favIconURL" class="favicon noEvents" />
             <div class="noEvents name">{{ itemData.title }}</div>
         </div>
         <input type="text" :class="rename ? '' : 'disabled'" :placeholder="itemData.title" @keyup="renameSubmit" ref="renameInput" />
