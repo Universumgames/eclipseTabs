@@ -247,8 +247,6 @@ export default class Folder extends Vue {
     }
 
     movePassOn(targetFolder: folderData) {
-        console.log(targetFolder)
-        console.log(this.folderData)
         this.$emit("move", targetFolder)
     }
 

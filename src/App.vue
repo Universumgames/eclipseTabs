@@ -27,6 +27,12 @@ export default class App extends Vue {
             document.title = to.meta.title != undefined ? (to.meta.title as string) : "404 Page not found"
         })
 
+        await this.getEclipseData()
+        await this.updateVersion()
+
+        const theme = await getTheme()
+        this.setColorScheme(theme)
+
         registerListener({
             updateList: () => {
                 this.updateList()
@@ -37,20 +43,31 @@ export default class App extends Vue {
         })
     }
 
+    async getEclipseData() {
+        const temp = await getDataStructFromFirefox()
+        if (temp == undefined) {
+            this.eclipseData = createEmptyData()
+            this.save()
+            console.log("Data cleared or extension is newly installed, created new storage structure: ", this.eclipseData)
+        } else this.eclipseData = temp
+    }
+
+    async updateVersion() {
+        if (this.eclipseData.version == undefined || this.eclipseData.version == "") {
+            this.eclipseData.version = "1.1.0"
+            await this.save()
+        }
+        if (this.eclipseData.version != getManifest().version) {
+            this.eclipseData.version = getManifest().version
+            await this.save()
+            this.displayHowTo()
+        }
+    }
+
     // eslint-disable-next-line no-unused-vars
     setColorScheme(theme: FirefoxTheme) {
         const body = document.getElementsByTagName("body")[0]
         body.classList.add(this.eclipseData.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode")
-        // const root = document.documentElement
-        // root.style.setProperty("--bg-color", theme.colors.sidebar)
-        // root.style.setProperty("--context-bg-color", theme.colors.popup)
-        // root.style.setProperty("--text-color", theme.colors.sidebar_text)
-        // root.style.setProperty("--color-hidden", theme.colors.frame)
-        // // root.style.setProperty("--folder-closed-text-color", "blue")
-        // root.style.setProperty("--divider-color", theme.colors.sidebar_border)
-        // root.style.setProperty("--button-background-active", theme.colors.button_background_active)
-        // root.style.setProperty("--button-background-hover", theme.colors.button_background_hover)
-        // root.style.setProperty("--folder-arrow-color", theme.colors.icons)
     }
 
     async startup() {
@@ -66,23 +83,7 @@ export default class App extends Vue {
     }
 
     async allReload() {
-        const temp = await getDataStructFromFirefox()
-        if (temp == undefined) {
-            this.eclipseData = createEmptyData()
-            this.save()
-            console.log("Data cleared or extension is newly installed, created new storage structure: ", this.eclipseData)
-        } else this.eclipseData = temp
-        if (this.eclipseData.version == undefined || this.eclipseData.version == "") {
-            this.eclipseData.version = "1.1.0"
-            this.save()
-        }
-        if (this.eclipseData.version != getManifest().version) {
-            this.eclipseData.version = getManifest().version
-            this.save()
-            this.displayHowTo()
-        }
-        const theme = await getTheme()
-        this.setColorScheme(theme)
+        await this.getEclipseData()
         const that = this
         tabHelper.getTabs().then(async function(tabs: any) {
             await updateTabsOnStartUp(that.eclipseData.rootFolder, tabs)
@@ -101,7 +102,7 @@ export default class App extends Vue {
 
     async save() {
         await saveDataInFirefox(JSON.parse(JSON.stringify(this.eclipseData)))
-        console.log("Data: ", this.eclipseData)
+        // console.log("Data: ", this.eclipseData)
     }
 
     displayHowTo() {

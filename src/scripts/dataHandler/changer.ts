@@ -121,7 +121,6 @@ export function moveElement(element: elementData, oldParent: folderData, newPare
         oldParent.elements.splice(oldParent.elements.indexOf(element), 1)
         // delete oldParent.elements[key as any]
         // oldParent.elements.length--
-        console.log(element, oldParent, newParent)
         return true
     }
     return false

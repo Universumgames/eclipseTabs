@@ -1,3 +1,7 @@
+Update 1.2.1:
+
+-   try fixing memory leaks
+
 Update 1.2.0:
 
 -   add share context, now you can easily extract easy readable and sharable text from your directories and elements so it`s easy to send a couple of links to somebody

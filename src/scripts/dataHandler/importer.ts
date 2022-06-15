@@ -20,7 +20,7 @@ export async function importData(json: string, overwrite: boolean = false) {
     for (const key in newJSONData.rootFolder.elements) {
         const element = newJSONData.rootFolder.elements[key]
         if (!("folderID" in element)) {
-            console.log("deleted element from root folder", element)
+            // console.log("deleted element from root folder", element)
             newJSONData.rootFolder.elements.splice(newJSONData.rootFolder.elements.indexOf(element), 1)
         }
     }

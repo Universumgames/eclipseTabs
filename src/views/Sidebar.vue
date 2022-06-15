@@ -199,7 +199,7 @@ export default class Sidebar extends Vue {
             console.warn("element not found, search based on query:", data)
             return
         }
-        console.log(data)
+        // console.log(data)
 
         // allow unsafe (action on "other" and "pinned" folders)
         if (data.actionPerformed == ContextAction.share) {
@@ -219,7 +219,7 @@ export default class Sidebar extends Vue {
         }
         if (data.actionPerformed == ContextAction.toggle) {
             this.htmlTarget.click()
-            console.log(this.htmlTarget)
+            // console.log(this.htmlTarget)
         }
         if (data.actionPerformed == ContextAction.cascadeToggle && data.targetIsFolder) {
             toggleExpandCascade(element as folderData)
@@ -283,7 +283,7 @@ export default class Sidebar extends Vue {
         if (this.targetElement != undefined) {
             if (!moveElement(this.targetElement, this.targetElementParent, targetFolder))
                 console.warn("Unable to move element ", this.targetElement, this.targetElementParent, targetFolder)
-            else console.log("Moved target $1 to folder $2", this.targetElement, targetFolder)
+            // else console.log("Moved target $1 to folder $2", this.targetElement, targetFolder)
 
             this.save()
         } else console.warn("TargetElement is undefined, unable to move element to folder ", targetFolder)
@@ -316,9 +316,9 @@ export default class Sidebar extends Vue {
             this.searchResults = []
             return
         }
-        console.log(this.queryString)
+        // console.log(this.queryString)
         this.searchResults = search(this.queryString, this.eclipseData.rootFolder)
-        console.log("Search Results: ", this.searchResults)
+        // console.log("Search Results: ", this.searchResults)
     }
 
     async revealFoundElements() {
