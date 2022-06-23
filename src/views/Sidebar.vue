@@ -39,6 +39,9 @@
                         ref="searchInputElement"
                         style="display:inline"
                     />
+                    <button style="margin-top: 1ch;" @click="matchCaseBtnClick" :class="searchMatchCase ? 'highlighted' : ''">
+                        Match case
+                    </button>
                     <p style="margin: 1ch">Found {{ searchResults.length }} matching elements</p>
                     <button style="margin-top: 1ch" @click="revealFoundElements">Reveal all found elements</button>
                     <button style="margin-top: 1ch" @click="currentlySearching = false">Close search</button>
@@ -117,6 +120,7 @@ export default class Sidebar extends Vue {
 
     searchResults: elementData[] = []
     queryString = ""
+    searchMatchCase = false
 
     folderAddInput!: HTMLInputElement
 
@@ -309,16 +313,21 @@ export default class Sidebar extends Vue {
         }, 200)
     }
 
-    async onQueryUpdate(event: any) {
-        if (event.keyCode == KeyCode.escape) {
+    async onQueryUpdate(event: any | undefined) {
+        if (event && event.keyCode == KeyCode.escape) {
             event.preventDefault()
             this.currentlySearching = false
             this.searchResults = []
             return
         }
         // console.log(this.queryString)
-        this.searchResults = search(this.queryString, this.eclipseData.rootFolder)
+        this.searchResults = search({ text: this.queryString, matchCase: this.searchMatchCase }, this.eclipseData.rootFolder)
         // console.log("Search Results: ", this.searchResults)
+    }
+
+    async matchCaseBtnClick() {
+        this.searchMatchCase = !this.searchMatchCase
+        this.onQueryUpdate(undefined)
     }
 
     async revealFoundElements() {

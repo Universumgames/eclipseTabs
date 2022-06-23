@@ -28,8 +28,10 @@
     -   ✅ show/hide selected item
     -   ✅ cascade expand/collapse (expand/collapse all subfolders)
     -   ✅ search option
+        -   ✅ regex search
+        -   ❌ mark parents which contain search results
 -   ❌ using user installed theme as color values (firefox themes are not suited for this)
--   ❌ Drag and Drop links into sidebar or something similar
+-   ❌ Drag and Drop links into sidebar or something similar (not possible with Firefox)
 -   ❌ (cloud sync maybe)
 -
 

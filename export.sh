@@ -17,7 +17,7 @@ printHelp(){
 
 compressSource(){
     ECLIPSE_EXPORT_SRC_FILE="${1}_src.zip"
-    zip -r -q "${ECLIPSE_EXPORT_SRC_FILE}" * -x *.zip '*.git*' 'node_modules/*'
+    zip -r -q "${ECLIPSE_EXPORT_SRC_FILE}" * -x *.zip '*.git*' 'node_modules/*' 'screenshots'
     echo "Source files zippen in ${ECLIPSE_EXPORT_SRC_FILE}"
 }
 

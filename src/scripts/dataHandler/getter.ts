@@ -83,18 +83,21 @@ export function getKeyByIDAndType(elements: Array<elementData>, isFolder: Boolea
     return undefined
 }
 
-export function search(query: string, folder: folderData): elementData[] {
+export function search(query: { text?: string; regex?: RegExp; matchCase?: Boolean }, folder: folderData): elementData[] {
     let results: elementData[] = []
-    const queryLow = query.toLowerCase()
+
+    let regex: RegExp
+    if (query.regex) regex = query.regex
+    else regex = new RegExp(query.text ?? "", query.matchCase ? "g" : "gi")
+
     for (const element of folder.elements) {
         if ("itemID" in element) {
             const item = element as itemData
-            if (item.itemID.includes(queryLow) || item.title.toLowerCase().includes(queryLow) || item.url.toLowerCase().includes(queryLow))
-                results.push(item)
+            if (regex.test(item.itemID) || regex.test(item.title) || regex.test(item.url)) results.push(item)
         } else if ("folderID" in element) {
             const folder = element as folderData
-            if (folder.folderID.includes(queryLow) || folder.name.toLowerCase().includes(queryLow)) results.push(folder)
-            results = [...results, ...search(query, folder)]
+            if (regex.test(folder.folderID) || regex.test(folder.name)) results.push(folder)
+            results = [...results, ...search({ regex: regex }, folder)]
         }
     }
     return results

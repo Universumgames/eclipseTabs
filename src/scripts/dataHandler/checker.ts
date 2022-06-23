@@ -1,6 +1,6 @@
 import { elementData, folderData, folderIDType, itemIDType, tabIDType, tabStructData } from "../interfaces"
 import { unorderedFolderID } from "./definitions"
-import { getItemJSONObjectByItemID, getItemJSONObjectByTabID } from "./getter"
+import { getFolderJSONObjectByID, getItemJSONObjectByItemID, getItemJSONObjectByTabID } from "./getter"
 
 export function tabExistsByItemID(itemID: itemIDType, dataStruct: tabStructData): Boolean {
     const item = getItemJSONObjectByItemID(itemID, dataStruct.rootFolder)

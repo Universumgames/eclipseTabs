@@ -53,12 +53,13 @@ export default class App extends Vue {
     }
 
     async updateVersion() {
-        if (this.eclipseData.version == undefined || this.eclipseData.version == "") {
+        /* if (this.eclipseData.version == undefined || this.eclipseData.version == "") {
             this.eclipseData.version = "1.1.0"
             await this.save()
-        }
-        if (this.eclipseData.version != getManifest().version) {
-            this.eclipseData.version = getManifest().version
+        } */
+        const manifest = getManifest()
+        if (this.eclipseData.version != manifest.version) {
+            this.eclipseData.version = manifest.version
             await this.save()
             this.displayHowTo()
         }
@@ -90,6 +91,7 @@ export default class App extends Vue {
             await updateTabs(that.eclipseData as tabStructData, tabs)
             that.$forceUpdate()
             that.save()
+            that.updateVersion()
         })
         // console.log(this.eclipseData)
 

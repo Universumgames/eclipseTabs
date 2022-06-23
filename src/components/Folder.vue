@@ -205,7 +205,15 @@ export default class Folder extends Vue {
 
     containedInSearchResult(): boolean {
         for (const element of this.searchResults) {
-            if ("folderID" in element && (element as folderData).folderID == this.folderData.folderID) return true
+            if ("folderID" in element) {
+                const f = element as folderData
+                if (f.folderID == this.folderData.folderID) return true
+                //if (f.parentFolderID == this.folderData.folderID) return true
+            }
+            /* if ("itemID" in element) {
+                const i = element as itemData
+                if (i.parentFolderID == this.folderData.folderID) return true
+            } */
         }
         return false
     }

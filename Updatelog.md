@@ -1,3 +1,12 @@
+Update 1.3.0:
+
+-   improved searching
+-   added Search with Regular Expressions (RegExp)
+
+Update 1.2.2:
+
+-   problem with HowTo page reopening fixed
+
 Update 1.2.1:
 
 -   try fixing memory leaks
