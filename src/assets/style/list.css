@@ -116,5 +116,22 @@
 }
 
 .highlighted {
-    background-color: var(--highlighted-bg-color);
+    background-color: var(--highlighted-bg-color) !important;
+}
+
+.searched {
+    background-color: var(--searched-dot-color) !important;
+}
+
+.searchedContainer {
+    background-color: var(--search-container-dot-color) !important;
+}
+
+.dot {
+    display: inline-block !important;
+    width: 1ch;
+    height: 1ch;
+    border-radius: 50%;
+    background-color: white;
+    margin-right: 0.5ch !important;
 }

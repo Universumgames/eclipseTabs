@@ -316,8 +316,7 @@ export default class Sidebar extends Vue {
     async onQueryUpdate(event: any | undefined) {
         if (event && event.keyCode == KeyCode.escape) {
             event.preventDefault()
-            this.currentlySearching = false
-            this.searchResults = []
+            this.closeSearch()
             return
         }
         // console.log(this.queryString)
@@ -328,6 +327,11 @@ export default class Sidebar extends Vue {
     async matchCaseBtnClick() {
         this.searchMatchCase = !this.searchMatchCase
         this.onQueryUpdate(undefined)
+    }
+
+    async closeSearch() {
+        this.currentlySearching = false
+        this.searchResults = []
     }
 
     async revealFoundElements() {

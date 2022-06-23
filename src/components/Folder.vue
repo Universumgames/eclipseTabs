@@ -5,7 +5,7 @@
             :folderID="folderData.folderID"
             :parentID="folderData.parentFolderID"
             :index="folderData.index"
-            :class="'element' + ' ' + (containedInSearchResult() ? 'highlighted' : '')"
+            class="element"
             tabindex="0"
             @click="folderClick"
             @keyup.enter="folderClick"
@@ -28,6 +28,10 @@
                     d="M 0.82682333,12.402343 6.6145833,6.6145833 0.82682333,0.82682333"
                 />
             </svg>
+            <span
+                :class="containedInSearchResult() ? 'searched dot' : containsSearchedElement() ? 'searchedContainer dot' : ''"
+                style="display: inline;"
+            ></span>
             <!--Text node-->
             <div class="noEvents name">
                 {{ folderData.name }} <small>({{ getter_getNumberOfOpenedTabs(folderData) }})</small>
@@ -94,6 +98,7 @@ import { ContextAction, ContextMenuData, elementData, folderData, KeyCode, Mode,
 import * as defs from "@/scripts/dataHandler/definitions"
 import { moveElement } from "@/scripts/dataHandler/changer"
 import { getFolderJSONObjectByID, getNumberOfOpenedTabs } from "@/scripts/dataHandler/getter"
+import { folderOrChildrenContainsElement } from "@/scripts/dataHandler/checker"
 
 @Options({
     components: { Item },
@@ -210,10 +215,18 @@ export default class Folder extends Vue {
                 if (f.folderID == this.folderData.folderID) return true
                 //if (f.parentFolderID == this.folderData.folderID) return true
             }
+            //if (folderOrChildrenContainsElement(element, this.folderData.elements)) return true
             /* if ("itemID" in element) {
                 const i = element as itemData
                 if (i.parentFolderID == this.folderData.folderID) return true
             } */
+        }
+        return false
+    }
+
+    containsSearchedElement(): boolean {
+        for (const element of this.searchResults) {
+            if (folderOrChildrenContainsElement(element, this.folderData.elements)) return true
         }
         return false
     }

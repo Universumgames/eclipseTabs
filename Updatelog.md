@@ -1,3 +1,8 @@
+Update 1.3.1:
+
+-   minimalized viewing Search Result
+-   show Parentfolders of Search REsults for easy overview
+
 Update 1.3.0:
 
 -   improved searching

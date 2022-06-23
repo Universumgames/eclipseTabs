@@ -27,6 +27,8 @@ body {
     --folder-arrow-color: #f98604;
     --element-hover-color: var(--context-bg-color);
     --highlighted-bg-color: var(--folder-arrow-color);
+    --searched-dot-color: var(--highlighted-bg-color);
+    --search-container-dot-color: green;
 }
 
 .lightmode {
@@ -43,6 +45,8 @@ body {
     --folder-arrow-color: #f98604;
     --element-hover-color: var(--context-bg-color);
     --highlighted-bg-color: var(--folder-arrow-color);
+    --searched-dot-color: var(--highlighted-bg-color);
+    --search-container-dot-color: green;
 }
 
 .closed {

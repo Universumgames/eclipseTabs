@@ -1,7 +1,7 @@
 <template>
     <div
         ref="container"
-        :class="'overflow listItem element ' + (hidden ? 'tabHidden' : '') + ' ' + (containedInSearchResult() ? 'highlighted' : '')"
+        :class="'overflow listItem element ' + (hidden ? 'tabHidden' : '')"
         @click="click"
         @keyup.enter="click"
         @dragstart="dragstart_handler"
@@ -11,6 +11,7 @@
         :title="itemData.url"
     >
         <div ref="dropContainer" :itemID="itemData.itemID" :index="itemData.index" :parentID="itemData.parentFolderID">
+            <span :class="containedInSearchResult() ? 'searched dot' : ''" style="display: inline;"></span>
             <img :src="itemData.favIconURL" class="favicon noEvents" />
             <div class="noEvents name">{{ itemData.title }}</div>
         </div>
