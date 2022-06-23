@@ -5,7 +5,7 @@ printHelp(){
     echo "usage: ./export.sh [all|src|main] filenameprefix"
     echo "Subcommands:"
     echo "all:"
-    echo "   Export progam into two zip files: one containing the programm, the other containing the source files"
+    echo "   Export program into two zip files: one containing the programm, the other containing the source files"
     echo "src:"
     echo "   Export only the sources"
     echo "main:"
@@ -17,8 +17,10 @@ printHelp(){
 
 compressSource(){
     ECLIPSE_EXPORT_SRC_FILE="${1}_src.zip"
-    zip -r -q "${ECLIPSE_EXPORT_SRC_FILE}" * -x *.zip '*.git*' 'node_modules/*' 'screenshots'
-    echo "Source files zippen in ${ECLIPSE_EXPORT_SRC_FILE}"
+    TMP_SRC_ZIP="temp_src.zip"
+    zip -r -q "${TMP_SRC_ZIP}" * -x *.zip '*.git*' 'node_modules/*' 'screenshots/*' 'package-lock.json' '*.code-workspace' '.vscode/*'
+    mv "${TMP_SRC_ZIP}" "${ECLIPSE_EXPORT_SRC_FILE}"
+    echo "Source files zipped in ${ECLIPSE_EXPORT_SRC_FILE}"
 }
 
 compressProgram(){
@@ -26,7 +28,9 @@ compressProgram(){
     npx vue-cli-service build
     echo "Project build!!"
     ECLIPSE_EXPORT_PROG_FILE="${1}.zip"
-    zip -r -q "${ECLIPSE_EXPORT_PROG_FILE}" dist/* manifest.json Updatelog.md LICENSE README.md howTo.html howTo.md 
+    TMP_PROG_ZIP="temp_prog.zip"
+    zip -r -q "${TMP_PROG_ZIP}" dist/* manifest.json Updatelog.md LICENSE README.md howTo.html howTo.md 
+    mv "${TMP_PROG_ZIP}" "${ECLIPSE_EXPORT_PROG_FILE}"
     echo "Program files zippen in ${ECLIPSE_EXPORT_PROG_FILE}"
 }
 
