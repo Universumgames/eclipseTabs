@@ -36,7 +36,10 @@
         <br />
         <!--<label>Border color <input type="text" id="color" /></label>-->
         <button type="submit" @click="saveOptions">Save</button><br />
-        <button type="submit" @click="openHowTo">Open HowTo Page</button>
+        <button type="submit" @click="openHowTo">Open HowTo Page</button><br />
+        <button @click="clearStruct">
+            <span title="You * up your data struct? Just reset it to default values to test and try again">Clear Data Struct</span></button
+        ><br />
     </form>
 </template>
 
@@ -46,6 +49,7 @@ import { getDataStructFromFirefox, saveDataInFirefox } from "@/scripts/dataHandl
 import { ColorScheme, tabStructData } from "@/scripts/interfaces"
 import { reloadExtension } from "@/scripts/helper"
 import * as tabHelper from "@/scripts/tabHelper"
+import { createEmptyData } from "@/scripts/dataHandler/adder"
 
 @Options({
     props: {
@@ -103,6 +107,10 @@ export default class Settings extends Vue {
 
     openHowTo() {
         tabHelper.createTabIfNotExist("./index.html#/howto")
+    }
+
+    async clearStruct() {
+        await saveDataInFirefox(createEmptyData())
     }
 }
 </script>

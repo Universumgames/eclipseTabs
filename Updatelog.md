@@ -1,3 +1,10 @@
+Update 1.4.0:
+
+-   reduce Memory allocation
+-   improve import speed
+-   switched to global FavIcon Storage to improve speed, performance and memory usage
+-   Favicons update on Page reopening
+
 Update 1.3.1:
 
 -   minimalized viewing Search Result

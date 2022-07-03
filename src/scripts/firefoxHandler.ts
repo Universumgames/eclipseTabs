@@ -60,16 +60,7 @@ export default class FirefoxHandler implements Browser {
                 folderID: data.folderID,
                 elements: data.elements
             } as folderData
-            return {
-                mode: data.mode,
-                colorScheme: data.colorScheme,
-                rootFolder: root,
-                devMode: false,
-                closeTabsInDeletingFolder: false,
-                version: "1.0.0",
-                displayHowTo: true,
-                hideOrSwitchTab: false
-            } as tabStructData
+            return createEmptyData()
         }
         return undefined
     }

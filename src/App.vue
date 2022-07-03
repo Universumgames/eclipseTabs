@@ -10,7 +10,9 @@ import { getDataStructFromFirefox, saveDataInFirefox } from "./scripts/dataHandl
 import { updateTabs, updateTabsOnStartUp } from "./scripts/dataHandler/updater"
 import { getManifest, getTheme, registerListener, startupHandler } from "./scripts/browserHandler"
 import { ColorScheme, FirefoxTheme, tabStructData } from "./scripts/interfaces"
+import { upgradeHandler } from "./scripts/eclipseHandler"
 import * as tabHelper from "./scripts/tabHelper"
+import { resetAllFavIconRefCounter } from "./scripts/dataHandler/changer"
 
 export default class App extends Vue {
     eclipseData = reactive<tabStructData>(createEmptyData())
@@ -57,6 +59,7 @@ export default class App extends Vue {
             this.eclipseData.version = "1.1.0"
             await this.save()
         } */
+        upgradeHandler(this.eclipseData as tabStructData)
         const manifest = getManifest()
         if (this.eclipseData.version != manifest.version) {
             this.eclipseData.version = manifest.version
@@ -77,7 +80,7 @@ export default class App extends Vue {
         if (temp != undefined) this.eclipseData = temp
         else this.eclipseData = createEmptyData()
         tabHelper.getTabs().then(async function(tabs: any) {
-            updateTabsOnStartUp(that.eclipseData.rootFolder, tabs)
+            updateTabsOnStartUp(that.eclipseData as tabStructData, that.eclipseData.rootFolder, tabs)
             that.save()
         })
         // console.log("Called startup")
@@ -87,13 +90,14 @@ export default class App extends Vue {
         await this.getEclipseData()
         const that = this
         tabHelper.getTabs().then(async function(tabs: any) {
-            await updateTabsOnStartUp(that.eclipseData.rootFolder, tabs)
+            resetAllFavIconRefCounter(that.eclipseData as tabStructData)
+            await updateTabsOnStartUp(that.eclipseData as tabStructData, that.eclipseData.rootFolder, tabs)
             await updateTabs(that.eclipseData as tabStructData, tabs)
             that.$forceUpdate()
             that.save()
             that.updateVersion()
         })
-        // console.log(this.eclipseData)
+        console.log("EclipseData", this.eclipseData)
 
         // console.log("reloaded")
     }

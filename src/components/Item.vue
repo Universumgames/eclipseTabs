@@ -12,7 +12,7 @@
     >
         <div ref="dropContainer" :itemID="itemData.itemID" :index="itemData.index" :parentID="itemData.parentFolderID">
             <span :class="containedInSearchResult() ? 'searched dot' : ''" style="display: inline;"></span>
-            <img :src="itemData.favIconURL" class="favicon noEvents" />
+            <img :src="favIcon" class="favicon noEvents" />
             <div class="noEvents name">{{ itemData.title }}</div>
         </div>
         <input type="text" :class="rename ? '' : 'disabled'" :placeholder="itemData.title" @keyup="renameSubmit" ref="renameInput" />
@@ -24,7 +24,7 @@
 
 <script lang="ts">
 import { moveElement } from "@/scripts/dataHandler/changer"
-import { getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
+import { getFavIconUrl, getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
 import { ContextAction, ContextMenuData, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
 import * as tabHelper from "@/scripts/tabHelper"
 import { Options, Vue } from "vue-class-component"
@@ -207,6 +207,10 @@ export default class Item extends Vue {
         this.targetElement.index = +this.itemData.index + 1
         this.save()
         this.allreload()
+    }
+
+    get favIcon() {
+        return getFavIconUrl(this.eclipseData, this.itemData.url)
     }
 }
 </script>

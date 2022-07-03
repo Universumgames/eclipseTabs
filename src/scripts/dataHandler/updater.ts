@@ -2,9 +2,10 @@ import { elementData, FirefoxTab, folderData, itemData, tabStructData } from "..
 import { recursiveSelectionSort } from "./sorting"
 import * as defs from "./definitions"
 import { getFirefoxTabByURL, getFolderJSONObjectByID, getItemJSONObjectByUrl, saveDataInFirefox } from "./getter"
-import { addTabSync, createItemIDByTab } from "./adder"
+import { addTabSync, createItemID } from "./adder"
 import { tabExistsByTabID } from "./checker"
 import { getCurrentTab } from "../tabHelper"
+import { addFavIcon } from "./changer"
 
 //#region update tabs
 async function updatePinnedTabs(tabStruct: tabStructData, tabs: any): Promise<void> {
@@ -29,7 +30,7 @@ async function updatePinnedTabs(tabStruct: tabStructData, tabs: any): Promise<vo
     for (const key in tabs) {
         const tab = tabs[key]
         if (tab.pinned) {
-            addTabSync(pinnedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, createItemIDByTab(tab), tab.hidden)
+            addTabSync(tabStruct, pinnedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, createItemID(), tab.hidden)
         }
     }
 }
@@ -56,16 +57,16 @@ async function updateUnorderedTabs(tabStruct: tabStructData, tabs: any): Promise
     for (const tab of tabs) {
         const exist = tabExistsByTabID(tab.id, tabStruct.rootFolder.elements)
         if (!tab.pinned && !exist) {
-            addTabSync(unorderedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, createItemIDByTab(tab), tab.hidden)
+            addTabSync(tabStruct, unorderedFolder, tab.title, tab.url, tab.favIconUrl, true, tab.id, createItemID(), tab.hidden)
         }
     }
 }
 
-export async function updateTabsOnStartUp(data: folderData, tabs: any) {
+export async function updateTabsOnStartUp(eclipseData: tabStructData, data: folderData, tabs: any) {
     for (const key in data.elements) {
         const element = data.elements[key]
         if (element != undefined) {
-            if ("folderID" in element) updateTabsOnStartUp(element as folderData, tabs)
+            if ("folderID" in element) updateTabsOnStartUp(eclipseData, element as folderData, tabs)
             else {
                 const item = element as itemData
                 const firefoxTab = getFirefoxTabByURL(tabs, item.url)
@@ -75,8 +76,11 @@ export async function updateTabsOnStartUp(data: folderData, tabs: any) {
                 } else {
                     item.tabID = (firefoxTab.id as unknown) as string
                     item.hidden = firefoxTab.hidden
-                    if (item.favIconURL == undefined || item.favIconURL == "" || item.favIconURL.startsWith("http"))
-                        item.favIconURL = firefoxTab.favIconUrl
+
+                    // if (item.favIconURL == undefined || item.favIconURL == "" || item.favIconURL.startsWith("http"))
+                    // item.favIconURL = firefoxTab.favIconUrl
+
+                    addFavIcon(eclipseData, item.itemID, item.url, firefoxTab.favIconUrl)
                 }
             }
         }

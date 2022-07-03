@@ -3,6 +3,8 @@ import { getManifest } from "../browserHandler"
 import { ColorScheme, elementData, FirefoxTab, folderData, itemData, Mode, tabStructData } from "../interfaces"
 import { generateFolderID, getDataStructFromFirefox, getFolderJSONObjectByID, saveDataInFirefox } from "./getter"
 import { recursiveSelectionSort } from "./sorting"
+import { addFavIcon } from "./changer"
+import { v4 as uuidv4 } from "uuid"
 
 export function createEmptyRoot(): folderData {
     return { folderID: "-1", name: "root", open: true, parentFolderID: "-1", index: 0, elements: [] }
@@ -41,7 +43,8 @@ export function createEmptyData(): tabStructData {
         closeTabsInDeletingFolder: false,
         version: getManifest().version,
         displayHowTo: true,
-        hideOrSwitchTab: false
+        hideOrSwitchTab: false,
+        favIconStorage: {}
     } as tabStructData
     return data
 }
@@ -77,6 +80,7 @@ export async function addFolderDirect(parentFolder: folderData, newFolderID: str
 }
 
 export function addTabSync(
+    eclipseData: tabStructData,
     folder: folderData,
     title: string,
     url: string,
@@ -92,11 +96,11 @@ export function addTabSync(
         tabID: tabID,
         itemID: itemID,
         url: url,
-        favIconURL: favIconURL,
         title: title,
         parentFolderID: folder.folderID,
         index: generateIndexInFolder(folder)
     }
+    addFavIcon(eclipseData, itemID, url, favIconURL)
     folder.elements.push(storedTab)
     return storedTab
 }
@@ -118,8 +122,8 @@ export function addTabSync(
     return item
 }*/
 
-export function createItemIDByTab(tab: FirefoxTab) {
-    return tab.url
+export function createItemID(): string {
+    return uuidv4()
 }
 
 export function generateIndexInFolder(folder: folderData) {

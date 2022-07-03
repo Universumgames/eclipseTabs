@@ -47,6 +47,13 @@ export interface tabStructData {
     version: String
     displayHowTo: Boolean
     hideOrSwitchTab: Boolean
+    favIconStorage: Record<string, StoredFavIcon>
+}
+
+export interface StoredFavIcon {
+    key: string
+    imageSrc: string
+    refBy: Array<string>
 }
 
 export interface folderData extends elementData {
@@ -62,7 +69,6 @@ export interface itemData extends elementData {
     itemID: itemIDType
     hidden: Boolean
     tabExists: Boolean
-    favIconURL: string
     title: string
 }
 

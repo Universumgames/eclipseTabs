@@ -1,9 +1,10 @@
-import { elementData } from "./../interfaces"
+import { elementData, StoredFavIcon } from "./../interfaces"
 import { folderData, itemData, tabStructData } from "../interfaces"
 import * as defs from "./definitions"
 import {
     getDataStructFromFirefox,
     getFolderJSONObjectByID,
+    getHostname,
     getItemJSONObjectByItemID,
     getItemJSONObjectByTabID,
     getKeyByIDAndType,
@@ -282,4 +283,23 @@ export function toggleExpandCascade(folder: folderData) {
     if (folder.open) collapseRecursion(folder)
     else expandRecursion(folder)
     folder.open = !folder.open
+}
+
+export function addFavIcon(eclipseData: tabStructData, uuid: string, url: string, favIcon: string): boolean {
+    const fav = eclipseData.favIconStorage[getHostname(url)]
+    if (fav != undefined) {
+        if (fav.refBy.find(objA => objA == uuid) == undefined) fav.refBy.push(uuid)
+        fav.imageSrc = favIcon
+        return true
+    } else {
+        if (favIcon == undefined || favIcon == "") return false
+        eclipseData.favIconStorage[getHostname(url)] = { key: getHostname(url), imageSrc: favIcon, refBy: [uuid] } as StoredFavIcon
+        return true
+    }
+}
+
+export function resetAllFavIconRefCounter(eclipseData: tabStructData) {
+    for (const key in eclipseData.favIconStorage) {
+        eclipseData.favIconStorage[key].refBy = []
+    }
 }

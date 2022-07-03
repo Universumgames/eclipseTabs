@@ -6,15 +6,20 @@ import * as defs from "./definitions"
 import { closeTab, createTab, focusTab, getCurrentTab, getTabByTabID, getTabByURL, getTabByURLDirect, getTabs, pinTab } from "../tabHelper"
 import { reloadExtension } from "../helper"
 import { folderExists, tabExistsByItemID } from "./checker"
+import { upgradeHandler } from "../eclipseHandler"
 
-export async function importData(json: string, overwrite: boolean = false) {
+export async function importData(
+    json: string,
+    settings: { overwrite: boolean; testRun: boolean; openTabs: boolean } = { overwrite: false, testRun: false, openTabs: true }
+) {
     const data = await getDataStructFromFirefox()
     if (data == undefined) return
     const pinnedOld = getFolderJSONObjectByID(defs.pinnedFolderID, data.rootFolder)
     if (pinnedOld == undefined) return
     pinnedOld.open = false
-    await saveDataInFirefox(data)
-    const newJSONData = JSON.parse(json) as tabStructData
+    //await saveDataInFirefox(data)
+    const newJSONData = JSON.parse(json)
+    console.log(newJSONData)
 
     //if an item is inside of the root element application breaks...
     for (const key in newJSONData.rootFolder.elements) {
@@ -25,15 +30,17 @@ export async function importData(json: string, overwrite: boolean = false) {
         }
     }
 
+    upgradeHandler(newJSONData)
+    console.log("Upgraded data", newJSONData)
+
     let toSave: tabStructData
 
     //when overwriting old data
-    if (overwrite) {
+    if (settings.overwrite) {
         console.warn("Replacing data, old data for recovery: ", data)
-        toSave = newJSONData
+        toSave = Object.assign({}, newJSONData)
 
-        await saveDataInFirefox(newJSONData)
-        console.log("new Data:", newJSONData)
+        console.log("new Data:", toSave)
     } else {
         //copying new settings values
         data.closeTabsInDeletingFolder = newJSONData.closeTabsInDeletingFolder
@@ -43,51 +50,52 @@ export async function importData(json: string, overwrite: boolean = false) {
         data.hideOrSwitchTab = newJSONData.hideOrSwitchTab
         data.mode = newJSONData.mode
         data.version = newJSONData.version
+        Object.assign(data.favIconStorage, newJSONData.favIconStorage)
         importStructData(data, newJSONData)
-        toSave = data
-        await saveDataInFirefox(data)
-        // await saveDataInFirefox(importFolder(data, jsonData.rootFolder))
+        toSave = Object.assign({}, data)
         console.log("Combined data", data)
     }
 
-    //reopening pinned tabs
-    const pinned = getFolderJSONObjectByID(defs.pinnedFolderID, newJSONData.rootFolder)
-    if (pinned != undefined) {
-        const tabs = await getTabs()
-        for (const element of pinned.elements) {
-            if (element == undefined) continue
-            const tab = element as itemData
-            if (tab.url.startsWith("about")) continue
-            let fireTab = getTabByURLDirect(tab.url, tabs)
-            if (fireTab != undefined) {
-                await pinTab(fireTab.id)
-            } else {
-                fireTab = await createTab(tab.url)
-                if (fireTab != undefined) await pinTab(fireTab.id)
+    if (settings.openTabs) {
+        //reopening pinned tabs
+        const pinned = getFolderJSONObjectByID(defs.pinnedFolderID, newJSONData.rootFolder)
+        if (pinned != undefined) {
+            const tabs = await getTabs()
+            for (const element of pinned.elements) {
+                if (element == undefined) continue
+                const tab = element as itemData
+                if (tab.url.startsWith("about")) continue
+                let fireTab = getTabByURLDirect(tab.url, tabs)
+                if (fireTab != undefined) {
+                    await pinTab(fireTab.id)
+                } else {
+                    fireTab = await createTab(tab.url)
+                    if (fireTab != undefined) await pinTab(fireTab.id)
+                }
             }
         }
-    }
 
-    await saveDataInFirefox(toSave)
+        //reopening other tabs
+        const unordered = getFolderJSONObjectByID(defs.unorderedFolderID, newJSONData.rootFolder)
+        if (unordered != undefined) {
+            const tabs = await getTabs()
 
-    //reopening other tabs
-    const unordered = getFolderJSONObjectByID(defs.unorderedFolderID, newJSONData.rootFolder)
-    if (unordered != undefined) {
-        const tabs = await getTabs()
-
-        for (const element of unordered.elements) {
-            const tab = element as itemData
-            let fireTab = getTabByURLDirect(tab.url, tabs)
-            if (fireTab == undefined) {
-                fireTab = await createTab(tab.url)
-                //while (fireTab == undefined) fireTab = await getTabByTabID()
-                console.log("Imported Unordered Tab: ", fireTab)
+            for (const element of unordered.elements) {
+                const tab = element as itemData
+                let fireTab = getTabByURLDirect(tab.url, tabs)
+                if (fireTab == undefined) {
+                    fireTab = await createTab(tab.url)
+                    //while (fireTab == undefined) fireTab = await getTabByTabID()
+                    console.log("Imported Unordered Tab: ", fireTab)
+                }
             }
         }
     }
 
     setTimeout(() => {
-        saveDataInFirefox(toSave)
+        if (!settings.testRun) saveDataInFirefox(toSave)
+        else console.log("Test run, not saving data", toSave)
+
         console.log("saved", toSave)
         // reloadExtension()
     }, 3000)
@@ -169,6 +177,7 @@ async function importBookmarkFolder(firefoxBookmarkFolder: any, parentFolder: fo
 async function importBookmark(firefoxBookmark: { title: string; url: string; id: string }, parentFolder: folderData, data: tabStructData) {
     const bm = firefoxBookmark
     const item = addTabSync(
+        data,
         parentFolder,
         bm.title,
         bm.url,

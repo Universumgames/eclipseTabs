@@ -1,4 +1,5 @@
 import { onUpdated } from "@vue/runtime-core"
+import { createEmptyData } from "./dataHandler/adder"
 import {
     browserHandler,
     browserStartupHandler,
@@ -66,16 +67,7 @@ export default class ChromeHandler implements Browser {
                 folderID: data.folderID,
                 elements: data.elements
             } as folderData
-            return {
-                mode: data.mode,
-                colorScheme: data.colorScheme,
-                rootFolder: root,
-                devMode: false,
-                closeTabsInDeletingFolder: false,
-                version: "1.0.0",
-                displayHowTo: true,
-                hideOrSwitchTab: false
-            } as tabStructData
+            return createEmptyData()
         }
         return undefined
     }
