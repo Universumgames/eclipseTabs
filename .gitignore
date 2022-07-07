@@ -25,3 +25,5 @@ pnpm-debug.log*
 *.sw?
 package-lock.json
 *.xpi
+eclipseTabs_firefox/dist
+eclipseTabs_firefox

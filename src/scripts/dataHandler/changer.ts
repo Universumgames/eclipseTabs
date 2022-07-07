@@ -292,7 +292,7 @@ export function addFavIcon(eclipseData: tabStructData, uuid: string, url: string
         fav.imageSrc = favIcon
         return true
     } else {
-        if (favIcon == undefined || favIcon == "") return false
+        if (favIcon == undefined || favIcon == "" || favIcon.includes("<!DOCTYPE html>")) return false
         eclipseData.favIconStorage[getHostname(url)] = { key: getHostname(url), imageSrc: favIcon, refBy: [uuid] } as StoredFavIcon
         return true
     }
@@ -301,5 +301,11 @@ export function addFavIcon(eclipseData: tabStructData, uuid: string, url: string
 export function resetAllFavIconRefCounter(eclipseData: tabStructData) {
     for (const key in eclipseData.favIconStorage) {
         eclipseData.favIconStorage[key].refBy = []
+    }
+}
+
+export function removeAllNonReferencedFavIcons(eclipseData: tabStructData) {
+    for (const key in eclipseData.favIconStorage) {
+        if (eclipseData.favIconStorage[key].refBy.length == 0) delete eclipseData.favIconStorage[key]
     }
 }

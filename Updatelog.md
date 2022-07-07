@@ -1,3 +1,8 @@
+Update 1.4.1:
+
+-   fix minor Bug for FavIcons, for websites with no favicon (404) but with a non empty response body
+-   removed debug messages
+
 Update 1.4.0:
 
 -   reduce Memory allocation

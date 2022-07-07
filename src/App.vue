@@ -12,7 +12,7 @@ import { getManifest, getTheme, registerListener, startupHandler } from "./scrip
 import { ColorScheme, FirefoxTheme, tabStructData } from "./scripts/interfaces"
 import { upgradeHandler } from "./scripts/eclipseHandler"
 import * as tabHelper from "./scripts/tabHelper"
-import { resetAllFavIconRefCounter } from "./scripts/dataHandler/changer"
+import { removeAllNonReferencedFavIcons, resetAllFavIconRefCounter } from "./scripts/dataHandler/changer"
 
 export default class App extends Vue {
     eclipseData = reactive<tabStructData>(createEmptyData())
@@ -93,11 +93,12 @@ export default class App extends Vue {
             resetAllFavIconRefCounter(that.eclipseData as tabStructData)
             await updateTabsOnStartUp(that.eclipseData as tabStructData, that.eclipseData.rootFolder, tabs)
             await updateTabs(that.eclipseData as tabStructData, tabs)
+            removeAllNonReferencedFavIcons(that.eclipseData as tabStructData)
             that.$forceUpdate()
             that.save()
             that.updateVersion()
         })
-        console.log("EclipseData", this.eclipseData)
+        // console.log("EclipseData", this.eclipseData)
 
         // console.log("reloaded")
     }
