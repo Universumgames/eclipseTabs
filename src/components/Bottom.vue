@@ -89,6 +89,7 @@
                     >Delete current selected element</object
                 >
             </span>
+            <p style="display:inline">v{{version}}</p>
         </div>
         <br />
         <!--Debug elements-->
@@ -116,6 +117,7 @@ import { ColorScheme, elementData, folderData, Mode, tabStructData } from "@/scr
 import { Options, Vue } from "vue-class-component"
 import * as helper from "@/scripts/helper"
 import { createTab } from "@/scripts/tabHelper"
+import { getManifest } from "@/scripts/browserHandler"
 
 @Options({
     props: {
@@ -207,6 +209,10 @@ export default class BottomMenu extends Vue {
 
     reloadStruct() {
         this.allreload()
+    }
+
+    get version() {
+        return getManifest().version
     }
 }
 </script>

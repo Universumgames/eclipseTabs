@@ -289,6 +289,7 @@ export function addFavIcon(eclipseData: tabStructData, uuid: string, url: string
     const fav = eclipseData.favIconStorage[getHostname(url)]
     if (fav != undefined) {
         if (fav.refBy.find(objA => objA == uuid) == undefined) fav.refBy.push(uuid)
+        if (favIcon == undefined || favIcon == "" || favIcon.includes("<!DOCTYPE html>")) return true
         fav.imageSrc = favIcon
         return true
     } else {

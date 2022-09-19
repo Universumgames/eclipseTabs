@@ -40,6 +40,7 @@
         <button @click="clearStruct">
             <span title="You * up your data struct? Just reset it to default values to test and try again">Clear Data Struct</span></button
         ><br />
+        <p>v{{version}}</p>
     </form>
 </template>
 
@@ -50,6 +51,7 @@ import { ColorScheme, tabStructData } from "@/scripts/interfaces"
 import { reloadExtension } from "@/scripts/helper"
 import * as tabHelper from "@/scripts/tabHelper"
 import { createEmptyData } from "@/scripts/dataHandler/adder"
+import { getManifest } from "@/scripts/browserHandler"
 
 @Options({
     props: {
@@ -111,6 +113,10 @@ export default class Settings extends Vue {
 
     async clearStruct() {
         await saveDataInFirefox(createEmptyData())
+    }
+
+    get version(){
+        return getManifest().version
     }
 }
 </script>
