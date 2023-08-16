@@ -1,23 +1,25 @@
 import { getCurrentBrowser } from "./browserHandler"
 import { FirefoxTab } from "./interfaces"
+import * as browserHandler from "./browserHandler"
 
-export async function hideTab(id: string | Number): Promise<Boolean> {
+
+export async function hideTab(id: string | number): Promise<Boolean> {
     return getCurrentBrowser().hideTab(id)
 }
 
-export async function showTab(id: string | Number): Promise<Boolean> {
+export async function showTab(id: string | number): Promise<Boolean> {
     return getCurrentBrowser().showTab(id)
 }
 
-export async function pinTab(id: string | Number): Promise<Boolean> {
+export async function pinTab(id: string | number): Promise<Boolean> {
     return getCurrentBrowser().pinTab(id)
 }
 
-export async function unpinTab(id: string | Number): Promise<Boolean> {
+export async function unpinTab(id: string | number): Promise<Boolean> {
     return getCurrentBrowser().unpinTab(id)
 }
 
-export function focusTab(id: string | Number): void {
+export function focusTab(id: string | number): void {
     getCurrentBrowser().focusTab(id)
 }
 
@@ -60,7 +62,7 @@ export async function getCurrentTab(): Promise<FirefoxTab> {
     return getCurrentBrowser().getCurrentTab()
 }
 
-export async function closeTab(id: string | Number) {
+export async function closeTab(id: string | number) {
     return getCurrentBrowser().closeTab(id)
 }
 
@@ -99,4 +101,12 @@ export function getNeighbourTabSync(tabID: string, tabs: Array<FirefoxTab>): str
     }
     if (nextTab == undefined) nextTab = prevTab
     return (nextTab.id as unknown) as string
+}
+
+export async function getActiveTab() {
+    return (await browserHandler.tabQuery({ currentWindow: true, active: true }))[0]
+}
+
+export function getCurrentWindowTabs() {
+    return browserHandler.tabQuery({ currentWindow: true })
 }

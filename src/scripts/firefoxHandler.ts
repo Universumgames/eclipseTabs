@@ -1,5 +1,6 @@
-import { createEmptyData, createEmptyRoot } from "./dataHandler/adder"
-import { folderData, tabStructData, FirefoxManifest, FirefoxBookmarksRoot, FirefoxTheme, Browser, FirefoxTab } from "./interfaces"
+import { FirefoxManifest, FirefoxBookmarksRoot, FirefoxTheme, Browser, FirefoxTab } from "./interfaces"
+import { FolderData } from "./elementData"
+import { ITabStructData, TabStructData, createEmptyData } from "./tabStructData"
 import { browserHandler, browserStartupHandler } from "./interfaces"
 
 //@ts-ignore
@@ -45,21 +46,22 @@ export default class FirefoxHandler implements Browser {
         return await firefoxBrowser.storage.local.set(data)
     }
 
-    async localStorageGetTabStructData(name: string): Promise<tabStructData | undefined> {
+    async localStorageGetTabStructData(name: string): Promise<ITabStructData | undefined> {
         const storage = await firefoxBrowser.storage.local.get(name)
-        const data = storage.eclipseData
+
+        const data = JSON.parse(storage.eclipseData)
         if (data === undefined) return undefined
 
         //transition to new object
         if ("rootFolder" in data) {
-            return data as tabStructData
+            return data as ITabStructData
         } else if ("name" in data && "open" in data && "folderID" in data && "elements" in data) {
             const root = {
                 name: data.name,
                 open: data.open,
                 folderID: data.folderID,
                 elements: data.elements
-            } as folderData
+            } as FolderData
             return createEmptyData()
         }
         return undefined
@@ -77,7 +79,7 @@ export default class FirefoxHandler implements Browser {
         return (await firefoxBrowser.theme.getCurrent()) as FirefoxTheme
     }
 
-    async hideTab(id: string | Number): Promise<Boolean> {
+    async hideTab(id: string | number): Promise<Boolean> {
         if (id != undefined) {
             if ((await this.getCurrentTab()).id == id) return false
             // console.log(`hide ${id}`)
@@ -87,7 +89,7 @@ export default class FirefoxHandler implements Browser {
         return false
     }
 
-    async showTab(id: string | Number): Promise<Boolean> {
+    async showTab(id: string | number): Promise<Boolean> {
         if (id != undefined) {
             // console.log(`show ${id}`)
             await firefoxBrowser.tabs.show(+id)
@@ -96,7 +98,7 @@ export default class FirefoxHandler implements Browser {
         return false
     }
 
-    async pinTab(id: string | Number): Promise<Boolean> {
+    async pinTab(id: string | number): Promise<Boolean> {
         if (id != undefined) {
             await firefoxBrowser.tabs.update(id, { pinned: true })
             return true
@@ -104,7 +106,7 @@ export default class FirefoxHandler implements Browser {
         return false
     }
 
-    async unpinTab(id: string | Number): Promise<Boolean> {
+    async unpinTab(id: string | number): Promise<Boolean> {
         if (id != undefined) {
             await firefoxBrowser.tabs.update(id, { pinned: false })
             return true
@@ -112,7 +114,7 @@ export default class FirefoxHandler implements Browser {
         return false
     }
 
-    focusTab(id: string | Number): void {
+    focusTab(id: string | number): void {
         firefoxBrowser.tabs.update(+id, { active: true })
     }
 
@@ -129,7 +131,7 @@ export default class FirefoxHandler implements Browser {
     async getCurrentTab(): Promise<FirefoxTab> {
         return (await this.tabQuery({ active: true }))[0]
     }
-    closeTab(id: string | Number): void {
+    closeTab(id: string | number): void {
         return firefoxBrowser.tabs.remove(id as number)
     }
 }

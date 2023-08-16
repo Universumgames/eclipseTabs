@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "eclipseTab",
-    "version": "1.4.3",
+    "version": "1.5",
     "developer": {
         "name": "UniversumGames",
         "url": "https://universegame.de/"
@@ -9,7 +9,7 @@
     "browser_specific_settings": {
         "gecko": {
             "id": "eclipseTab@universegame.de",
-            "strict_min_version": "80.0"
+            "strict_min_version": "100.0"
         }
     },
     "homepage_url": "https://universegame.de",
@@ -19,7 +19,7 @@
         "126": "dist/icons/eclipse_126.png",
         "96": "dist/icons/eclipse.svg"
     },
-    "permissions": ["storage", "tabs", "tabHide", "contextMenus", "bookmarks"],
+    "permissions": ["storage", "tabs", "tabHide", "contextMenus", "bookmarks", "<all_urls>"],
     "sidebar_action": {
         "default_title": "eclipseTab",
         "default_panel": "dist/index.html#/",

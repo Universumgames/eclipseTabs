@@ -1,35 +1,39 @@
 <template>
-    <router-view :eclipseData="eclipseData" :allreload="allReload" v-on:save="save" />
+    <router-view :allreload="allReload" v-on:save="save" />
 </template>
 
 <script lang="ts">
-import { reactive } from "vue"
-import { Vue } from "vue-class-component"
-import { createEmptyData } from "./scripts/dataHandler/adder"
-import { getDataStructFromFirefox, saveDataInFirefox } from "./scripts/dataHandler/getter"
-import { updateTabs, updateTabsOnStartUp } from "./scripts/dataHandler/updater"
+//import { reactive } from "vue"
+import { Options, Vue } from "vue-class-component"
 import { getManifest, getTheme, registerListener, startupHandler } from "./scripts/browserHandler"
-import { ColorScheme, FirefoxTheme, tabStructData } from "./scripts/interfaces"
+import { ColorScheme, FirefoxTab, FirefoxTheme } from "./scripts/interfaces"
 import { upgradeHandler } from "./scripts/eclipseHandler"
 import * as tabHelper from "./scripts/tabHelper"
-import { resetAllFavIconRefCounter } from "./scripts/dataHandler/changer"
+import Sidebar from "./views/Sidebar.vue"
+import { eclipseStore } from "./store"
+import { TabStructData } from "./scripts/tabStructData"
 
+@Options({
+    components: {
+        Sidebar
+    }
+})
 export default class App extends Vue {
-    eclipseData = reactive<tabStructData>(createEmptyData())
     loadedOnce: Boolean = false
+    store = eclipseStore()
 
-    created() {
-        // this.startup()
+    async created() {
     }
 
     async mounted() {
-        startupHandler({ startup: this.startup })
+        await this.startup()
+
+        await startupHandler({ startup: this.startup })
 
         this.$router.beforeEach(to => {
             document.title = to.meta.title != undefined ? (to.meta.title as string) : "404 Page not found"
         })
 
-        await this.getEclipseData()
         await this.updateVersion()
 
         const theme = await getTheme()
@@ -45,24 +49,15 @@ export default class App extends Vue {
         })
     }
 
-    async getEclipseData() {
-        const temp = await getDataStructFromFirefox()
-        if (temp == undefined) {
-            this.eclipseData = createEmptyData()
-            this.save()
-            console.log("Data cleared or extension is newly installed, created new storage structure: ", this.eclipseData)
-        } else this.eclipseData = temp
-    }
-
     async updateVersion() {
         /* if (this.eclipseData.version == undefined || this.eclipseData.version == "") {
             this.eclipseData.version = "1.1.0"
             await this.save()
         } */
-        upgradeHandler(this.eclipseData as tabStructData)
+        upgradeHandler(this.store.state.eclipseData as TabStructData)
         const manifest = getManifest()
-        if (this.eclipseData.version != manifest.version) {
-            this.eclipseData.version = manifest.version
+        if (this.store.state.eclipseData!.version != manifest.version) {
+            this.store.state.eclipseData!.version = manifest.version
             await this.save()
             this.displayHowTo()
         }
@@ -71,36 +66,30 @@ export default class App extends Vue {
     // eslint-disable-next-line no-unused-vars
     setColorScheme(theme: FirefoxTheme) {
         const body = document.getElementsByTagName("body")[0]
-        body.classList.add(this.eclipseData.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode")
+        body.classList.add(this.store.state.eclipseData!.colorScheme == ColorScheme.dark ? "darkmode" : "lightmode")
     }
 
     async startup() {
         const that = this
-        const temp = await getDataStructFromFirefox()
-        if (temp != undefined) this.eclipseData = temp
-        else this.eclipseData = createEmptyData()
-        tabHelper.getTabs().then(async function(tabs: any) {
-            updateTabsOnStartUp(that.eclipseData as tabStructData, that.eclipseData.rootFolder, tabs)
+
+        this.store.state.eclipseData = await TabStructData.loadFromStorage()
+        tabHelper.getTabs().then(async function (tabs: FirefoxTab[]) {
+            that.store.state.eclipseData.updateTabs(tabs)
             that.save()
         })
-        // console.log("Called startup")
+        console.log("Called startup")
     }
 
     async allReload() {
-        await this.getEclipseData()
         const that = this
-        tabHelper.getTabs().then(async function(tabs: any) {
-            resetAllFavIconRefCounter(that.eclipseData as tabStructData)
-            await updateTabsOnStartUp(that.eclipseData as tabStructData, that.eclipseData.rootFolder, tabs)
-            await updateTabs(that.eclipseData as tabStructData, tabs)
-            // removeAllNonReferencedFavIcons(that.eclipseData as tabStructData)
+        tabHelper.getTabs().then(async function (tabs: any) {
+            that.store.state.eclipseData.updateTabs(tabs)
+            that.store.state.eclipseData.validateFavIconCache()
             that.$forceUpdate()
             that.save()
             that.updateVersion()
         })
-        // console.log("EclipseData", this.eclipseData)
-
-        // console.log("reloaded")
+        console.log("reloaded")
     }
 
     updateList() {
@@ -108,7 +97,9 @@ export default class App extends Vue {
     }
 
     async save() {
-        await saveDataInFirefox(JSON.parse(JSON.stringify(this.eclipseData)))
+        await this.store.state.eclipseData.save()
+        this.store.state.eclipseData.sort()
+
         // console.log("Data: ", this.eclipseData)
     }
 
@@ -127,6 +118,7 @@ export default class App extends Vue {
     -moz-osx-font-smoothing: grayscale;
     margin: 0;
 }
+
 #nav a {
     font-weight: bold;
     color: #2c3e50;

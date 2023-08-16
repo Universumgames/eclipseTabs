@@ -3,11 +3,14 @@
         <div class="noEvents" id="contextTitle">eclipseTabMenu</div>
         <div id="contextMenuList">
             <div id="contextMenu_generic">
-                <div class="contextElement" id="contextMenu_generic_collapseAll" @click="contextMenu_generic_collapseAll_handler">
+                <div class="contextElement" id="contextMenu_generic_collapseAll"
+                    @click="contextMenu_generic_collapseAll_handler">
                     Collapse All
                 </div>
-                <div class="contextElement" id="contextMenu_generic_expandAll" @click="contextMenu_generic_expandAll_handler">Expand All</div>
-                <div class="contextElement" id="contextMenu_generic_search" @click="contextMenu_generic_search_handler">Search</div>
+                <div class="contextElement" id="contextMenu_generic_expandAll"
+                    @click="contextMenu_generic_expandAll_handler">Expand All</div>
+                <div class="contextElement" id="contextMenu_generic_search" @click="contextMenu_generic_search_handler">
+                    Search</div>
                 <div class="contextElement" @click="reportBug">Submit a bug</div>
             </div>
 
@@ -15,27 +18,29 @@
                 <div class="contextElement" @click="share">Share</div>
             </div>
             <div ref="contextMenu_folder" id="contextMenu_folder" v-show="targetIsFolder && !unsafe">
-                <div class="contextElement" id="contextMenu_folder_rename" @click="contextMenu_folder_rename_handler">Rename Folder</div>
-                <div class="contextElement" id="contextMenu_folder_delete" @click="contextMenu_folder_delete_handler">Delete Folder</div>
+                <div class="contextElement" id="contextMenu_folder_rename" @click="contextMenu_folder_rename_handler">Rename
+                    Folder</div>
+                <div class="contextElement" id="contextMenu_folder_delete" @click="contextMenu_folder_delete_handler">Delete
+                    Folder</div>
                 <div class="contextElement" id="contextMenu_folder_toggle" @click="contextMenu_folder_toggle_handler">
                     Open/Close Folder
                 </div>
-                <div class="contextElement" id="contextMenu_folder_cascade_toggle" @click="contextMenu_folder_cascade_toggle_handler">
+                <div class="contextElement" id="contextMenu_folder_cascade_toggle"
+                    @click="contextMenu_folder_cascade_toggle_handler">
                     Open/Close Folder and Subfolders
                 </div>
-                <div class="contextElement" id="contextMenu_folder_create_at_loc" @click="contextMenu_folder_create_at_location">
+                <div class="contextElement" id="contextMenu_folder_create_at_loc"
+                    @click="contextMenu_folder_create_at_location">
                     Create Folder at location
                 </div>
             </div>
             <div ref="contextMenu_item" id="contextMenu_item" v-show="targetIsItem && !unsafe">
-                <div class="contextElement" id="contextMenu_item_rename" @click="contextMenu_item_rename_handler">Rename item</div>
-                <div class="contextElement" id="contextMenu_item_delete" @click="contextMenu_item_delete_handler">Delete item</div>
-                <div
-                    v-if="eclipseData.hideOrSwitchTab == false"
-                    class="contextElement"
-                    id="contextMenu_item_toggle"
-                    @click="contextMenu_item_toggle_handler"
-                >
+                <div class="contextElement" id="contextMenu_item_rename" @click="contextMenu_item_rename_handler">Rename
+                    item</div>
+                <div class="contextElement" id="contextMenu_item_delete" @click="contextMenu_item_delete_handler">Delete
+                    item</div>
+                <div v-if="eclipseData.hideOrSwitchTab == false" class="contextElement" id="contextMenu_item_toggle"
+                    @click="contextMenu_item_toggle_handler">
                     Show/Hide item
                 </div>
             </div>
@@ -45,10 +50,11 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
-import { ContextAction, ContextMenuData, tabStructData } from "@/scripts/interfaces"
-import { pinnedFolderID, unorderedFolderID } from "@/scripts/dataHandler/definitions"
+import { ContextAction, ContextMenuData } from "@/scripts/interfaces"
+import { pinnedFolderID, unorderedFolderID } from "@/scripts/definitions"
 import { getManifest } from "@/scripts/browserHandler"
 import { createTab } from "@/scripts/tabHelper"
+import { TabStructData } from "@/scripts/tabStructData"
 
 @Options({
     components: {},
@@ -64,7 +70,7 @@ import { createTab } from "@/scripts/tabHelper"
     }
 })
 export default class ContextMenu extends Vue {
-    eclipseData!: tabStructData
+    eclipseData!: TabStructData
 
     contextMenu!: HTMLElement
 

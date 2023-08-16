@@ -10,7 +10,5 @@
     width: 100%;
     margin: -0.5ch;
     border: 2px inset #eee;
-    max-height: 90vh;
-    min-height: 50vh;
-    height: 60%;
+    height: 15vh;
 }

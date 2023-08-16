@@ -1,3 +1,5 @@
+import { ITabStructData, TabStructData } from "./tabStructData"
+
 export interface browserHandler {
     updateList: any
     setColorScheme: any
@@ -14,7 +16,7 @@ export interface Browser extends TabManager {
     tabQuery(query: any): Promise<Array<any>>
     startupHandler(handler: browserStartupHandler): void
     localStorageSet(data: any): Promise<any>
-    localStorageGetTabStructData(name: string): Promise<tabStructData | undefined>
+    localStorageGetTabStructData(name: string): Promise<ITabStructData | undefined>
     getManifest(): FirefoxManifest
     getBookmarks(): Promise<FirefoxBookmarksRoot>
     getTheme(): Promise<FirefoxTheme>
@@ -22,59 +24,20 @@ export interface Browser extends TabManager {
 
 //TODO declare tabmanager and implement interface
 export interface TabManager {
-    hideTab(id: string | Number): Promise<Boolean>
-    showTab(id: string | Number): Promise<Boolean>
-    pinTab(id: string | Number): Promise<Boolean>
-    unpinTab(id: string | Number): Promise<Boolean>
-    focusTab(id: string | Number): void
+    hideTab(id: string | number): Promise<Boolean>
+    showTab(id: string | number): Promise<Boolean>
+    pinTab(id: string | number): Promise<Boolean>
+    unpinTab(id: string | number): Promise<Boolean>
+    focusTab(id: string | number): void
     createTab(url: string): Promise<FirefoxTab>
     getTabs(): Promise<Array<FirefoxTab>>
     getCurrentTab(): Promise<FirefoxTab>
-    closeTab(id: string | Number): void
+    closeTab(id: string | number): void
 }
 
 export enum BrowserType {
     Gecko,
     Chrome
-}
-
-export interface tabStructData {
-    mode: Mode
-    rootFolder: folderData
-    colorScheme: ColorScheme
-    devMode: Boolean
-    closeTabsInDeletingFolder: Boolean
-    version: String
-    displayHowTo: Boolean
-    hideOrSwitchTab: Boolean
-    favIconStorage: Record<string, StoredFavIcon>
-}
-
-export interface StoredFavIcon {
-    key: string
-    imageSrc: string
-    refBy: Array<string>
-}
-
-export interface folderData extends elementData {
-    name: string
-    open: Boolean
-    folderID: folderIDType
-    elements: Array<elementData>
-}
-
-export interface itemData extends elementData {
-    url: string
-    tabID: tabIDType
-    itemID: itemIDType
-    hidden: Boolean
-    tabExists: Boolean
-    title: string
-}
-
-export interface elementData {
-    parentFolderID: string
-    index: number
 }
 
 export enum Mode {
@@ -110,15 +73,15 @@ export interface FirefoxManifest {
     short_name: String
     sidebar_action: any
     version: String
-    manifest_version: Number
+    manifest_version: number
 }
 
 export interface FirefoxBookmarksRoot {
     children: Array<any>
-    dateAdded: Number
-    dateGroupModified: Number
+    dateAdded: number
+    dateGroupModified: number
     id: String
-    index: Number
+    index: number
     parentId: any
     title: String
     type: String
@@ -133,25 +96,25 @@ export interface FirefoxTab {
     cookieStoreId: string
     discarded: boolean
     favIconUrl: string
-    height: Number
+    height: number
     hidden: boolean
     highlighted: boolean
-    id: Number
+    id: number
     incognito: boolean
-    index: Number
+    index: number
     isArticle: boolean
     isInReaderMode: boolean
-    lastAccessed: Number
+    lastAccessed: number
     mutedInfo: any
-    openerTabId: Number
+    openerTabId: number
     pinned: boolean
     sessionId: string
     status: string
-    successorTabId: Number
+    successorTabId: number
     title: string
     url: string
-    width: Number
-    windowId: Number
+    width: number
+    windowId: number
 }
 
 export enum ContextAction {

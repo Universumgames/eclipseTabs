@@ -6,10 +6,10 @@ import {
     FirefoxBookmarksRoot,
     FirefoxManifest,
     FirefoxTheme,
-    tabStructData,
     BrowserType,
     Browser
 } from "./interfaces"
+import { ITabStructData, TabStructData } from "./tabStructData"
 
 export function getBrowserType(): BrowserType {
     //@ts-ignore
@@ -57,7 +57,7 @@ export async function localStorageSet(data: any): Promise<any> {
     return getCurrentBrowser().localStorageSet(data)
 }
 
-export async function localStorageGetTabStructData(name: string): Promise<tabStructData | undefined> {
+export async function localStorageGetTabStructData(name: string): Promise<ITabStructData | undefined> {
     return getCurrentBrowser().localStorageGetTabStructData(name)
 }
 

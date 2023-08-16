@@ -1,7 +1,6 @@
-import { createItemID } from "./dataHandler/adder"
-import { addFavIcon } from "./dataHandler/changer"
-import { getHostname } from "./dataHandler/getter"
-import { elementData, folderData, itemData, itemIDType, tabIDType, tabStructData } from "./interfaces"
+import { folderIDType, itemIDType, tabIDType } from "./interfaces"
+import { ElementData, FolderData, IItemData, ItemData } from "./elementData"
+import { TabStructData } from "./tabStructData"
 
 /**
  *
@@ -20,7 +19,7 @@ export function compareVersion(versionA: string | String, versionB: string | Str
     return 0
 }
 
-export function upgradeHandler(eclipseData: tabStructData) {
+export function upgradeHandler(eclipseData: TabStructData) {
     // upgrade from <=1.3.1 to 1.4.0
     if (compareVersion(eclipseData.version, "1.4.0") == -1) {
         upgradeTo_1_4_0(eclipseData)
@@ -28,13 +27,13 @@ export function upgradeHandler(eclipseData: tabStructData) {
     }
 }
 
-function upgradeTo_1_4_0(eclipseData: tabStructData) {
+function upgradeTo_1_4_0(eclipseData: TabStructData) {
     console.log("upgrading from " + eclipseData.version + " to 1.4.0")
 
     //const eclipseData = Object.assign({}, eclipseData2)
     if (eclipseData.favIconStorage == undefined) eclipseData.favIconStorage = {}
     eclipseData.version = "1.4.0"
-    const queue: elementData[] = [...eclipseData.rootFolder.elements]
+    const queue: ElementData[] = [...eclipseData.rootFolder.elements]
     queue.concat(eclipseData.rootFolder.elements)
     let items = 0
 
@@ -47,7 +46,7 @@ function upgradeTo_1_4_0(eclipseData: tabStructData) {
 
         if (element == undefined) continue
         if ("folderID" in element) {
-            queue.push(...(element as folderData).elements)
+            queue.push(...(element as FolderData).elements)
             // console.log("add to queue", (element as folderData).elements)
         } else {
             const item = (element as unknown) as {
@@ -60,9 +59,9 @@ function upgradeTo_1_4_0(eclipseData: tabStructData) {
                 title: string
             }
 
-            item.itemID = createItemID()
+            item.itemID = eclipseData.findUnusedItemID(item.url)
 
-            const ret = addFavIcon(eclipseData, item.itemID, item.url, item.favIconURL)
+            const ret = eclipseData.addFavIcon(item.itemID, item.url, item.favIconURL)
             const logdata = { url: item.url, icon: item.favIconURL }
             item.favIconURL = ""
             // if (ret) console.log("added favicon for ", logdata)

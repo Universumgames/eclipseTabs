@@ -1,7 +1,16 @@
-import { createStore } from 'vuex'
+import { TabStructData, createEmptyData } from "@/scripts/tabStructData"
+import { InjectionKey } from 'vue'
+import { Store, createStore, useStore } from 'vuex'
 
-export default createStore({
+export interface State {
+  eclipseData: TabStructData
+}
+
+export const key: InjectionKey<Store<State>> = Symbol()
+
+export default createStore<State>({
   state: {
+    eclipseData: createEmptyData()
   },
   mutations: {
   },
@@ -10,3 +19,8 @@ export default createStore({
   modules: {
   }
 })
+
+
+export function eclipseStore() {
+  return useStore(key)
+}

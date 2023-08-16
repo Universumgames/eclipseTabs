@@ -2,9 +2,9 @@
     <form id="settingsContainer">
         <br />
         <div id="developerMode">
-            <span title="Active Developer View to use important developer tools like resetting the data struct or reloading the addon"
-                >Developer View</span
-            >
+            <span
+                title="Active Developer View to use important developer tools like resetting the data struct or reloading the addon">Developer
+                View</span>
             <label class="switch">
                 <input type="checkbox" ref="developerMode_checkbox" />
                 <span class="slider round"></span>
@@ -18,16 +18,17 @@
             </label>
         </div>
         <div id="closeTabsSW">
-            <span title="When deleting a folder with open (or hidden) tabs, those will be not closed by default, unless you activate that here"
-                >Close Tabs when deleting folder</span
-            >
+            <span
+                title="When deleting a folder with open (or hidden) tabs, those will be not closed by default, unless you activate that here">Close
+                Tabs when deleting folder</span>
             <label class="switch">
                 <input type="checkbox" ref="closeTabsSW_checkbox" />
                 <span class="slider round"></span>
             </label>
         </div>
         <div id="hideOrSwitchSW">
-            <span title="Decide wether you hide/show a tab on click or to directly jump to it">Hide/Show tabs or switch on click</span>
+            <span title="Decide wether you hide/show a tab on click or to directly jump to it">Hide/Show tabs or switch on
+                click</span>
             <label class="switch">
                 <input type="checkbox" ref="hideOrSwitchSW_checkbox" />
                 <span class="slider round"></span>
@@ -38,20 +39,19 @@
         <button type="submit" @click="saveOptions">Save</button><br />
         <button type="submit" @click="openHowTo">Open HowTo Page</button><br />
         <button @click="clearStruct">
-            <span title="You * up your data struct? Just reset it to default values to test and try again">Clear Data Struct</span></button
-        ><br />
-        <p>v{{version}}</p>
+            <span title="You * up your data struct? Just reset it to default values to test and try again">Clear Data
+                Struct</span></button><br />
+        <p>v{{ version }}</p>
     </form>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component"
-import { getDataStructFromFirefox, saveDataInFirefox } from "@/scripts/dataHandler/getter"
-import { ColorScheme, tabStructData } from "@/scripts/interfaces"
+import { ColorScheme } from "@/scripts/interfaces"
 import { reloadExtension } from "@/scripts/helper"
 import * as tabHelper from "@/scripts/tabHelper"
-import { createEmptyData } from "@/scripts/dataHandler/adder"
 import { getManifest } from "@/scripts/browserHandler"
+import { TabStructData, createEmptyData } from "@/scripts/tabStructData"
 
 @Options({
     props: {
@@ -80,20 +80,20 @@ export default class Settings extends Vue {
 
     async saveOptions(e: any) {
         e.preventDefault()
-        const data = await getDataStructFromFirefox()
+        const data = await TabStructData.loadFromStorage()
         if (data == undefined) return
         // console.log(data)
         data.devMode = this.devModeSW.checked
         data.closeTabsInDeletingFolder = this.closeTabsDeletingFolderSW.checked
         data.colorScheme = this.darkModeSW.checked ? ColorScheme.light : ColorScheme.dark
         data.hideOrSwitchTab = this.hideOrSwitchSW.checked
-        saveDataInFirefox(data)
+        data.save()
         reloadExtension()
     }
 
     restoreOptions() {
         const that = this
-        function setCurrentChoices(storage: tabStructData) {
+        function setCurrentChoices(storage: TabStructData) {
             that.devModeSW.checked = storage.devMode as boolean
             that.closeTabsDeletingFolderSW.checked = storage.closeTabsInDeletingFolder as boolean
             that.darkModeSW.checked = storage.colorScheme == ColorScheme.light
@@ -102,7 +102,7 @@ export default class Settings extends Vue {
             if (storage.colorScheme == ColorScheme.dark) document.body.classList.add("darkmode")
         }
 
-        getDataStructFromFirefox().then(eclipseStorage => {
+        TabStructData.loadFromStorage().then((eclipseStorage: any) => {
             setCurrentChoices(eclipseStorage!)
         })
     }
@@ -112,10 +112,10 @@ export default class Settings extends Vue {
     }
 
     async clearStruct() {
-        await saveDataInFirefox(createEmptyData())
+        await createEmptyData().save()
     }
 
-    get version(){
+    get version() {
         return getManifest().version
     }
 }

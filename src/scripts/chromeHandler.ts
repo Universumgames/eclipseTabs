@@ -1,16 +1,15 @@
 import { onUpdated } from "@vue/runtime-core"
-import { createEmptyData } from "./dataHandler/adder"
 import {
     browserHandler,
     browserStartupHandler,
     FirefoxBookmarksRoot,
     FirefoxManifest,
     FirefoxTheme,
-    tabStructData,
     Browser,
-    folderData,
     FirefoxTab
 } from "./interfaces"
+import { FolderData } from "./elementData"
+import { TabStructData, createEmptyData } from "./tabStructData"
 
 //@ts-ignore
 const chromeBrowser = chrome
@@ -36,8 +35,8 @@ export default class ChromeHandler implements Browser {
     }
 
     async tabQuery(query: any): Promise<Array<any>> {
-        return new Promise(function(resolve, reject) {
-            chromeBrowser.tabs.query(query, function(tabs: Array<any>) {
+        return new Promise(function (resolve, reject) {
+            chromeBrowser.tabs.query(query, function (tabs: Array<any>) {
                 resolve(tabs)
             })
         })
@@ -52,21 +51,21 @@ export default class ChromeHandler implements Browser {
         return await chromeBrowser.storage.local.set(data)
     }
 
-    async localStorageGetTabStructData(name: string): Promise<tabStructData | undefined> {
+    async localStorageGetTabStructData(name: string): Promise<TabStructData | undefined> {
         const storage = await chromeBrowser.storage.local.get(name)
         const data = storage.eclipseData
         if (data === undefined) return undefined
 
         //transition to new object
         if ("rootFolder" in data) {
-            return data as tabStructData
+            return data as TabStructData
         } else if ("name" in data && "open" in data && "folderID" in data && "elements" in data) {
             const root = {
                 name: data.name,
                 open: data.open,
                 folderID: data.folderID,
                 elements: data.elements
-            } as folderData
+            } as FolderData
             return createEmptyData()
         }
         return undefined
@@ -84,37 +83,37 @@ export default class ChromeHandler implements Browser {
         throw new Error("Method not implemented.")
     }
 
-    async hideTab(id: string | Number): Promise<Boolean> {
+    async hideTab(id: string | number): Promise<Boolean> {
         return false
     }
 
-    async showTab(id: string | Number): Promise<Boolean> {
+    async showTab(id: string | number): Promise<Boolean> {
         return false
     }
 
-    pinTab(id: string | Number): Promise<Boolean> {
-        return new Promise(function(resolve, reject) {
-            chromeBrowser.tabs.update(id, { pinned: true }, function(tab: any) {
+    pinTab(id: string | number): Promise<Boolean> {
+        return new Promise(function (resolve, reject) {
+            chromeBrowser.tabs.update(id, { pinned: true }, function (tab: any) {
                 resolve(tab != undefined)
             })
         })
     }
 
-    unpinTab(id: string | Number): Promise<Boolean> {
-        return new Promise(function(resolve, reject) {
-            chromeBrowser.tabs.update(id, { pinned: false }, function(tab: any) {
+    unpinTab(id: string | number): Promise<Boolean> {
+        return new Promise(function (resolve, reject) {
+            chromeBrowser.tabs.update(id, { pinned: false }, function (tab: any) {
                 resolve(tab != undefined)
             })
         })
     }
 
-    focusTab(id: string | Number): void {
+    focusTab(id: string | number): void {
         throw new Error("Method not implemented.")
     }
 
     createTab(url: string): Promise<FirefoxTab> {
-        return new Promise(function(resolve, reject) {
-            chromeBrowser.tabs.create({ url: url }, function(tab: any) {
+        return new Promise(function (resolve, reject) {
+            chromeBrowser.tabs.create({ url: url }, function (tab: any) {
                 resolve(tab)
             })
         })
@@ -125,14 +124,14 @@ export default class ChromeHandler implements Browser {
     }
 
     getCurrentTab(): Promise<FirefoxTab> {
-        return new Promise(function(resolve, reject) {
-            chromeBrowser.tabs.getCurrent(function(tab: any) {
+        return new Promise(function (resolve, reject) {
+            chromeBrowser.tabs.getCurrent(function (tab: any) {
                 resolve(tab)
             })
         })
     }
 
-    closeTab(id: string | Number): void {
+    closeTab(id: string | number): void {
         chromeBrowser.tabs.remove(id)
     }
 }

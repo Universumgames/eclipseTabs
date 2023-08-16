@@ -1,70 +1,70 @@
 {
-    "name": "eclipseTabs",
-    "version": "1.4.3",
-    "private": true,
-    "scripts": {
-        "serve": "vue-cli-service serve",
-        "build": "vue-cli-service build",
-        "lint": "vue-cli-service lint",
-        "debug": "vue-cli-service build --watch",
-        "dev": "npm run debug",
-        "export": "./export.sh all eclipseTabs_firefox"
+  "name": "eclipseTabs",
+  "version": "1.4.3",
+  "private": true,
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint",
+    "debug": "vue-cli-service build --watch",
+    "dev": "npm run debug",
+    "export": "./export.sh all eclipseTabs_firefox"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Universumgames/eclipseTabs.git"
+  },
+  "keywords": [
+    "firefox",
+    "extension",
+    "browser-extension"
+  ],
+  "author": "Universumgames",
+  "license": "MIT",
+  "dependencies": {
+    "core-js": "^3.6.5",
+    "tslib": "^1.14.1",
+    "uuid": "^8.3.2",
+    "vue": "^3.2.21",
+    "vue-class-component": "^8.0.0-0",
+    "vue-router": "^4.0.10",
+    "vuex": "^4.0.0-0"
+  },
+  "devDependencies": {
+    "@types/uuid": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^5.4.0",
+    "@typescript-eslint/parser": "^5.4.0",
+    "@vue/cli-plugin-babel": "~5.0.8",
+    "@vue/cli-plugin-eslint": "~5.0.8",
+    "@vue/cli-plugin-router": "~5.0.8",
+    "@vue/cli-plugin-typescript": "~5.0.8",
+    "@vue/cli-plugin-vuex": "~5.0.8",
+    "@vue/cli-service": "~5.0.8",
+    "@vue/compiler-sfc": "^3.0.0",
+    "@vue/eslint-config-typescript": "^9.1.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-vue": "^8.0.3",
+    "typescript": "~4.5.5"
+  },
+  "eslintConfig": {
+    "root": true,
+    "env": {
+      "node": true
     },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Universumgames/eclipseTabs.git"
-    },
-    "keywords": [
-        "firefox",
-        "extension",
-        "browser-extension"
+    "extends": [
+      "plugin:vue/vue3-essential",
+      "eslint:recommended",
+      "@vue/typescript"
     ],
-    "author": "Universumgames",
-    "license": "MIT",
-    "dependencies": {
-        "core-js": "^3.6.5",
-        "tslib": "^1.14.1",
-        "uuid": "^8.3.2",
-        "vue": "^3.2.21",
-        "vue-class-component": "^8.0.0-0",
-        "vue-router": "^4.0.10",
-        "vuex": "^4.0.0-0"
+    "parserOptions": {
+      "parser": "@typescript-eslint/parser"
     },
-    "devDependencies": {
-        "@types/uuid": "^8.3.4",
-        "@typescript-eslint/eslint-plugin": "^4.18.0",
-        "@typescript-eslint/parser": "^4.18.0",
-        "@vue/cli-plugin-babel": "~4.5.0",
-        "@vue/cli-plugin-eslint": "~4.5.0",
-        "@vue/cli-plugin-router": "~4.5.0",
-        "@vue/cli-plugin-typescript": "^4.5.13",
-        "@vue/cli-plugin-vuex": "~4.5.0",
-        "@vue/cli-service": "~4.5.0",
-        "@vue/compiler-sfc": "^3.0.0",
-        "@vue/eslint-config-typescript": "^7.0.0",
-        "babel-eslint": "^10.1.0",
-        "eslint": "^6.7.2",
-        "eslint-plugin-vue": "^7.0.0",
-        "typescript": "~4.1.5"
-    },
-    "eslintConfig": {
-        "root": true,
-        "env": {
-            "node": true
-        },
-        "extends": [
-            "plugin:vue/vue3-essential",
-            "eslint:recommended",
-            "@vue/typescript"
-        ],
-        "parserOptions": {
-            "parser": "@typescript-eslint/parser"
-        },
-        "rules": {}
-    },
-    "browserslist": [
-        "> 1%",
-        "last 2 versions",
-        "not dead"
-    ]
+    "rules": {}
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ]
 }

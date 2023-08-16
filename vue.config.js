@@ -1,11 +1,12 @@
-module.exports = {
+const { defineConfig } = require("@vue/cli-service")
+
+module.exports = defineConfig({
     publicPath: "./",
-    filenameHashing: false,
     productionSourceMap: false,
     css: {
-        extract: false
+        extract: false,
     },
-    configureWebpack: config => {
+    configureWebpack: (config) => {
         config.devtool = "source-map"
-    }
-}
+    },
+})

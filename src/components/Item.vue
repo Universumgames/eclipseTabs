@@ -1,21 +1,14 @@
 <template>
-    <div
-        ref="container"
-        :class="'overflow listItem element ' + (hidden ? 'tabHidden' : '')"
-        @click="click"
-        @keyup.enter="click"
-        @dragstart="dragstart_handler"
-        @dropend="dropend_handler"
-        @dragend="dragend_handler"
-        tabindex="0"
-        :title="itemData.url"
-    >
+    <div ref="container" :class="'overflow listItem element ' + (hidden ? 'tabHidden' : '')" @click="click"
+        @keyup.enter="click" @dragstart="dragstart_handler" @dropend="dropend_handler" @dragend="dragend_handler"
+        tabindex="0" :title="itemData.url">
         <div ref="dropContainer" :itemID="itemData.itemID" :index="itemData.index" :parentID="itemData.parentFolderID">
             <span :class="containedInSearchResult() ? 'searched dot' : ''" style="display: inline;"></span>
             <img :src="favIcon" class="favicon noEvents" />
             <div class="noEvents name">{{ itemData.title }}</div>
         </div>
-        <input type="text" :class="rename ? '' : 'disabled'" :placeholder="itemData.title" @keyup="renameSubmit" ref="renameInput" />
+        <input type="text" :class="rename ? '' : 'disabled'" :placeholder="itemData.title" @keyup="renameSubmit"
+            ref="renameInput" />
         <div v-show="modeMove" @drop="inbetweenDrop" ref="inbetween">
             <small class="noEvents">Insert Below {{ itemData.title }}</small>
         </div>
@@ -23,36 +16,35 @@
 </template>
 
 <script lang="ts">
-import { moveElement } from "@/scripts/dataHandler/changer"
-import { getFavIconUrl, getFolderJSONObjectByID } from "@/scripts/dataHandler/getter"
-import { ContextAction, ContextMenuData, elementData, folderData, itemData, KeyCode, Mode, tabStructData } from "@/scripts/interfaces"
+import { ElementData, FolderData, ItemData } from "@/scripts/elementData"
+import { getFavIconUrl } from "@/scripts/helper"
+import { ContextAction, ContextMenuData, KeyCode, Mode } from "@/scripts/interfaces"
 import * as tabHelper from "@/scripts/tabHelper"
+import { eclipseStore } from "@/store"
 import { Options, Vue } from "vue-class-component"
 
 @Options({
     components: {},
     props: {
-        eclipseData: Object,
+        //eclipseData: Object,
         itemData: Object,
         parentFolder: Object,
         htmlTarget: Object,
         targetElement: Object,
         contextData: Object,
-        tier: Number,
         allreload: Function,
         searchResults: Array
     }
 })
 export default class Item extends Vue {
-    itemData!: itemData
-    parentFolder!: folderData
-    eclipseData!: tabStructData
+    itemData!: ItemData
+    parentFolder!: FolderData
+    //eclipseData!: tabStructData
     htmlTarget: HTMLElement | undefined = undefined
-    targetElement: elementData | undefined = undefined
+    targetElement: ElementData | undefined = undefined
     contextData!: ContextMenuData
-    tier: number = 0
     allreload!: Function
-    searchResults!: elementData[]
+    searchResults!: ElementData[]
 
     container!: HTMLElement
     dropContainer!: HTMLElement
@@ -61,9 +53,14 @@ export default class Item extends Vue {
 
     oldRename: boolean = false
 
+    store = eclipseStore()
+
+    get eclipseData() {
+        return this.store.state.eclipseData
+    }
+
     mounted() {
         this.container = this.$refs.container as HTMLElement
-        if (this.tier != 0) this.container.style.marginLeft = 1.5 + "rem"
         this.inbetween = this.$refs.inbetween as HTMLElement
         this.renameInput = this.$refs.renameInput as HTMLInputElement
         this.dropContainer = this.$refs.dropContainer as HTMLElement
@@ -106,7 +103,7 @@ export default class Item extends Vue {
 
     containedInSearchResult(): boolean {
         for (const element of this.searchResults) {
-            if ("itemID" in element && (element as itemData).itemID == this.itemData.itemID) return true
+            if ("itemID" in element && (element as ItemData).itemID == this.itemData.itemID) return true
         }
         return false
     }
@@ -127,8 +124,8 @@ export default class Item extends Vue {
             tabs != undefined
                 ? tabs
                 : {
-                      pinned: false
-                  }
+                    pinned: false
+                }
         // var currentTab = tabHelper.getCurrentTab();
         if (!tab.pinned) {
             const tabExists = tabHelper.tabExistsSync(tabID, tabList)
@@ -188,7 +185,7 @@ export default class Item extends Vue {
         this.$emit("dragstart", event)
     }
 
-    dropend_handler() {}
+    dropend_handler() { }
 
     dragend_handler() {
         this.container.classList.remove("hover")
@@ -198,10 +195,9 @@ export default class Item extends Vue {
     inbetweenDrop() {
         if (this.targetElement == undefined) return
         if (this.targetElement.parentFolderID != this.itemData.parentFolderID) {
-            moveElement(
+            this.store.state.eclipseData.moveElement(
                 this.targetElement!,
-                getFolderJSONObjectByID(this.targetElement.parentFolderID!, this.eclipseData.rootFolder)!,
-                getFolderJSONObjectByID(this.itemData.parentFolderID!, this.eclipseData.rootFolder)!
+                this.store.state.eclipseData.findFolderByID(this.itemData.parentFolderID)!
             )
         }
         this.targetElement.index = +this.itemData.index + 1
