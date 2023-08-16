@@ -55,6 +55,8 @@ export class TabStructData implements ITabStructData {
     }
 
     async save(): Promise<void> {
+        console.log("saving");
+
         await browserHandler.localStorageSet({ eclipseData: JSON.stringify(this) });
     }
 

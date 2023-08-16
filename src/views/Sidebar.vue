@@ -14,8 +14,10 @@
                     <p>{{ folderCreateNote }}</p>
                     <input type="text" ref="addFolderNameInput" placeholder="foldername" @keyup="addFolderSubmit" />
                 </div>
-                <div v-show="currentlyDragging" ref="rootDropoff">
-                    <span>Dropoff spot for moving to root level</span>
+                <div v-show="currentlyDragging" ref="rootDropoff"
+                    style="height: 10rem; background-color: var(--context-bg-color); border-radius: 1rem;">
+                    <span style="padding: 3ch;"><br />Dropoff spot for moving to root level
+                    </span>
                 </div>
                 <div id="searchInput" v-show="currentlySearching">
                     <input type="text" v-model="queryString" @keyup="onQueryUpdate" placeholder="search query"

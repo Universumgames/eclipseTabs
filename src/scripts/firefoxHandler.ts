@@ -50,12 +50,15 @@ export default class FirefoxHandler implements Browser {
         const storage = await firefoxBrowser.storage.local.get(name)
 
         const json = storage.eclipseData
+
         if (json === undefined) return undefined
         try {
-            const data = JSON.parse(json)
+            const data = typeof json == 'string' ? JSON.parse(json) : json
 
             //transition to new object
             if ("rootFolder" in data) {
+                console.log("transition to new object");
+
                 return data as ITabStructData
             } else if ("name" in data && "open" in data && "folderID" in data && "elements" in data) {
                 const root = {

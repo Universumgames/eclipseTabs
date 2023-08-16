@@ -1,4 +1,9 @@
+Update 1.5.1:
+
+- fix bug when transitioning from 1.4.x to 1.5.0
+
 Update 1.5.0:
+
 - underlying architecture changes
 - improved performance
 - improve Memory usage
