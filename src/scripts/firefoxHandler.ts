@@ -49,22 +49,27 @@ export default class FirefoxHandler implements Browser {
     async localStorageGetTabStructData(name: string): Promise<ITabStructData | undefined> {
         const storage = await firefoxBrowser.storage.local.get(name)
 
-        const data = JSON.parse(storage.eclipseData)
-        if (data === undefined) return undefined
+        const json = storage.eclipseData
+        if (json === undefined) return undefined
+        try {
+            const data = JSON.parse(json)
 
-        //transition to new object
-        if ("rootFolder" in data) {
-            return data as ITabStructData
-        } else if ("name" in data && "open" in data && "folderID" in data && "elements" in data) {
-            const root = {
-                name: data.name,
-                open: data.open,
-                folderID: data.folderID,
-                elements: data.elements
-            } as FolderData
-            return createEmptyData()
+            //transition to new object
+            if ("rootFolder" in data) {
+                return data as ITabStructData
+            } else if ("name" in data && "open" in data && "folderID" in data && "elements" in data) {
+                const root = {
+                    name: data.name,
+                    open: data.open,
+                    folderID: data.folderID,
+                    elements: data.elements
+                } as FolderData
+                return createEmptyData()
+            }
+            return undefined
+        } catch (e) {
+            return undefined
         }
-        return undefined
     }
 
     getManifest(): FirefoxManifest {

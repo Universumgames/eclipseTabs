@@ -1,3 +1,9 @@
+Update 1.5.0:
+- underlying architecture changes
+- improved performance
+- improve Memory usage
+- simplify import/export
+
 Update 1.4.1:
 
 -   fix minor Bug for FavIcons, for websites with no favicon (404) but with a non empty response body
